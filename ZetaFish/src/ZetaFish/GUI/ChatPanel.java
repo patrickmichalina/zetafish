@@ -14,14 +14,14 @@ import javax.swing.JTextField;
  *
  * @author Patrick
  */
-public class ChatInterface extends Panel implements Runnable {
+public class ChatPanel extends Panel implements Runnable {
 
     private BoxLayout  chatLayout;
     private Dimension  dim;
     private JTextArea  outputText;
     private JTextField inputTest;
 
-    ChatInterface() {
+    ChatPanel() {
         super(600,130);
 
         JButton test = new JButton("Send");
