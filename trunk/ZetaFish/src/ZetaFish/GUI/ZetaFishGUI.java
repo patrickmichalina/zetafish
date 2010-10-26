@@ -4,30 +4,32 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  *
  * @author Patrick
  */
-public class ZetaFishGUI extends JFrame implements ActionListener {
+public class ZetaFishGUI extends JFrame implements ActionListener
+{
     private BackgroundPanel backgroundPanel;
     private Panel           logoPanel;
     private MenuPanel       menuPanel;
 
-    private ChatInterface   chatPanel;
+    private ChatPanel   chatPanel;
     private InfoPanel       infoPanel;
-    private GamePanel       deckPanel;
+    private GamePanel       gamePanel;
 
     private FlowLayout      windowLayout;
-    private BoxLayout       menuBtnLayout;
 
     /**
      *
      */
-    public ZetaFishGUI() {
+    public ZetaFishGUI()
+    {
         super("ZetaFish");
 
         //start the game with the inital view
@@ -38,9 +40,10 @@ public class ZetaFishGUI extends JFrame implements ActionListener {
      *
      * @param args
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         ZetaFishGUI ourWindow = new ZetaFishGUI();
-}
+    }
 
     private void initStartConditions() {
         windowLayout    = new FlowLayout(0,220,80);
@@ -65,7 +68,7 @@ public class ZetaFishGUI extends JFrame implements ActionListener {
         backgroundPanel.add(menuPanel);
 
         this.pack();
-        this.setSize(800,600);
+        this.setSize(800,650);
         this.isDoubleBuffered();
         this.isLightweight();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,12 +78,14 @@ public class ZetaFishGUI extends JFrame implements ActionListener {
         this.validate();
     }
 
-    private void exitCommand() {
+    private void exitCommand()
+    {
         dispose();
         System.exit(0);
     }
 
-    private void playCommand() {
+    private void playCommand()
+    {
         //reset to blank window
         backgroundPanel.removeAll();
         backgroundPanel.repaint();
@@ -88,32 +93,52 @@ public class ZetaFishGUI extends JFrame implements ActionListener {
         //setup game screen
         backgroundPanel.setLayout(new BorderLayout());
 
-        chatPanel = new ChatInterface();
+        chatPanel = new ChatPanel();
         infoPanel = new InfoPanel();
-        deckPanel = new GamePanel();
+        gamePanel = new GamePanel();
         
         backgroundPanel.add(infoPanel, BorderLayout.PAGE_START);
-        backgroundPanel.add(deckPanel, BorderLayout.CENTER);
+        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
         backgroundPanel.add(chatPanel, BorderLayout.PAGE_END);
 
         backgroundPanel.repaint();
         backgroundPanel.validate();
     }
 
-    private void instructionCommand() {
-        //opens instructions in a new JFrame or in .txt
+    private void instructionCommand()
+    {
+        JFrame instructionFrame = new JFrame("Instructions");
+        JTextArea text = new JTextArea("Instructions go here... I wonder how long instructions are for GoFish??");
+        text.setEditable(false);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+
+        instructionFrame.add(new JScrollPane(text));
+
+        instructionFrame.pack();
+        instructionFrame.setSize(400,400);
+        instructionFrame.isDoubleBuffered();
+        instructionFrame.isLightweight();
+        instructionFrame.setLocationRelativeTo(null);
+        instructionFrame.setResizable(false);
+        instructionFrame.setVisible(true);
+        instructionFrame.validate();
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if("playCMD".equals(e.getActionCommand())){
+    public void actionPerformed(ActionEvent e)
+    {
+        if("playCMD".equals(e.getActionCommand()))
+        {
             playCommand();
         }
 
-        if("instCMD".equals(e.getActionCommand())){
+        if("instCMD".equals(e.getActionCommand()))
+        {
             instructionCommand();
         }
 
-        if("exitCMD".equals(e.getActionCommand())){
+        if("exitCMD".equals(e.getActionCommand()))
+        {
             exitCommand();
         }
     }
