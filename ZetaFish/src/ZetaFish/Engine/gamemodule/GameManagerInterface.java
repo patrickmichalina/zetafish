@@ -1,4 +1,4 @@
-package gamemodule;
+package ZetaFish.Engine.gamemodule;
 
 public interface GameManagerInterface {
 

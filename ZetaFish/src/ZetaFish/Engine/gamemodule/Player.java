@@ -1,4 +1,4 @@
-package gamemodule; 
+package ZetaFish.Engine.gamemodule; 
 /** 
  *  Summary: Player class provides a player object that holds player data for each player. 
  *  Is used to monitor and store player status and state during the game.

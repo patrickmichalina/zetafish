@@ -1,4 +1,4 @@
-package gamemodule;
+package ZetaFish.Engine.gamemodule;
 /** 
  *  Description: GameEngine class serves as the game actions part of the Game Module. 
  *  Provides all game activity including deck management and state, and all game 

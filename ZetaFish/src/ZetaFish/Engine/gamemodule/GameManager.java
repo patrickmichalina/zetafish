@@ -1,4 +1,5 @@
-package gamemodule; 
+package ZetaFish.Engine.gamemodule;
+
 /** 
  *  Summary: Provides a manager class for the Game module. Game Manager manages and 
  *  monitors all game objects and actions. Receives requests from the NetworkManager 

@@ -1,5 +1,5 @@
+package ZetaFish.Engine.gamemodule;
 
-package gamemodule;
 import java.util.*;
 /**
  * Tests every method in the GameManager Class. Simulates game functions. 
