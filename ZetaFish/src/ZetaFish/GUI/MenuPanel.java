@@ -17,7 +17,9 @@ public class MenuPanel extends Panel {
     /**
      *
      */
-    public JButton playBtn = new JButton("Play");
+	public JButton serverBtn = new JButton("Start Server" );
+	
+	public JButton playBtn = new JButton("Play");
     /**
      *
      */
@@ -45,10 +47,12 @@ public class MenuPanel extends Panel {
 
     private void initComponents() {
         this.setLayout(new BoxLayout(this,1));
+        this.add(serverBtn);
         this.add(playBtn);
         this.add(instBtn);
         this.add(exitBtn);
         
+        serverBtn.setActionCommand("serverCMD");
         playBtn.setActionCommand("playCMD");
         instBtn.setActionCommand("instCMD");
         exitBtn.setActionCommand("exitCMD");

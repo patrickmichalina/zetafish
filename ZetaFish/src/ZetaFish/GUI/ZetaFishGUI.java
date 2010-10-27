@@ -9,11 +9,18 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import ZetaFish.ZetaFishClient;
+import ZetaFish.ZetaFishServer;
+import ZetaFish.Interfaces.*;
+import ZetaFish.NetworkObjects.ZFPlayer;
+import ZetaFish.NetworkObjects.ZFStatus;
+
+
 /**
  *
  * @author Patrick
  */
-public class ZetaFishGUI extends JFrame implements ActionListener
+public class ZetaFishGUI extends JFrame implements ActionListener, IStatusListener
 {
     private BackgroundPanel backgroundPanel;
     private Panel           logoPanel;
@@ -24,6 +31,9 @@ public class ZetaFishGUI extends JFrame implements ActionListener
     private GamePanel       gamePanel;
 
     private FlowLayout      windowLayout;
+    
+    private INetworkManager networkManager;
+    private ZetaFishServer  server = null;
 
     /**
      *
@@ -34,6 +44,8 @@ public class ZetaFishGUI extends JFrame implements ActionListener
 
         //start the game with the inital view
         initStartConditions();
+        
+        networkManager = new ZetaFishClient();
     }
     
     /**
@@ -57,7 +69,7 @@ public class ZetaFishGUI extends JFrame implements ActionListener
         backgroundPanel.setLayout(windowLayout);
 
        
-
+        menuPanel.serverBtn.addActionListener(this);
         menuPanel.playBtn.addActionListener(this);
         menuPanel.instBtn.addActionListener(this);
         menuPanel.exitBtn.addActionListener(this);
@@ -78,31 +90,64 @@ public class ZetaFishGUI extends JFrame implements ActionListener
         this.validate();
     }
 
+    private void serverCommand()
+    {
+    	if(server == null)
+    		server = new ZetaFishServer(null);    	
+    }
+    
     private void exitCommand()
     {
-        dispose();
+    	try
+    	{
+    		networkManager.closeConnection();
+    	}
+    	catch(Exception err)
+    	{
+    		HandleException(err);
+    	}    	
+        dispose();                      
         System.exit(0);
     }
 
     private void playCommand()
     {
-        //reset to blank window
-        backgroundPanel.removeAll();
-        backgroundPanel.repaint();
-
-        //setup game screen
-        backgroundPanel.setLayout(new BorderLayout());
-
-        chatPanel = new ChatPanel();
-        infoPanel = new InfoPanel();
-        gamePanel = new GamePanel();
-        
-        backgroundPanel.add(infoPanel, BorderLayout.PAGE_START);
-        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
-        backgroundPanel.add(chatPanel, BorderLayout.PAGE_END);
-
-        backgroundPanel.repaint();
-        backgroundPanel.validate();
+    	try
+    	{
+	    	networkManager.openConnection("localhost", "My User Name", "My Password");
+	    		    	
+	        //reset to blank window
+	        backgroundPanel.removeAll();
+	        backgroundPanel.repaint();
+	
+	        //setup game screen
+	        backgroundPanel.setLayout(new BorderLayout());
+	
+	        chatPanel = new ChatPanel(networkManager);
+	        infoPanel = new InfoPanel();
+	        gamePanel = new GamePanel();
+	        
+	        networkManager.addChatListener(chatPanel);
+	        
+	        backgroundPanel.add(infoPanel, BorderLayout.PAGE_START);
+	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
+	        backgroundPanel.add(chatPanel, BorderLayout.PAGE_END);
+	
+	        backgroundPanel.repaint();
+	        backgroundPanel.validate();
+    	}
+    	catch(Exception err)
+    	{
+    		HandleException(err);
+    	}
+    }
+    /**
+     * Single spot to determine how to handle exceptions
+     * @param err
+     */
+    private void HandleException(Exception err)
+    {
+    	err.printStackTrace();    	
     }
 
     private void instructionCommand()
@@ -127,19 +172,44 @@ public class ZetaFishGUI extends JFrame implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-        if("playCMD".equals(e.getActionCommand()))
+    	if("serverCMD".equals(e.getActionCommand()))
+        {
+            serverCommand();
+        }
+    	else if("playCMD".equals(e.getActionCommand()))
         {
             playCommand();
         }
 
-        if("instCMD".equals(e.getActionCommand()))
+        else if("instCMD".equals(e.getActionCommand()))
         {
             instructionCommand();
         }
 
-        if("exitCMD".equals(e.getActionCommand()))
+        else if("exitCMD".equals(e.getActionCommand()))
         {
             exitCommand();
         }
     }
+
+	@Override
+	public void OnGameStausChange(ZFStatus status) 
+	{
+		System.out.println("STATUS CHANGE!");
+		System.out.println("Status:" + status.getStatus());
+		System.out.println("Current Player:" + status.getCurrentPlayer());
+		System.out.println("Is Game Over?:" + status.getIsGameOver());
+		System.out.println("Is Game Running?:" + status.getIsGameRunning());
+		ZFPlayer[] players = status.getPlayers();
+		System.out.println("Number of players:" + ((players == null) ? "null" : status.getPlayers().length));
+		if(players != null)
+		{
+			for(ZFPlayer player: players)
+			{
+				System.out.println("\tName:" + player.getPlayerName());
+				System.out.println("\tScore:" + player.getScore());
+				System.out.println("\tCards in hand:" + player.getCardsInHand());				
+			}
+		}		
+	}
 }

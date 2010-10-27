@@ -21,17 +21,15 @@ import ZetaFish.NetworkObjects.*;
  * @author calbrecht
  *
  */
-public class ZetaFishServer extends JFrame 
+public class ZetaFishServer extends JFrame
 {
-	static protected Set<ZFClientResponseHandler> activePlayers = new HashSet<ZFClientResponseHandler>();
+	private ZFServerThread serverThread = null;
 	
 	public static final int DEFAULT_PORT = 5000;
 	public static final boolean INCLUDE_JOKERS = true;
 	
 	private JTextArea output;
-	private JScrollPane scrollPane;
-	
-	private ZFGame game;
+	private JScrollPane scrollPane;	
 	
 	public ZetaFishServer(String args[]) 
 	{		
@@ -43,7 +41,7 @@ public class ZetaFishServer extends JFrame
 		setVisible(true);
 		int port = DEFAULT_PORT;
 		
-		if (args.length > 0) {
+		if (args != null && args.length > 0) {
 			try {
 				port = Integer.parseInt(args[0]);
 			}
@@ -51,35 +49,23 @@ public class ZetaFishServer extends JFrame
 				display(e.toString());
 			}
 		}
-		game = new ZFGame(this, INCLUDE_JOKERS);
-		try {
-			ServerSocket server = new ServerSocket(port);
-			Socket connection;
-			while (true) {
-				display("Waiting for players to connect...");
-				connection = server.accept();
-				ZFClientResponseHandler newPlayer = new ZFClientResponseHandler(connection, game, this);
-				activePlayers.add(newPlayer);
-				newPlayer.start();
-			}
-		}
-		catch(Exception e) 
-		{
-			display(e.toString());
-		}
+		serverThread = new ZFServerThread(this, port, this.INCLUDE_JOKERS);
+		serverThread.start();
 	}
 	
-	public void display(String s) 
+	public synchronized void display(String s) 
 	{
 		output.append(s + "\n");
 	}
 	
+	public synchronized Set<ZFClientResponseHandler> getActivePlayers()
+	{
+		return serverThread.activePlayers;
+	}
+	
 	public synchronized void BroadcastObject(Object obj)
 	{
-		for(ZFClientResponseHandler prh: this.activePlayers)
-		{						
-			prh.getPlayer().sendObject(obj);								
-		}
+		serverThread.BroadcastObject(obj);		
 	}
 	
 	/**
@@ -88,6 +74,56 @@ public class ZetaFishServer extends JFrame
 	public static void main_SVR(String[] args) {
 		// TODO Auto-generated method stub
 		new ZetaFishServer(args);
+	}
+}
+
+class ZFServerThread extends Thread 
+{	
+	private ZetaFishServer ZFserver;
+	private boolean includeJokers;
+	private ZFGame game;
+	private int port;
+	
+	static protected Set<ZFClientResponseHandler> activePlayers = new HashSet<ZFClientResponseHandler>();
+	
+	public ZFServerThread(ZetaFishServer server, int port, boolean includeJokers)
+	{
+		this.ZFserver = server;
+		this.port = port;
+		this.includeJokers = includeJokers;
+	}
+	
+	public void run()
+	{		
+		game = new ZFGame(ZFserver, this.includeJokers);
+		try {
+			ServerSocket server = new ServerSocket(port);
+			Socket connection;
+			while (true) {
+				ZFserver.display("Waiting for players to connect...");
+				connection = server.accept();
+				ZFClientResponseHandler newPlayer = new ZFClientResponseHandler(connection, game, ZFserver);
+				activePlayers.add(newPlayer);
+				newPlayer.start();
+			}
+		}
+		catch(Exception e) 
+		{
+			ZFserver.display(e.toString());
+		}		
+	}
+	
+	public synchronized Set<ZFClientResponseHandler> getActivePlayers()
+	{
+		return this.activePlayers;
+	}
+	
+	public synchronized void BroadcastObject(Object obj)
+	{
+		for(ZFClientResponseHandler prh: this.activePlayers)
+		{						
+			prh.getPlayer().sendObject(obj);								
+		}
 	}
 }
 
@@ -209,7 +245,7 @@ class ZFClientResponseHandler extends Thread {
 	private void parseChatCommand(ZFChat c)
 	{		
 		server.display("(Chat)" + c.from + ": " + c.msg);
-		for(ZFClientResponseHandler prh: server.activePlayers)
+		for(ZFClientResponseHandler prh: server.getActivePlayers())
 		{						
 			if (prh != this)
 				prh.player.sendObject(c);								
