@@ -1,4 +1,4 @@
-package gamemodule; 
+package ZetaFish.Engine.gamemodule; 
 /** 
  *  Summary: Class Card is a basic data class that holds individual card status and information. 
  *  Imports: none
