@@ -2,8 +2,10 @@ package ZetaFish.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 
 /**
  *  Summary: Class GamePanel represents the playing area that houses 3 sections.
@@ -25,8 +27,11 @@ public class GamePanel extends Panel {
     private Panel turnPanel     = new Panel(200,400);
     private Panel bookPanel     = new Panel(200,400);
 
-    private JList playerList    = new JList();
+    private JList playerList;
     private JList bookList      = new JList();
+
+    private String[] playerNames = {"Chad", "Melanie", "Patrick"};
+    private Card[]   bookedCards;
 
     public GamePanel() {
         super();
@@ -46,16 +51,25 @@ public class GamePanel extends Panel {
         this.add(turnPanel, BorderLayout.LINE_START);
         turnPanel.setBorder(BorderFactory.createTitledBorder("Current Turn"));
 
+            //work in progress
+            playerList = new JList(playerNames);
+            playerList.setVisibleRowCount(6);
+            playerList.setPreferredSize(new Dimension(150,100));
+            this.add(playerList);
+         
+            JScrollPane optionPane = new JScrollPane(playerList);
+            turnPanel.add(optionPane);
+
         /*********************************************************************/
         /*                         Ocean of Cards                            */
         /*********************************************************************/
         this.add(poolPanel, BorderLayout.CENTER);
         poolPanel.setBorder(BorderFactory.createTitledBorder("Ocean of Cards"));
 
-        // this is just for show at the moment!
-        for(int i = 0; i < 52; i++) {
-           poolPanel.add(deck.deck.get(i));
-        }
+            // this is just for show at the moment!
+            for(int i = 0; i < 52; i++) {
+                poolPanel.add(deck.deck.get(i));
+            }
 
         /*********************************************************************/
         /*                             Books                                 */
@@ -64,12 +78,17 @@ public class GamePanel extends Panel {
         bookPanel.setBorder(BorderFactory.createLineBorder(Color.green, 1));
         bookPanel.setBorder(BorderFactory.createTitledBorder("Books"));
 
+            //work in progress
+
+
         /*********************************************************************/
         /*                      Player's Hand                                */
         /*********************************************************************/
         this.add(playerPanel, BorderLayout.PAGE_END);
         playerPanel.setBorder(BorderFactory.createTitledBorder("Your Hand"));
         playerPanel.add(deck.deck.get(1));
+        playerPanel.add(deck.deck.get(2));
+        playerPanel.add(deck.deck.get(3));
     }
 
     /**
