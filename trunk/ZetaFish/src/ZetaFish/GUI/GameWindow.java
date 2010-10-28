@@ -64,7 +64,7 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
      * @param args[]
      */
     public static void main(String args[]) {
-        GameWindow ourWindow = new GameWindow();
+        new GameWindow();
     }
 
     private void initStartConditions() {
