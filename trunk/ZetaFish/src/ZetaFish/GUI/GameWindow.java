@@ -34,8 +34,8 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
      * BackgroundPanel is the primary panel that holds the main BG image.
      * logoPanel holds the image of the ZetaFish logo.
      * menuPanel holds the buttons that first appear on game creation.
-     * infoPanel is
-     * gamePanel
+     * infoPanel is holds status information for the game
+     * gamePanel is the panel that contains several more game related panels
      */
 
     private BackgroundPanel backgroundPanel;
@@ -91,12 +91,14 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
 
         //Below are aesthetic calls to the JFrame
         this.pack();
-        this.setSize(800,650);
+        this.setSize(800,600);
         this.isDoubleBuffered();
         this.isLightweight();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+
+        //set visibility to on and refresh
         this.setVisible(true);
         this.validate();
     }
@@ -141,6 +143,8 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
 	
 	        backgroundPanel.repaint();
 	        backgroundPanel.validate();
+                this.setSize(1024,768);
+                this.setLocationRelativeTo(null);
     	}
     	catch(Exception err) {
             HandleException(err);

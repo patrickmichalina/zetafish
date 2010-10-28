@@ -19,7 +19,6 @@ import ZetaFish.Interfaces.*;
  * @author Patrick
  */
 public class ChatPanel extends Panel implements Runnable, IChatListener, ActionListener {
-
     private BoxLayout  chatLayout;
     private Dimension  dim;
     private JTextArea  outputText;

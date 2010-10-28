@@ -3,6 +3,7 @@ package ZetaFish.GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.BorderFactory;
+import javax.swing.JList;
 
 /**
  *  Summary: Class GamePanel represents the playing area that houses 3 sections.
@@ -16,37 +17,58 @@ import javax.swing.BorderFactory;
  *
  *  @author Patrick Michalina
  */
-public class GamePanel extends Panel
-{
-    private Panel playerPanel   = new Panel(500,70);
-    private Panel opponentPanel = new Panel(500,70);
-    private Panel poolPanel     = new Panel(500,310);
+public class GamePanel extends Panel {
+    private Panel playerPanel   = new Panel(1024,100);
+    private Panel opponentPanel = new Panel(1024,70);
+    private Panel poolPanel     = new Panel(600,330);
 
-    public GamePanel()
-    {
+    private Panel turnPanel     = new Panel(200,400);
+    private Panel bookPanel     = new Panel(200,400);
+
+    private JList playerList    = new JList();
+    private JList bookList      = new JList();
+
+    public GamePanel() {
         super();
-        this.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        this.setBorder(BorderFactory.createTitledBorder("Game Area"));
         this.setLayout(new BorderLayout());
 
+        //just for show at the moment!
         DeckOfCards deck = new DeckOfCards();
 
-        /****** OPPONENT CARD AREA ****/
+        /*********************************************************************/
+        /*                      Opponent Card Area                           */
+        /*********************************************************************/
         this.add(opponentPanel, BorderLayout.PAGE_START);
-        opponentPanel.add(deck.deck.get(0));
 
-        /****** OCEAN OF CARDS    ****/
+        /*********************************************************************/
+        /*                           Turn Area                               */
+        /*********************************************************************/
+        this.add(turnPanel, BorderLayout.LINE_START);
+        turnPanel.setBorder(BorderFactory.createTitledBorder("Current Turn"));
+
+        /*********************************************************************/
+        /*                         Ocean of Cards                            */
+        /*********************************************************************/
         this.add(poolPanel, BorderLayout.CENTER);
-        poolPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+        poolPanel.setBorder(BorderFactory.createTitledBorder("Ocean of Cards"));
 
-        for(int i = 0; i < 52; i++)
-        {
+        // this is just for show at the moment!
+        for(int i = 0; i < 52; i++) {
            poolPanel.add(deck.deck.get(i));
-
         }
-        
-        /****** PLAYER CARD AREA ****/
+
+        /*********************************************************************/
+        /*                             Books                                 */
+        /*********************************************************************/
+        this.add(bookPanel, BorderLayout.LINE_END);
+        bookPanel.setBorder(BorderFactory.createLineBorder(Color.green, 1));
+        bookPanel.setBorder(BorderFactory.createTitledBorder("Books"));
+
+        /*********************************************************************/
+        /*                      Player's Hand                                */
+        /*********************************************************************/
         this.add(playerPanel, BorderLayout.PAGE_END);
+        playerPanel.setBorder(BorderFactory.createTitledBorder("Your Hand"));
         playerPanel.add(deck.deck.get(1));
     }
 
