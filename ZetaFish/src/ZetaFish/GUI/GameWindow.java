@@ -97,7 +97,7 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-
+        
         //set visibility to on and refresh
         this.setVisible(true);
         this.validate();
