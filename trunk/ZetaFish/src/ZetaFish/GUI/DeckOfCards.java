@@ -9,8 +9,7 @@ import javax.swing.ImageIcon;
  * @author Patrick
  */
 public class DeckOfCards {
-
-	public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
+    public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
 	
     /**
      * 
