@@ -120,7 +120,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         this.playerName = playerName;
         this.networkManager.openConnection(this.serverName, this.playerName, "My Password");
 
-        testDrawCards();
+        //testDrawCards();
     }
 
     private void testDrawCards()
@@ -455,7 +455,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 					JLayeredPane playerPane = (JLayeredPane)this.opponentPanel.getComponent(i);
 					playerPane.removeAll();
 					addCardsToPane(playerPane, player.getHand(), false);
-				}				
+					i++;
+				}			
+				
             }        
         }
         
