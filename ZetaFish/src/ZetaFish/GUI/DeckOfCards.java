@@ -167,7 +167,7 @@ public class DeckOfCards {
     	Card card = null;
     	try
     	{
-    		card = deck.get(suit).get(value-1);
+    		card = deck.get(suit).get(value - 1);
     	}
     	catch(Exception err)
     	{
