@@ -298,14 +298,14 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	}	
 	
 	@Override
-	public synchronized void PlayBook(Card[] book) throws Exception
+	public synchronized void PlayBook(ZFCard[] book) throws Exception
 	{
 		ZFPlayBook play = new ZFPlayBook(book);
 		sendObject(play);		
 	}	
 	
 	@Override
-	public synchronized Card[] getHand() 
+	public synchronized ZFCard[] getHand() 
 	{
 		return (lastStatus == null) ? null : lastStatus.getPlayers()[myPlayerNumber].getHand();
 	}

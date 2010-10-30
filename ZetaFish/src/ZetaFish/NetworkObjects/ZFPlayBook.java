@@ -6,14 +6,14 @@ import ZetaFish.*;
 
 public class ZFPlayBook implements Serializable  
 {
-	private Card[] book;
+	private ZFCard[] book;
 	
-	public ZFPlayBook(Card[] book)
+	public ZFPlayBook(ZFCard[] book)
 	{
 		this.book = book;
 	}
 	
-	public Card[] getBook()
+	public ZFCard[] getBook()
 	{
 		return this.book;
 	}

@@ -7,8 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
-import ZetaFish.Card;
 import ZetaFish.Interfaces.*;
+import ZetaFish.NetworkObjects.ZFCard;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse;
 import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
@@ -224,8 +224,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 		System.out.println("Result:" + response.getResult());
 		System.out.println("Message:" + response.getMessage());
 		System.out.println("Cards:");
-		Card[] cards = response.getCards();
-		for(Card card: cards)
+		ZFCard[] cards = response.getCards();
+		for(ZFCard card: cards)
 		{
 			System.out.println(card.toString());
 		}

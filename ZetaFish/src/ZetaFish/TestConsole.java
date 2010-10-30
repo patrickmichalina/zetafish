@@ -80,10 +80,10 @@ public class TestConsole implements IChatListener, IStatusListener, ITurnListene
 					break;		
 					
 				case PLAY_BOOK:
-					Card[] hand = nm.getHand();
+					ZFCard[] hand = nm.getHand();
 					if(hand != null)
 					{
-						Card[] book = new Card[]{hand[0], hand[1], hand[2], hand[3]};						
+						ZFCard[] book = new ZFCard[]{hand[0], hand[1], hand[2], hand[3]};						
 						nm.PlayBook(book);
 					}
 					else
@@ -97,10 +97,10 @@ public class TestConsole implements IChatListener, IStatusListener, ITurnListene
 					break;
 					
 				case SHOW_HAND:
-					Card[] hand2 = nm.getHand();
+					ZFCard[] hand2 = nm.getHand();
 					if(hand2 != null)
 					{
-						for(Card card: hand2)
+						for(ZFCard card: hand2)
 						{
 							System.out.print(card.toString() + " ");							
 						}
@@ -207,8 +207,8 @@ public class TestConsole implements IChatListener, IStatusListener, ITurnListene
 		System.out.println("Result:" + response.getResult());
 		System.out.println("Message:" + response.getMessage());
 		System.out.println("Cards:");
-		Card[] cards = response.getCards();
-		for(Card card: cards)
+		ZFCard[] cards = response.getCards();
+		for(ZFCard card: cards)
 		{
 			System.out.println(card.toString());
 		}

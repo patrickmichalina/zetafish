@@ -1,6 +1,7 @@
-package ZetaFish;
+package ZetaFish.NetworkObjects;
 
 import java.io.Serializable;
+
 
 
 /**
@@ -8,14 +9,14 @@ import java.io.Serializable;
  *  is a regulate poker deck that contains 52 regular cards and that can
  *  also optionally include two Jokers.
  */
-public class Deck  implements Serializable 
+public class ZFDeck  implements Serializable 
 {
    
    /**
     * An array of 52 or 54 cards.  A 54-card deck contains two Jokers,
     * in addtion to the 52 cards of a regular poker deck.
     */
-   private Card[] deck;
+   private ZFCard[] deck;
    
    /**
     * Keeps track of the number of cards that have been dealt from
@@ -29,7 +30,7 @@ public class Deck  implements Serializable
     * randomize the order.  (Note that "new Deck()" is equivalent
     * to "new Deck(false)".)
     */
-   public Deck() {
+   public ZFDeck() {
       this(false);  // Just call the other constructor in this class.
    }
    
@@ -42,26 +43,26 @@ public class Deck  implements Serializable
     * @param includeJokers if true, two Jokers are included in the deck; if false,
     * there are no Jokers in the deck.
     */
-   public Deck(boolean includeJokers) {
+   public ZFDeck(boolean includeJokers) {
       if (includeJokers)
-         deck = new Card[54];
+         deck = new ZFCard[54];
       else
-         deck = new Card[52];
+         deck = new ZFCard[52];
       int cardCt = 0; // How many cards have been created so far.
 
-      for(Card.Suits suit:Card.Suits.values())
+      for(ZFCard.Suits suit:ZFCard.Suits.values())
       {
-    	  if(suit != Card.Suits.JOKER)
+    	  if(suit != ZFCard.Suits.JOKER)
     	  {
 	         for ( int value = 1; value <= 13; value++ ) {
-	            deck[cardCt] = new Card(value,suit);
+	            deck[cardCt] = new ZFCard(value,suit);
 	            cardCt++;
 	         }
     	  }
       }
       if (includeJokers) {
-         deck[52] = new Card(1,Card.Suits.JOKER);
-         deck[53] = new Card(2,Card.Suits.JOKER);
+         deck[52] = new ZFCard(1,ZFCard.Suits.JOKER);
+         deck[53] = new ZFCard(2,ZFCard.Suits.JOKER);
       }
       cardsUsed = 0;
    }
@@ -73,7 +74,7 @@ public class Deck  implements Serializable
    public void shuffle() {
       for ( int i = deck.length-1; i > 0; i-- ) {
          int rand = (int)(Math.random()*(i+1));
-         Card temp = deck[i];
+         ZFCard temp = deck[i];
          deck[i] = deck[rand];
          deck[rand] = temp;
       }
@@ -100,7 +101,7 @@ public class Deck  implements Serializable
     * @return the card which is removed from the deck.
     * @throws IllegalStateException if there are no cards left in the deck
     */
-   public Card dealCard() {
+   public ZFCard dealCard() {
       if (cardsUsed == deck.length)
          throw new IllegalStateException("No cards are left in the deck.");
       cardsUsed++;

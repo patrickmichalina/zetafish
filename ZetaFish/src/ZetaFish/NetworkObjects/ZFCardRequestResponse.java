@@ -16,10 +16,10 @@ public class ZFCardRequestResponse implements Serializable
 	}
 	
 	private CardRequestResult result;
-	private Card[] cards;
+	private ZFCard[] cards;
 	private String msg;
 	
-	public ZFCardRequestResponse(CardRequestResult result, Card[] cards, String msg)
+	public ZFCardRequestResponse(CardRequestResult result, ZFCard[] cards, String msg)
 	{
 		this.result = result;
 		this.cards = cards;
@@ -31,7 +31,7 @@ public class ZFCardRequestResponse implements Serializable
 		return this.result;		
 	}
 	
-	public Card[] getCards()
+	public ZFCard[] getCards()
 	{
 		return this.cards;
 	}
