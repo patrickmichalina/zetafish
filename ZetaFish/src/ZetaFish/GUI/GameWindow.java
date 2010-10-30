@@ -122,18 +122,19 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
 
     private void playCommand() {
         try {
-            networkManager.openConnection("localhost", "My User Name", "My Password");
+        	// TODO: Pop up a box asking for player name.
+        	networkManager.openConnection("localhost", "My User Name", "My Password");
 	    		    	
-	    //reset to blank window
-	    backgroundPanel.removeAll();
-	    backgroundPanel.repaint();
+        	//reset to blank window
+        	backgroundPanel.removeAll();
+        	backgroundPanel.repaint();
 	
 	        //setup game screen
 	        backgroundPanel.setLayout(new BorderLayout());
 	
 	        chatPanel = new ChatPanel(networkManager);
 	        infoPanel = new InfoPanel();
-	        gamePanel = new GamePanel();
+	        gamePanel = new GamePanel(this.networkManager);
 	        
 	        networkManager.addChatListener(chatPanel);
 	        
@@ -199,21 +200,8 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     }
     
     @Override
-    public void OnGameStausChange(ZFStatus status) {
-        System.out.println("STATUS CHANGE!");
-        System.out.println("Status:" + status.getStatus());
-	System.out.println("Current Player:" + status.getCurrentPlayer());
-	System.out.println("Is Game Over?:" + status.getIsGameOver());
-	System.out.println("Is Game Running?:" + status.getIsGameRunning());
-	ZFPlayer[] players = status.getPlayers();
-	System.out.println("Number of players:" + ((players == null) ? "null" : status.getPlayers().length));
-	
-        if(players != null) {
-            for(ZFPlayer player: players) {
-                System.out.println("\tName:" + player.getPlayerName());
-		System.out.println("\tScore:" + player.getScore());
-		System.out.println("\tCards in hand:" + player.getCardsInHand());
-            }
-        }
+    public void OnGameStausChange(ZFStatus status) 
+    {
+        
     }
 }
