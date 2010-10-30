@@ -156,28 +156,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
                       lblCardCount.setText("Count: " + i);
           }
 
-              
-       // test
-
-
-
-
-      // this is just for testing at the moment!
-      	int x = 0;
-      	for(DeckOfCards.Suits suit : DeckOfCards.Suits.values())
-          {
-      		if(suit != DeckOfCards.Suits.JOKER)
-      		{
-	        		for(int val = 1; val <= 1; val++)
-	        		{
-	        			Card card = deck.getCard(val, suit);
-	        			panelBookAce.add(card, new Integer(x));
-                                      card.setShown(true);
-	        			card.setIcon(card.getImage());
-	        			card.setBounds((x++ * 18) + 0, 0,  45, 65);
-	        		}
-      		}
-          }	
+             
     
     }
 
@@ -422,7 +401,14 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
                 if(pane == playerPanel) {
                     card.setShown(true);
                     card.setIcon(card.getImage());
-                    card.setBounds((i++ * 40) + 50, 20,  45, 65);
+                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
+                }
+
+                //opponent 1
+                if(pane == opponentSubPanel1 || pane == opponentSubPanel2) {
+                    card.setShown(false);
+                    card.setIcon(card.getImage());
+                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
                 }
                     
                 
@@ -454,7 +440,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		if(players != null) 
         {
 			// Update my hand
-			addCardsToPane(playerPanel, players[0].getHand());
+			
 
 			// Update other players
 			int i = 0;
@@ -465,7 +451,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				{
 					JLayeredPane playerPane = (JLayeredPane)this.opponentPanel.getComponent(i);
 					playerPane.removeAll();
-					addCardsToPane(playerPane, player.getHand());					
+					addCardsToPane(playerPanel, player.getHand());
 				}				
             }        
         }
