@@ -21,8 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 
-
-
 /**
  *  Summary: Class GamePanel represents the playing area that houses 3 sections.
  *           It holds the player, opponent, and pool panels. This is where the user
@@ -37,7 +35,7 @@ import java.awt.event.ActionListener;
  *  @author Chad Albrecht
  *  @author Melanie
  */
-public class GamePanel extends Panel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ActionListener {
+public class GamePanel extends JPanel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ActionListener {
     private JLayeredPane playerPanel       = new JLayeredPane();
     private JLayeredPane poolPanel         = new JLayeredPane();
     private JLayeredPane bookPanel         = new JLayeredPane();
@@ -78,7 +76,9 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JButton      btnqueen          = new JButton("Queen");
     private JButton      btnking           = new JButton("King");
     private JButton      btnace            = new JButton("Ace");
-    
+    private JButton      btnSend           = new JButton("Send");
+    private JButton      btnPlayBook       = new JButton("Play Book");
+    private JButton      btnStartGame      = new JButton("Start Game");
     private JLabel       poolTxt           = new JLabel("Pool: ");
     private JLabel       bookTxt           = new JLabel("Book: ");
     private JLabel       winsTxt           = new JLabel("Wins: ");
@@ -86,14 +86,9 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JLabel       statusTxt         = new JLabel("Network Status: ");
     private JLabel       myTrnTxt          = new JLabel("My Turn!");
     private JLabel       lblCardCount      = new JLabel("Count: ");
-    private Dimension    btnSize           = new Dimension(50,35);
-
-    private JButton      btnSend           = new JButton("Send");
-    private JButton      btnPlayBook       = new JButton("Play Book");
-    private JButton      btnStartGame      = new JButton("Start Game");
-    
     private JTextArea    txtOutput         = new JTextArea(5,0);
     private JTextField   txtInput          = new JTextField();
+    private Dimension    btnSize           = new Dimension(50,35);
 
     private final String SEND_ACTION = "send";
     private final String START_GAME_ACTION = "start_game";
@@ -125,11 +120,21 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         this.playerName = playerName;
         this.networkManager.openConnection(this.serverName, this.playerName, "My Password");
 
-        testDrawDeck();
+        testDrawCards();
     }
 
-    private void testDrawDeck()
+    private void testDrawCards()
     {
+        //draw cards in opponents hands
+
+        //draw booked sets
+
+        //draw draw ocean
+
+        //draw hand
+
+
+
       /*********************************************************************/
       /*                         Ocean of Cards                            */
       /*********************************************************************/
@@ -152,7 +157,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
           }
 
               
-              // test
+       // test
+
 
 
 
@@ -174,7 +180,7 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
           }	
     
     }
-    
+
     private void setComponents() {
         //All these components are added in a flowlayout. The order DOES matter.
         this.add(infoPanel);
@@ -271,20 +277,20 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     }
 
     private void setComponentDimensions() {
-        infoPanel.setPreferredSize(        new Dimension(1024,30) );
-        panelChat.setPreferredSize(        new Dimension(890,110));
-        panelButtons.setPreferredSize(     new Dimension(124,130));
+        infoPanel.setPreferredSize(        new Dimension(1024, 30));
+        panelChat.setPreferredSize(        new Dimension( 890,110));
+        panelButtons.setPreferredSize(     new Dimension( 124,130));
         
         playerPanel.setPreferredSize(      new Dimension(1024,100));
         poolPanel.setPreferredSize(        new Dimension(1024,150));
         bookPanel.setPreferredSize(        new Dimension(1024,200));
         
         opponentPanel.setPreferredSize(    new Dimension(1024,100));
-        opponentSubPanel1.setPreferredSize(new Dimension(205,100) );
-        opponentSubPanel2.setPreferredSize(new Dimension(205,100) );
-        opponentSubPanel3.setPreferredSize(new Dimension(205,100) );
-        opponentSubPanel4.setPreferredSize(new Dimension(205,100) );
-        opponentSubPanel5.setPreferredSize(new Dimension(204,100) );
+        opponentSubPanel1.setPreferredSize(new Dimension( 205,100));
+        opponentSubPanel2.setPreferredSize(new Dimension( 205,100));
+        opponentSubPanel3.setPreferredSize(new Dimension( 205,100));
+        opponentSubPanel4.setPreferredSize(new Dimension( 205,100));
+        opponentSubPanel5.setPreferredSize(new Dimension( 204,100));
 
         btn1.setPreferredSize(    btnSize);
         btn2.setPreferredSize(    btnSize);
@@ -411,8 +417,15 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     				break;    		
     		}
     		Card card = deck.getCard(zfCard.getValue(), suit);
-    		//card.setIcon(card.getImage());
-			//card.setBounds((i++ * 18) + 30, 45,  60, 60);
+                
+                //players hand
+                if(pane == playerPanel) {
+                    card.setShown(true);
+                    card.setIcon(card.getImage());
+                    card.setBounds((i++ * 40) + 50, 20,  45, 65);
+                }
+                    
+                
 			
     		pane.add(card, i++);    		
     	}  
@@ -441,7 +454,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 		if(players != null) 
         {
 			// Update my hand
-			
+			addCardsToPane(playerPanel, players[0].getHand());
+
 			// Update other players
 			int i = 0;
 			for(ZFPlayer player: players) 
@@ -460,7 +474,7 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 	
 	private void ShowGameStatus(ZFStatus status)
 	{
-		System.out.println("STATUS CHANGE!");
+        System.out.println("STATUS CHANGE!");
         System.out.println("Status:" + status.getStatus());
         System.out.println("Current Player:" + status.getCurrentPlayer());
         System.out.println("Is Game Over?:" + status.getIsGameOver());
