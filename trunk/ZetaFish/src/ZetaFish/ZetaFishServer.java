@@ -307,13 +307,13 @@ class ZFGame {
 	private int numPlayers;
 	private boolean gameEnabled, isGameOver;
 	private int currentPlayerNumber;
-	private Deck deck;
+	private ZFDeck deck;
 	
 	private ZetaFishServer server;
 	
 	public ZFGame(ZetaFishServer server, boolean includeJokers) {
 		this.server = server;
-		deck = new Deck(includeJokers);	
+		deck = new ZFDeck(includeJokers);	
 		players = new ArrayList<Player>();		
 		numPlayers = 0;
 		gameEnabled = false;
@@ -371,7 +371,7 @@ class ZFGame {
 				{
 					try
 					{
-						Card newCard = deck.dealCard();
+						ZFCard newCard = deck.dealCard();
 						player.addCardToHand(newCard);
 					}
 					catch(Exception err)
@@ -440,9 +440,9 @@ class ZFGame {
 		if(playerNumber == this.currentPlayerNumber)
 		{
 			Player opponent = players.get(cr.getOpponentNumber());
-			Card[] hand = opponent.getHand();
-			Set<Card> passback = new HashSet<Card>();
-			for(Card card: hand)
+			ZFCard[] hand = opponent.getHand();
+			Set<ZFCard> passback = new HashSet<ZFCard>();
+			for(ZFCard card: hand)
 			{
 				if(card.getValue() == cr.getCardValue())
 				{
@@ -452,7 +452,7 @@ class ZFGame {
 			}
 			if(passback.size() > 0)
 			{
-				Card[] cards = new Card[passback.size()]; 
+				ZFCard[] cards = new ZFCard[passback.size()]; 
 				cards = passback.toArray(cards);
 				response = new ZFCardRequestResponse(ZFCardRequestResponse.CardRequestResult.FROM_PLAYER, 
 						cards, "From player!");
@@ -460,7 +460,7 @@ class ZFGame {
 			else
 			{
 				passback.add(deck.dealCard());
-				Card[] cards = new Card[passback.size()];
+				ZFCard[] cards = new ZFCard[passback.size()];
 				cards = passback.toArray(cards);
 				response = new ZFCardRequestResponse(ZFCardRequestResponse.CardRequestResult.FROM_OCEAN, 
 						cards, "From ocean!");
@@ -510,15 +510,15 @@ class Player {
 	private String token;
 	private ObjectOutputStream out;
 	private int PlayerNumber;
-	private List<Card> hand;
-	private List<Card[]> books;
+	private List<ZFCard> hand;
+	private List<ZFCard[]> books;
 			
 	public Player(int PlayerNumber, String token) {
 		this.PlayerNumber = PlayerNumber;
 		this.token = token;
 		out = null;		
-		hand = new ArrayList<Card>();
-		books = new ArrayList<Card[]>();
+		hand = new ArrayList<ZFCard>();
+		books = new ArrayList<ZFCard[]>();
 	}		
 	public void setOutput(ObjectOutputStream out)
 	{
@@ -534,15 +534,15 @@ class Player {
 		out = null;
 	}
 	
-	public void addCardToHand(Card card)
+	public void addCardToHand(ZFCard card)
 	{
 		hand.add(card);
 	}
 	
-	public boolean removeCardFromHand(Card card)
+	public boolean removeCardFromHand(ZFCard card)
 	{
 		boolean removed = false;
-		for(Card inhand: hand)
+		for(ZFCard inhand: hand)
 		{
 			if(inhand.equals(card))
 			{
@@ -554,9 +554,9 @@ class Player {
 		return removed;
 	}
 	
-	public Card[] getHand()
+	public ZFCard[] getHand()
 	{
-		Card[] h = new Card[hand.size()];
+		ZFCard[] h = new ZFCard[hand.size()];
 		h = hand.toArray(h);
 		return h;		
 	}
@@ -566,19 +566,19 @@ class Player {
 		return hand.size();
 	}
 	
-	public List<Card[]> getBooks()
+	public List<ZFCard[]> getBooks()
 	{		
 		return books;
 	}
 	
-	public void playBook(Card[] book)
+	public void playBook(ZFCard[] book)
 	{
 		books.add(book);
-		for(Card bookcard: book)
+		for(ZFCard bookcard: book)
 		{		
 			for(int i=0; i<hand.size(); i++)
 			{
-				Card handcard = hand.get(i);
+				ZFCard handcard = hand.get(i);
 				if(handcard.equals(bookcard))					
 					hand.remove(handcard);
 			}

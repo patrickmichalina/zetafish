@@ -101,13 +101,13 @@ public interface INetworkManager
    * @param book cards to play
    * @throws Exception
    */
-  public void PlayBook(Card[] book) throws Exception;
+  public void PlayBook(ZFCard[] book) throws Exception;
   
   /**
    * Cards in your hand
    * @return cards
    */
-  public Card[] getHand();
+  public ZFCard[] getHand();
   
   /**
    * Is the game over?

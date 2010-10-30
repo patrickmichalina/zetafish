@@ -1,4 +1,4 @@
-package ZetaFish;
+package ZetaFish.NetworkObjects;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * different jokers.
  */
 
-public class Card implements Serializable  
+public class ZFCard implements Serializable  
 {
    
    public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
@@ -50,7 +50,7 @@ public class Card implements Serializable
     * Creates a Joker, with 1 as the associated value.  (Note that
     * "new Card()" is equivalent to "new Card(1,Card.JOKER)".)
     */
-   public Card() {
+   public ZFCard() {
       suit = Suits.JOKER;
       value = 1;
    }
@@ -66,7 +66,7 @@ public class Card implements Serializable
     * @throws IllegalArgumentException if the parameter values are not in the
     * permissable ranges
     */
-   public Card(int theValue, Suits theSuit) {
+   public ZFCard(int theValue, Suits theSuit) {
       if (theSuit != Suits.SPADES && theSuit != Suits.HEARTS && theSuit != Suits.DIAMONDS && 
             theSuit != Suits.CLUBS && theSuit != Suits.JOKER)
          throw new IllegalArgumentException("Illegal playing card suit");
@@ -161,7 +161,7 @@ public class Card implements Serializable
     * @param other
     * @return true if suit and value matches, false otherwise
     */
-   public boolean equals(Card other)
+   public boolean equals(ZFCard other)
    {
 	   boolean retval = ( (this.getSuit() == other.getSuit())
 			   &&
