@@ -46,16 +46,11 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     private Panel           logoPanel;
     private ChatPanel       chatPanel;
     private GamePanel       gamePanel;
-
-    private JPanel          menuPanel;
-    private JPanel          infoPanel;
- 
-    
-    
     private JButton serverBtn = new JButton("Start Server");
     private JButton playBtn   = new JButton("Play");
     private JButton instBtn   = new JButton("Instructions");
     private JButton exitBtn   = new JButton("Exit");
+    private JPanel  menuPanel;
 
     private FlowLayout windowLayout = new FlowLayout(0,220,80);
     

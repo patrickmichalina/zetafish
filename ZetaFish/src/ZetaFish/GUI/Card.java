@@ -15,7 +15,7 @@ public class Card extends JLabel {
     private boolean   shown = false;
 
     Card() {
-        this.container.setPreferredSize(new Dimension(img.getIconWidth(),img.getIconHeight()));
+        //this.container.setPreferredSize(new Dimension(img.getIconWidth(),img.getIconHeight()));
     }
 
     Card(ImageIcon image) {
@@ -31,5 +31,9 @@ public class Card extends JLabel {
         }
         else
             return imgBack;
+    }
+
+    public void setShown(boolean val) {
+        shown = val;
     }
 }
