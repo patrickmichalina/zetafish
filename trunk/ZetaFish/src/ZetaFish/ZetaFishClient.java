@@ -56,7 +56,8 @@ public class ZetaFishClient extends Thread implements INetworkManager
 				catch(Exception err)
 				{
 					String msg = err.getMessage();
-					System.out.print("CLIENT EXCEPTION(1):" + msg);
+					System.out.println("CLIENT EXCEPTION(1):" + msg);
+					err.printStackTrace();
 					if((msg == "Connection reset") || (msg == "socket closed"))
 						done = true;
 				}			
