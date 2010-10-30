@@ -120,7 +120,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         this.playerName = playerName;
         this.networkManager.openConnection(this.serverName, this.playerName, "My Password");
 
-        //testDrawCards();
+        testDrawCards();
     }
 
     private void testDrawCards()
@@ -372,7 +372,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      * @param pane
      * @param cards
      */
-    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards, boolean ShowCards)
+    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards, boolean isHeld)
     {
     	pane.removeAll();
     	int i = 0;
@@ -397,25 +397,21 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		}
     		Card card = deck.getCard(zfCard.getValue(), suit);
 
-//                //players hand
-//                if(pane == playerPanel) {
-//                    card.setShown(true);
-//                    card.setIcon(card.getImage());
-//                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
-//                }
-//
-//                //opponent 1
-//                if(pane == opponentSubPanel1 || pane == opponentSubPanel2) {
-//                    card.setShown(false);
-//                    card.setIcon(card.getImage());
-//                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
-//                }
+    		card.setShown(isHeld);
 
-    		card.setShown(ShowCards);
-    		card.setBounds((i * 18) + 18, 18,  45, 65);
-    		pane.add(card, i);
+                if(isHeld) {
+                    card.setBounds((i * 60) + 20, 18,  45, 65);
+                }
+                else {
+                    card.setBounds((i * 8) + 15, 20,  45, 65);
+                }
+
+                pane.add(card, i);
     		pane.setComponentZOrder(card, i);
     		i++;
+                this.repaint();
+                pane.repaint();
+                this.validate();
     	}
     	pane.repaint();
     }

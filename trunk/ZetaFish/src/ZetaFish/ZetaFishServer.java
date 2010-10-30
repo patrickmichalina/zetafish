@@ -26,7 +26,7 @@ public class ZetaFishServer extends JFrame
 	private ZFServerThread serverThread = null;
 	
 	public static final int DEFAULT_PORT = 5000;
-	public static final boolean INCLUDE_JOKERS = true;
+	public static final boolean INCLUDE_JOKERS = false;
 	
 	private JTextArea output;
 	private JScrollPane scrollPane;	
