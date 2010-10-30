@@ -372,7 +372,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      * @param pane
      * @param cards
      */
-    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards, boolean isHeld)
+    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards, boolean isHeld, boolean isShown)
     {
     	pane.removeAll();
     	int i = 0;
@@ -397,7 +397,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		}
     		Card card = deck.getCard(zfCard.getValue(), suit);
 
-    		card.setShown(isHeld);
+    		card.setShown(isShown);
 
                 if(isHeld) {
                     card.setBounds((i * 60) + 20, 18,  45, 65);
@@ -444,13 +444,13 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				if(player.getPlayerNumber() == this.networkManager.getMyPlayerNumber())
 				{
 					this.playerPanel.removeAll();
-					addCardsToPane(playerPanel, player.getHand(), true);
+					addCardsToPane(playerPanel, player.getHand(), true, true);
 				}
 				else // Update other players
 				{
 					JLayeredPane playerPane = (JLayeredPane)this.opponentPanel.getComponent(i);
 					playerPane.removeAll();
-					addCardsToPane(playerPane, player.getHand(), false);
+					addCardsToPane(playerPane, player.getHand(), false, false);
 					i++;
 				}
 
