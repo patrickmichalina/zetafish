@@ -7,6 +7,13 @@ import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import ZetaFish.Card;
+import ZetaFish.Interfaces.*;
+import ZetaFish.NetworkObjects.ZFCardRequestResponse;
+import ZetaFish.NetworkObjects.ZFPlayer;
+import ZetaFish.NetworkObjects.ZFStatus;
+
+
 /**
  *  Summary: Class GamePanel represents the playing area that houses 3 sections.
  *           It holds the player, opponent, and pool panels. This is where the user
@@ -21,7 +28,7 @@ import javax.swing.JPanel;
  *  @author Chad Albrecht
  *  @author Melanie
  */
-public class GamePanel extends Panel {
+public class GamePanel extends Panel implements IStatusListener, ITurnListener, ICardRequestResponseListener {
     private JLayeredPane playerPanel       = new JLayeredPane();
     private JLayeredPane poolPanel         = new JLayeredPane();
     private JLayeredPane bookPanel         = new JLayeredPane();
@@ -47,11 +54,20 @@ public class GamePanel extends Panel {
     private JButton      btnking           = new JButton("King");
     private JButton      btnace            = new JButton("Ace");
     private Dimension    btnSize           = new Dimension(50,35);
+    
+    private INetworkManager networkManager = null;
 
-    public GamePanel() {
+    public GamePanel(INetworkManager networkManager) {
         super();
         this.setLayout(new FlowLayout(1,0,0));
 
+        this.networkManager = networkManager;
+        
+        this.networkManager.addStatusListener(this);
+        this.networkManager.addTurnListener(this);
+        this.networkManager.addCardRequestResponseListener(this);
+                
+                
         //just for show at the moment!
         DeckOfCards deck = new DeckOfCards();        
         
@@ -72,9 +88,6 @@ public class GamePanel extends Panel {
                 deck.deck.get(i).setIcon(deck.deck.get(i).getImage());
                 deck.deck.get(i).setBounds((i * 18) + 30, 45,  60, 60);
             }
-
-        
-
     }
 
     private void setComponents() {
@@ -175,4 +188,47 @@ public class GamePanel extends Panel {
     public JLayeredPane getOpponentPanel() {
         return opponentPanel;
     }
+
+	@Override
+	public void OnGameStausChange(ZFStatus status) 
+	{
+		System.out.println("STATUS CHANGE!");
+        System.out.println("Status:" + status.getStatus());
+        System.out.println("Current Player:" + status.getCurrentPlayer());
+        System.out.println("Is Game Over?:" + status.getIsGameOver());
+        System.out.println("Is Game Running?:" + status.getIsGameRunning());
+        ZFPlayer[] players = status.getPlayers();
+        System.out.println("Number of players:" + ((players == null) ? "null" : status.getPlayers().length));
+	
+        if(players != null) 
+        {
+            for(ZFPlayer player: players) 
+            {
+                System.out.println("\tName:" + player.getPlayerName());
+                System.out.println("\tScore:" + player.getScore());
+                System.out.println("\tCards in hand:" + player.getCardsInHand());
+            }
+        }	
+	}
+
+	@Override
+	public void OnGameTurn() 
+	{
+		System.out.println("My Turn!");		
+	}
+
+	@Override
+	public void OnCardRequestResponse(ZFCardRequestResponse response) 
+	{
+		System.out.println("CARD REQUEST RESPONSE");
+		System.out.println("Result:" + response.getResult());
+		System.out.println("Message:" + response.getMessage());
+		System.out.println("Cards:");
+		Card[] cards = response.getCards();
+		for(Card card: cards)
+		{
+			System.out.println(card.toString());
+		}
+		
+	}
 }
