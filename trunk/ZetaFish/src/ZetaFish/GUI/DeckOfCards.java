@@ -1,6 +1,7 @@
 package ZetaFish.GUI;
 
-import java.util.ArrayList;
+import java.util.*;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -9,10 +10,13 @@ import javax.swing.ImageIcon;
  */
 public class DeckOfCards {
 
+	public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
+	
     /**
      * 
      */
-    public ArrayList <Card> deck = new ArrayList();
+    private Map<Suits, ArrayList <Card>> deck = new HashMap<Suits, ArrayList <Card>>();
+    
 
     // declare the memory space for each card
     private Card aceOfSpades      = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/spades-ace.png"    )));
@@ -83,71 +87,84 @@ public class DeckOfCards {
     /**
      *
      */
-    public DeckOfCards() {
+    public DeckOfCards() 
+    {
+    	// add a list for all the suits
+    	for(Suits suit: Suits.values())
+    	{
+    		deck.put(suit, new ArrayList <Card>());
+    	}
+    	
         // fill the array list with 52 defined cards
-        deck.add(aceOfSpades    );
-        deck.add(aceOfClubs     );
-        deck.add(aceOfHearts    );
-        deck.add(aceOfDiamonds  );
+        deck.get(Suits.SPADES).add(aceOfSpades    );
+        deck.get(Suits.CLUBS).add(aceOfClubs     );
+        deck.get(Suits.HEARTS).add(aceOfHearts    );
+        deck.get(Suits.DIAMONDS).add(aceOfDiamonds  );
+        
+        deck.get(Suits.SPADES).add(twoOfSpades    );
+        deck.get(Suits.CLUBS).add(twoOfClubs     );
+        deck.get(Suits.HEARTS).add(twoOfHearts    );
+        deck.get(Suits.DIAMONDS).add(twoOfDiamonds  );
+        
+        deck.get(Suits.SPADES).add(threeOfSpades  );
+        deck.get(Suits.CLUBS).add(threeOfClubs   );
+        deck.get(Suits.HEARTS).add(threeOfHearts  );
+        deck.get(Suits.DIAMONDS).add(threeOfDiamonds);
 
-        deck.add(kingOfSpades   );
-        deck.add(kingOfClubs    );
-        deck.add(kingOfHearts   );
-        deck.add(kingOfDiamonds );
+        deck.get(Suits.SPADES).add(fourOfSpades   );
+        deck.get(Suits.CLUBS).add(fourOfClubs    );
+        deck.get(Suits.HEARTS).add(fourOfHearts   );
+        deck.get(Suits.DIAMONDS).add(fourOfDiamonds );
+        
+        deck.get(Suits.SPADES).add(fiveOfSpades   );
+        deck.get(Suits.CLUBS).add(fiveOfClubs    );
+        deck.get(Suits.HEARTS).add(fiveOfHearts   );
+        deck.get(Suits.DIAMONDS).add(fiveOfDiamonds );
 
-        deck.add(queenOfSpades  );
-        deck.add(queenOfClubs   );
-        deck.add(queenOfHearts  );
-        deck.add(queenOfDiamonds);
+        deck.get(Suits.SPADES).add(sixOfSpades    );
+        deck.get(Suits.CLUBS).add(sixOfClubs     );
+        deck.get(Suits.HEARTS).add(sixOfHearts    );
+        deck.get(Suits.DIAMONDS).add(sixOfDiamonds  );
+        
+        deck.get(Suits.SPADES).add(sevenOfSpades  );
+        deck.get(Suits.CLUBS).add(sevenOfClubs   );
+        deck.get(Suits.HEARTS).add(sevenOfHearts  );
+        deck.get(Suits.DIAMONDS).add(sevenOfDiamonds);
+        
+        deck.get(Suits.SPADES).add(eightOfSpades  );
+        deck.get(Suits.CLUBS).add(eightOfClubs   );
+        deck.get(Suits.HEARTS).add(eightOfHearts  );
+        deck.get(Suits.DIAMONDS).add(eightOfDiamonds);
+        
+        deck.get(Suits.SPADES).add(nineOfSpades   );
+        deck.get(Suits.CLUBS).add(nineOfClubs    );
+        deck.get(Suits.HEARTS).add(nineOfHearts   );
+        deck.get(Suits.DIAMONDS).add(nineOfDiamonds );
 
-        deck.add(jackOfSpades   );
-        deck.add(jackOfClubs    );
-        deck.add(jackOfHearts   );
-        deck.add(jackOfDiamonds );
+        deck.get(Suits.SPADES).add(tenOfSpades    );
+        deck.get(Suits.CLUBS).add(tenOfClubs     );
+        deck.get(Suits.HEARTS).add(tenOfHearts    );
+        deck.get(Suits.DIAMONDS).add(tenOfDiamonds  );
 
-        deck.add(tenOfSpades    );
-        deck.add(tenOfClubs     );
-        deck.add(tenOfHearts    );
-        deck.add(tenOfDiamonds  );
-
-        deck.add(nineOfSpades   );
-        deck.add(nineOfClubs    );
-        deck.add(nineOfHearts   );
-        deck.add(nineOfDiamonds );
-
-        deck.add(eightOfSpades  );
-        deck.add(eightOfClubs   );
-        deck.add(eightOfHearts  );
-        deck.add(eightOfDiamonds);
-
-        deck.add(sevenOfSpades  );
-        deck.add(sevenOfClubs   );
-        deck.add(sevenOfHearts  );
-        deck.add(sevenOfDiamonds);
-
-        deck.add(sixOfSpades    );
-        deck.add(sixOfClubs     );
-        deck.add(sixOfHearts    );
-        deck.add(sixOfDiamonds  );
-
-        deck.add(fiveOfSpades   );
-        deck.add(fiveOfClubs    );
-        deck.add(fiveOfHearts   );
-        deck.add(fiveOfDiamonds );
-
-        deck.add(fourOfSpades   );
-        deck.add(fourOfClubs    );
-        deck.add(fourOfHearts   );
-        deck.add(fourOfDiamonds );
-
-        deck.add(threeOfSpades  );
-        deck.add(threeOfClubs   );
-        deck.add(threeOfHearts  );
-        deck.add(threeOfDiamonds);
-
-        deck.add(twoOfSpades    );
-        deck.add(twoOfClubs     );
-        deck.add(twoOfHearts    );
-        deck.add(twoOfDiamonds  );
+        deck.get(Suits.SPADES).add(jackOfSpades   );
+        deck.get(Suits.CLUBS).add(jackOfClubs    );
+        deck.get(Suits.HEARTS).add(jackOfHearts   );
+        deck.get(Suits.DIAMONDS).add(jackOfDiamonds );
+        
+        deck.get(Suits.SPADES).add(queenOfSpades  );
+        deck.get(Suits.CLUBS).add(queenOfClubs   );
+        deck.get(Suits.HEARTS).add(queenOfHearts  );
+        deck.get(Suits.DIAMONDS).add(queenOfDiamonds);
+        
+        deck.get(Suits.SPADES).add(kingOfSpades   );
+        deck.get(Suits.CLUBS).add(kingOfClubs    );
+        deck.get(Suits.HEARTS).add(kingOfHearts   );
+        deck.get(Suits.DIAMONDS).add(kingOfDiamonds );       
+    }
+        
+    
+    public Card getCard(int value, Suits suit)
+    {
+ 		return deck.get(suit).get(value-1);  
     }
 }
