@@ -109,11 +109,11 @@ public class GameWindow extends JFrame implements ActionListener {
 
     private void serverCommand() {
         if(server == null) {
-            server = new ZetaFishServer(null);
+            server = new ZetaFishServer(null, false);
             
             String servername = "localhost";
             String playername = "Player Server";
-            JoinGame(servername, playername);
+            JoinGame(servername, playername, true);
         }
     }
     
@@ -133,10 +133,10 @@ public class GameWindow extends JFrame implements ActionListener {
         // TODO: Pop up a box asking for player name and server.
         String servername = "localhost";
         String playername = "Player Other";
-        JoinGame(servername, playername);
+        JoinGame(servername, playername, false);
     }
     
-    private void JoinGame(String serverName, String playerName)
+    private void JoinGame(String serverName, String playerName, boolean CanStartGame)
     {
     	try {
             //reset to blank window
@@ -146,14 +146,18 @@ public class GameWindow extends JFrame implements ActionListener {
             //setup game screen
             backgroundPanel.setLayout(new BorderLayout());            
 
-            gamePanel = new GamePanel(networkManager, serverName, playerName);
+            gamePanel = new GamePanel(networkManager, serverName, playerName, CanStartGame);
 	        	        	        
 	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
 	
 	        backgroundPanel.repaint();
+	        
 	        backgroundPanel.validate();
-                this.setSize(1024,768);
-                this.setLocationRelativeTo(null);
+            
+	        // TODO: Tighten this up
+	        this.setSize(1024,1024);
+	        //this.setSize(1024,768);
+            this.setLocationRelativeTo(null);
     	}
     	catch(Exception err) {
             HandleException(err);

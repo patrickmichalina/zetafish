@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import ZetaFish.NetworkObjects.*;
+import ZetaFish.NetworkObjects.ZFCardRequestResponse.CardRequestResult;
 
 
 /**
@@ -31,14 +32,14 @@ public class ZetaFishServer extends JFrame
 	private JTextArea output;
 	private JScrollPane scrollPane;	
 	
-	public ZetaFishServer(String args[]) 
+	public ZetaFishServer(String args[], boolean Visible) 
 	{		
 		super("ZetaFish Server");
 		output = new JTextArea();
 		scrollPane = new JScrollPane(output);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		setSize(300,300);
-		setVisible(true);
+		setVisible(Visible);
 		int port = DEFAULT_PORT;
 		
 		if (args != null && args.length > 0) {
@@ -73,7 +74,7 @@ public class ZetaFishServer extends JFrame
 	 */
 	public static void main_SVR(String[] args) {
 		// TODO Auto-generated method stub
-		new ZetaFishServer(args);
+		new ZetaFishServer(args, true);
 	}
 }
 
@@ -449,32 +450,35 @@ class ZFGame {
 				
 		if(playerNumber == this.currentPlayerNumber)
 		{
+			Player player = players.get(playerNumber);
 			Player opponent = players.get(cr.getOpponentNumber());
 			ZFCard[] hand = opponent.getHand();
 			Set<ZFCard> passback = new HashSet<ZFCard>();
+			CardRequestResult result = CardRequestResult.FROM_PLAYER;
 			for(ZFCard card: hand)
 			{
 				if(card.getValue() == cr.getCardValue())
 				{
-					passback.add(card);
+					passback.add(card);					
 					opponent.removeCardFromHand(card);					
 				}
 			}
-			if(passback.size() > 0)
+			if(passback.size() == 0)
 			{
-				ZFCard[] cards = new ZFCard[passback.size()]; 
-				cards = passback.toArray(cards);
-				response = new ZFCardRequestResponse(ZFCardRequestResponse.CardRequestResult.FROM_PLAYER, 
-						cards, "From player!");
+				result = CardRequestResult.FROM_OCEAN;
+				passback.add(deck.dealCard());			
 			}
-			else
+			
+			// add cards to player's hand
+			for(ZFCard card: passback)
 			{
-				passback.add(deck.dealCard());
-				ZFCard[] cards = new ZFCard[passback.size()];
-				cards = passback.toArray(cards);
-				response = new ZFCardRequestResponse(ZFCardRequestResponse.CardRequestResult.FROM_OCEAN, 
-						cards, "From ocean!");
-			}			
+				player.addCardToHand(card);
+			}
+			
+			// send new cards back
+			ZFCard[] cards = new ZFCard[passback.size()]; 
+			cards = passback.toArray(cards);								
+			response = new ZFCardRequestResponse(result,cards, result.toString());
 		}
 		else
 		{
