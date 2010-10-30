@@ -164,6 +164,15 @@ public class DeckOfCards {
     
     public Card getCard(int value, Suits suit)
     {
- 		return deck.get(suit).get(value-1);  
+    	Card card = null;
+    	try
+    	{
+    		card = deck.get(suit).get(value-1);
+    	}
+    	catch(Exception err)
+    	{
+    		err.printStackTrace();    	
+    	}
+    	return card;
     }
 }
