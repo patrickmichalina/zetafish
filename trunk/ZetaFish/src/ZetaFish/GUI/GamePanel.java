@@ -12,6 +12,8 @@ import ZetaFish.NetworkObjects.ZFCard;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse;
 import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
+import java.awt.Color;
+import javax.swing.JLabel;
 
 
 /**
@@ -38,6 +40,7 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JLayeredPane opponentSubPanel3 = new JLayeredPane();
     private JLayeredPane opponentSubPanel4 = new JLayeredPane();
     private JLayeredPane opponentSubPanel5 = new JLayeredPane();
+    private JPanel       infoPanel         = new JPanel();
     private JPanel       goFishButtons     = new JPanel();
     private JButton      btn1              = new JButton("1");
     private JButton      btn2              = new JButton("2");
@@ -54,6 +57,11 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JButton      btnking           = new JButton("King");
     private JButton      btnace            = new JButton("Ace");
     private Dimension    btnSize           = new Dimension(50,35);
+    private JLabel       poolTxt           = new JLabel("Pool: ");
+    private JLabel       bookTxt           = new JLabel("Book: ");
+    private JLabel       winsTxt           = new JLabel("Wins: ");
+    private JLabel       lossTxt           = new JLabel("Losses: ");
+    private JLabel       statusTxt         = new JLabel("Network Status: ");
     
     private INetworkManager networkManager = null;
     
@@ -62,16 +70,11 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     public GamePanel(INetworkManager networkManager) {
         super();
         this.setLayout(new FlowLayout(1,0,0));
-
-        this.networkManager = networkManager;
-        
-        this.networkManager.addStatusListener(this);
-        this.networkManager.addTurnListener(this);
-        this.networkManager.addCardRequestResponseListener(this);
-                                       
+                           
         this.deck = new DeckOfCards();        
-        
+
         setComponents();
+        //setListeners();
         setLayouts();
         setBorders();
         setComponentDimensions();
@@ -99,6 +102,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     }
 
     private void setComponents() {
+        //All these components are added in a flowlayout. The order DOES matter.
+        this.add(infoPanel);
         this.add(opponentPanel);
         this.add(bookPanel);
         this.add(poolPanel);
@@ -125,6 +130,12 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         goFishButtons.add(btnqueen);
         goFishButtons.add(btnking);
         goFishButtons.add(btnace);
+
+        infoPanel.add(poolTxt);
+        infoPanel.add(bookTxt);
+        infoPanel.add(winsTxt);
+        infoPanel.add(lossTxt);
+        infoPanel.add(statusTxt);
     }
 
     private void setBorders() {
@@ -136,9 +147,11 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         poolPanel.setBorder(        BorderFactory.createTitledBorder("Ocean"));
         bookPanel.setBorder(        BorderFactory.createTitledBorder("Books"));
         playerPanel.setBorder(      BorderFactory.createTitledBorder("Your Hand"));
+        infoPanel.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
     }
 
     private void setComponentDimensions() {
+        infoPanel.setPreferredSize(        new Dimension(1024,30) );
         playerPanel.setPreferredSize(      new Dimension(1024,100));
         poolPanel.setPreferredSize(        new Dimension(1024,150));
         bookPanel.setPreferredSize(        new Dimension(1024,200));
@@ -166,6 +179,7 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     }
 
     private void setSeeThrough() {
+        infoPanel.setOpaque(    false);
         playerPanel.setOpaque(  false);
         poolPanel.setOpaque(    false);
         bookPanel.setOpaque(    false);
@@ -175,6 +189,10 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 
     private void setLayouts() {
         opponentPanel.setLayout(new FlowLayout(0,0,0));
+    }
+
+    private void setListeners() {
+        
     }
 
     /**

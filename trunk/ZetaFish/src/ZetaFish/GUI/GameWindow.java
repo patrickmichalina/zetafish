@@ -14,6 +14,9 @@ import ZetaFish.ZetaFishServer;
 import ZetaFish.Interfaces.*;
 import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 /**
  *  Summary:
@@ -37,15 +40,24 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
      * infoPanel is holds status information for the game
      * gamePanel is the panel that contains several more game related panels
      */
+    private static GameWindow ourGameWindow;
 
     private BackgroundPanel backgroundPanel;
     private Panel           logoPanel;
-    private MenuPanel       menuPanel;
     private ChatPanel       chatPanel;
-    private InfoPanel       infoPanel;
     private GamePanel       gamePanel;
 
-    private FlowLayout      windowLayout;
+    private JPanel          menuPanel;
+    private JPanel          infoPanel;
+ 
+    
+    
+    private JButton serverBtn = new JButton("Start Server");
+    private JButton playBtn   = new JButton("Play");
+    private JButton instBtn   = new JButton("Instructions");
+    private JButton exitBtn   = new JButton("Exit");
+
+    private FlowLayout windowLayout = new FlowLayout(0,220,80);
     
     private INetworkManager networkManager;
     private ZetaFishServer  server = null;
@@ -64,23 +76,16 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
      * @param args[]
      */
     public static void main(String args[]) {
-        new GameWindow();
+         ourGameWindow = new GameWindow();
     }
 
     private void initStartConditions() {
-        windowLayout    = new FlowLayout(0,220,80); //make the initial view look nice
-
         //create the baclground, logo, and menu panels
         backgroundPanel = new BackgroundPanel(new ImageIcon(getClass().getResource("/Resources/water.jpg")));
         logoPanel       = new Panel(new ImageIcon(getClass().getResource("/Resources/logo.png" )));
-        menuPanel       = new MenuPanel();
 
-        //attach the buttons to the menu panel
-        menuPanel.serverBtn.addActionListener(this);
-        menuPanel.playBtn.addActionListener(this);
-        menuPanel.instBtn.addActionListener(this);
-        menuPanel.exitBtn.addActionListener(this);
-        
+        setMenuPanel();
+
         //attach the logoPanel and menuPanel to the primary panel and set layout
         backgroundPanel.setLayout(windowLayout);
         backgroundPanel.add(logoPanel);
@@ -104,8 +109,9 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     }
 
     private void serverCommand() {
-        if(server == null)
+        if(server == null) {
             server = new ZetaFishServer(null);
+        }
     }
     
     private void exitCommand() {
@@ -122,23 +128,24 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
 
     private void playCommand() {
         try {
-        	// TODO: Pop up a box asking for player name.
-        	networkManager.openConnection("localhost", "My User Name", "My Password");
-	    		    	
-        	//reset to blank window
-        	backgroundPanel.removeAll();
-        	backgroundPanel.repaint();
-	
-	        //setup game screen
-	        backgroundPanel.setLayout(new BorderLayout());
-	
-	        chatPanel = new ChatPanel(networkManager);
-	        infoPanel = new InfoPanel();
+            // TODO: Pop up a box asking for player name.
+            networkManager.openConnection("localhost", "My User Name", "My Password");
+            
+            //reset to blank window
+            backgroundPanel.removeAll();
+            backgroundPanel.repaint();
+
+            //setup game screen
+            backgroundPanel.setLayout(new BorderLayout());
+            
+
+                //setGamePanel();
+                setChatPanel();
+
 	        gamePanel = new GamePanel(this.networkManager);
 	        
 	        networkManager.addChatListener(chatPanel);
 	        
-	        backgroundPanel.add(infoPanel, BorderLayout.PAGE_START);
 	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
 	        backgroundPanel.add(chatPanel, BorderLayout.PAGE_END);
 	
@@ -151,6 +158,44 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
             HandleException(err);
     	}
     }
+
+    private void setMenuPanel() {
+        menuPanel       = new JPanel();
+        menuPanel.setLayout(new BoxLayout(menuPanel,1));
+        menuPanel.setOpaque(false);
+        menuPanel.add(serverBtn);
+        menuPanel.add(playBtn);
+        menuPanel.add(instBtn);
+        menuPanel.add(exitBtn);
+        
+        serverBtn.setActionCommand("serverCMD");
+        playBtn.setActionCommand(  "playCMD"  );
+        instBtn.setActionCommand(  "instCMD"  );
+        exitBtn.setActionCommand(  "exitCMD"  );
+
+        //attach the buttons to the menu panel
+        serverBtn.addActionListener(this);
+        playBtn.addActionListener(this);
+        instBtn.addActionListener(this);
+        exitBtn.addActionListener(this);
+    }
+
+    private void setGamePanel() {
+
+    }
+
+    private void setChatPanel() {
+        chatPanel = new ChatPanel(networkManager);
+    }
+
+
+
+
+
+
+
+
+
     /**
      * Single spot to determine how to handle exceptions
      * @param err
@@ -165,9 +210,7 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
         text.setEditable(false);
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
-
         instructionFrame.add(new JScrollPane(text));
-
         instructionFrame.pack();
         instructionFrame.setSize(400,400);
         instructionFrame.isDoubleBuffered();
@@ -179,29 +222,24 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     }
 
     public void actionPerformed(ActionEvent e) {
-    	if("serverCMD".equals(e.getActionCommand()))
-        {
+    	if("serverCMD".equals(e.getActionCommand())) {
             serverCommand();
         }
-    	else if("playCMD".equals(e.getActionCommand()))
-        {
+    	else if("playCMD".equals(e.getActionCommand())) {
             playCommand();
         }
 
-        else if("instCMD".equals(e.getActionCommand()))
-        {
+        else if("instCMD".equals(e.getActionCommand())) {
             instructionCommand();
         }
 
-        else if("exitCMD".equals(e.getActionCommand()))
-        {
+        else if("exitCMD".equals(e.getActionCommand())) {
             exitCommand();
         }
     }
     
     @Override
-    public void OnGameStausChange(ZFStatus status) 
-    {
-        
+    public void OnGameStausChange(ZFStatus status) {
+      //empty
     }
 }
