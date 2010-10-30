@@ -50,5 +50,6 @@ public class Card extends JLabel {
 
     public void setShown(boolean val) {
         shown = val;
+        this.setIcon(this.getImage());
     }
 }

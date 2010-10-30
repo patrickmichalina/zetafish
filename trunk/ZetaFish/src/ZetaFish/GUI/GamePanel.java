@@ -372,7 +372,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      * @param pane
      * @param cards
      */
-    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards)
+    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards, boolean ShowCards)
     {
     	pane.removeAll();
     	int i = 0;
@@ -397,23 +397,25 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		}
     		Card card = deck.getCard(zfCard.getValue(), suit);
                 
-                //players hand
-                if(pane == playerPanel) {
-                    card.setShown(true);
-                    card.setIcon(card.getImage());
-                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
-                }
-
-                //opponent 1
-                if(pane == opponentSubPanel1 || pane == opponentSubPanel2) {
-                    card.setShown(false);
-                    card.setIcon(card.getImage());
-                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
-                }
+//                //players hand
+//                if(pane == playerPanel) {
+//                    card.setShown(true);
+//                    card.setIcon(card.getImage());
+//                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
+//                }
+//
+//                //opponent 1
+//                if(pane == opponentSubPanel1 || pane == opponentSubPanel2) {
+//                    card.setShown(false);
+//                    card.setIcon(card.getImage());
+//                    card.setBounds((i++ * 25) + 50, 20,  45, 65);
+//                }
                     
-                
-			
-    		pane.add(card, i++);    		
+    		card.setShown(ShowCards);
+    		card.setBounds((i * 18) + 18, 18,  45, 65);    					
+    		pane.add(card, i);
+    		pane.setComponentZOrder(card, i);
+    		i++;
     	}  
     	pane.repaint();
     }
@@ -439,19 +441,20 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		ZFPlayer[] players = status.getPlayers();
 		if(players != null) 
         {
-			// Update my hand
-			
-
-			// Update other players
 			int i = 0;
 			for(ZFPlayer player: players) 
             {
-				
-				if(player.getPlayerNumber() != this.networkManager.getMyPlayerNumber())
+				// Update my hand				
+				if(player.getPlayerNumber() == this.networkManager.getMyPlayerNumber())
+				{
+					this.playerPanel.removeAll();
+					addCardsToPane(playerPanel, player.getHand(), true);
+				}
+				else // Update other players
 				{
 					JLayeredPane playerPane = (JLayeredPane)this.opponentPanel.getComponent(i);
 					playerPane.removeAll();
-					addCardsToPane(playerPanel, player.getHand());
+					addCardsToPane(playerPane, player.getHand(), false);
 				}				
             }        
         }
