@@ -56,6 +56,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private Dimension    btnSize           = new Dimension(50,35);
     
     private INetworkManager networkManager = null;
+    
+    private DeckOfCards deck = null;
 
     public GamePanel(INetworkManager networkManager) {
         super();
@@ -66,10 +68,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         this.networkManager.addStatusListener(this);
         this.networkManager.addTurnListener(this);
         this.networkManager.addCardRequestResponseListener(this);
-                
-                
-        //just for show at the moment!
-        DeckOfCards deck = new DeckOfCards();        
+                                       
+        this.deck = new DeckOfCards();        
         
         setComponents();
         setLayouts();
@@ -82,11 +82,19 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         /*********************************************************************/
         
             // this is just for testing at the moment!
-            for(int i = 0; i < 52; i++) {
-                
-                poolPanel.add(deck.deck.get(i), new Integer(i));
-                deck.deck.get(i).setIcon(deck.deck.get(i).getImage());
-                deck.deck.get(i).setBounds((i * 18) + 30, 45,  60, 60);
+        	int i = 0;
+        	for(DeckOfCards.Suits suit : DeckOfCards.Suits.values())
+            {
+        		if(suit != DeckOfCards.Suits.JOKER)
+        		{
+	        		for(int val = 1; val <= 13; val++)
+	        		{
+	        			Card card= deck.getCard(val, suit);
+	        			poolPanel.add(card, new Integer(i));
+	        			card.setIcon(card.getImage());
+	        			card.setBounds((i++ * 18) + 30, 45,  60, 60);
+	        		}	        		
+        		}
             }
     }
 
@@ -187,6 +195,39 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 
     public JLayeredPane getOpponentPanel() {
         return opponentPanel;
+    }
+    
+    
+    /**
+     * Adds one or more cards coming in from a request to a pane
+     * @param pane
+     * @param cards
+     */
+    private void AddCardsToPane(JLayeredPane pane, ZFCard[] cards)
+    {
+    	// TODO: This is ugly.  Refactor to follow DRY
+    	for(ZFCard zfCard : cards)
+    	{
+    		DeckOfCards.Suits suit = DeckOfCards.Suits.JOKER;
+    		switch(zfCard.getSuit())
+    		{
+    			case CLUBS:
+    				suit = DeckOfCards.Suits.CLUBS;
+    				break;
+    			case SPADES:
+    				suit = DeckOfCards.Suits.SPADES;
+    				break;
+    			case HEARTS:
+    				suit = DeckOfCards.Suits.HEARTS;
+    				break;
+    			case DIAMONDS:
+    				suit = DeckOfCards.Suits.DIAMONDS;
+    				break;    		
+    		}
+    		Card card = deck.getCard(zfCard.getValue(), suit);
+    	
+    		pane.add(card, zfCard.getValue());    		
+    	}    	
     }
 
 	@Override

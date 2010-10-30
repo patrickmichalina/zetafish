@@ -21,8 +21,8 @@ public class Card extends JLabel {
     Card(ImageIcon image) {
        super();
        this.img     = image;
-       //this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue-150-1.png"    ));
-       this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue.png"    ));
+       this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue-150-1.png"    ));
+       //this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue.png"    ));
     }
 
     public ImageIcon getImage() {
