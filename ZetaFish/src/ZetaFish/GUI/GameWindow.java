@@ -44,10 +44,10 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
 
     private BackgroundPanel backgroundPanel;
     private Panel           logoPanel;
-    private ChatPanel       chatPanel;
     private GamePanel       gamePanel;
     private JButton serverBtn = new JButton("Start Server");
-    private JButton playBtn   = new JButton("Play");
+    private JButton playBtn   = new JButton("Joing Game");
+    private JButton playNewBtn   = new JButton("Create Game");
     private JButton instBtn   = new JButton("Instructions");
     private JButton exitBtn   = new JButton("Exit");
     private JPanel  menuPanel;
@@ -134,15 +134,10 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
             backgroundPanel.setLayout(new BorderLayout());
             
 
-                //setGamePanel();
-                setChatPanel();
-
-	        gamePanel = new GamePanel(this.networkManager);
-	        
-	        networkManager.addChatListener(chatPanel);
+	        gamePanel = new GamePanel(networkManager);
+	        networkManager.addChatListener(gamePanel);
 	        
 	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
-	        backgroundPanel.add(chatPanel, BorderLayout.PAGE_END);
 	
 	        backgroundPanel.repaint();
 	        backgroundPanel.validate();
@@ -180,7 +175,7 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     }
 
     private void setChatPanel() {
-        chatPanel = new ChatPanel(networkManager);
+        
     }
 
 

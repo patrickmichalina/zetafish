@@ -2,18 +2,25 @@ package ZetaFish.GUI;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import ZetaFish.Interfaces.*;
 import ZetaFish.NetworkObjects.ZFCard;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse;
 import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
+import java.awt.BorderLayout;
 import java.awt.Color;
-import javax.swing.JLabel;
+import java.awt.event.ActionListener;
+
 
 
 /**
@@ -30,7 +37,7 @@ import javax.swing.JLabel;
  *  @author Chad Albrecht
  *  @author Melanie
  */
-public class GamePanel extends Panel implements IStatusListener, ITurnListener, ICardRequestResponseListener {
+public class GamePanel extends Panel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ActionListener {
     private JLayeredPane playerPanel       = new JLayeredPane();
     private JLayeredPane poolPanel         = new JLayeredPane();
     private JLayeredPane bookPanel         = new JLayeredPane();
@@ -55,6 +62,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JLayeredPane panelBook2        = new JLayeredPane();
     private JPanel       infoPanel         = new JPanel();
     private JPanel       goFishButtons     = new JPanel();
+    private JPanel       panelChat         = new JPanel();
+    private JPanel       panelButtons      = new JPanel();
     private JButton      btn1              = new JButton("1");
     private JButton      btn2              = new JButton("2");
     private JButton      btn3              = new JButton("3");
@@ -69,7 +78,6 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JButton      btnqueen          = new JButton("Queen");
     private JButton      btnking           = new JButton("King");
     private JButton      btnace            = new JButton("Ace");
-    private Dimension    btnSize           = new Dimension(50,35);
     private JLabel       poolTxt           = new JLabel("Pool: ");
     private JLabel       bookTxt           = new JLabel("Book: ");
     private JLabel       winsTxt           = new JLabel("Wins: ");
@@ -77,6 +85,15 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     private JLabel       statusTxt         = new JLabel("Network Status: ");
     private JLabel       myTrnTxt          = new JLabel("My Turn!");
     private JLabel       lblCardCount      = new JLabel("Count: ");
+    private Dimension    btnSize           = new Dimension(50,35);
+
+    private JButton      btnSend           = new JButton("Send");
+    private JButton      btnPlayBook       = new JButton("Play Book");
+    private JButton      btnStartGame      = new JButton("Start Game");
+    private JTextArea    txtOutput         = new JTextArea(5,0);
+    private JTextField   txtInput          = new JTextField();
+
+    private final String SEND_ACTION = "send";
 
     private INetworkManager networkManager = null;
     
@@ -85,14 +102,16 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     public GamePanel(INetworkManager networkManager) {
         super();
         this.setLayout(new FlowLayout(1,0,0));
+        this.networkManager = networkManager;
                            
         this.deck = new DeckOfCards();        
 
-        setComponents();
-        //setListeners();
+        
+        setListeners();
         setLayouts();
-        setBorders();
+        setComponents();
         setComponentDimensions();
+        setBorders();
         setSeeThrough();
         setInitVisLayers();
 
@@ -138,6 +157,11 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 	        		}
         		}
             }
+
+
+        
+
+
     }
 
     private void setComponents() {
@@ -148,6 +172,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         this.add(poolPanel);
         this.add(playerPanel);
         this.add(goFishButtons);
+        this.add(panelChat);
+        this.add(panelButtons);
 
         opponentPanel.add(opponentSubPanel1);
         opponentPanel.add(opponentSubPanel2);
@@ -192,10 +218,15 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         bookPanel.add(panelBook2);
 
         poolPanel.add(lblCardCount);
+
+        panelChat.add(new JScrollPane(txtOutput), BorderLayout.PAGE_START);
+        panelChat.add(txtInput, BorderLayout.CENTER);
+        panelChat.add(btnSend, BorderLayout.LINE_END);
         
-    
+        panelButtons.add(btnPlayBook);
+        panelButtons.add(btnStartGame);
 
-
+        txtOutput.setLineWrap(true);
     }
 
     private void setBorders() {
@@ -208,10 +239,28 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         bookPanel.setBorder(        BorderFactory.createTitledBorder("Books"));
         playerPanel.setBorder(      BorderFactory.createTitledBorder("Your Hand"));
         infoPanel.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
+        panelBookAce.setBorder(     BorderFactory.createLineBorder(Color.black, 2));
+        panelBookKing.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
+        panelBookQueen.setBorder(   BorderFactory.createLineBorder(Color.black, 2));
+        panelBookJack.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
+        panelBook10.setBorder(      BorderFactory.createLineBorder(Color.black, 2));
+        panelBook9.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook8.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook7.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook6.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook5.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook4.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook3.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        panelBook2.setBorder(       BorderFactory.createLineBorder(Color.black, 2));
+        txtOutput.setBorder(        BorderFactory.createLineBorder(Color.black, 1));
+        txtInput.setBorder(         BorderFactory.createLineBorder(Color.black, 1));
+        panelChat.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
     }
 
     private void setComponentDimensions() {
         infoPanel.setPreferredSize(        new Dimension(1024,30) );
+        panelChat.setPreferredSize(        new Dimension(900,110));
+        panelButtons.setPreferredSize(     new Dimension(124,130));
         playerPanel.setPreferredSize(      new Dimension(1024,100));
         poolPanel.setPreferredSize(        new Dimension(1024,150));
         bookPanel.setPreferredSize(        new Dimension(1024,200));
@@ -256,34 +305,25 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
         panelBook3.setBounds(    730, 100, 99, 65);
         panelBook2.setBounds(    830,  70, 99, 65);
 
-        panelBookAce.setBorder(  BorderFactory.createLineBorder(Color.black, 2));
-        panelBookKing.setBorder( BorderFactory.createLineBorder(Color.black, 2));
-        panelBookQueen.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        panelBookJack.setBorder( BorderFactory.createLineBorder(Color.black, 2));
-        panelBook10.setBorder(   BorderFactory.createLineBorder(Color.black, 2));
-        panelBook9.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook8.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook7.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook6.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook5.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook4.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook3.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
-        panelBook2.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
+
 
         lblCardCount.setBounds(10, 10, 100, 20);
     }
 
     private void setSeeThrough() {
+        this.setOpaque(         false);
         infoPanel.setOpaque(    false);
         playerPanel.setOpaque(  false);
         poolPanel.setOpaque(    false);
         bookPanel.setOpaque(    false);
         opponentPanel.setOpaque(false);
         goFishButtons.setOpaque(false);
+        panelButtons.setOpaque( false);
     }
 
     private void setLayouts() {
         opponentPanel.setLayout(new FlowLayout(0,0,0));
+        panelChat.setLayout(new BorderLayout(3,3));
     }
 
     private void setInitVisLayers() {
@@ -291,6 +331,8 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
     }
 
     private void setListeners() {
+        btnSend.setActionCommand(SEND_ACTION);
+        btnSend.addActionListener(this);
     }
 
     /**
@@ -389,4 +431,24 @@ public class GamePanel extends Panel implements IStatusListener, ITurnListener, 
 		}
 		
 	}
+
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void OnNewMessage(String from, String msg) {
+        txtOutput.setText(txtOutput.getText() + from + ": " + msg + "\n");
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getActionCommand() == SEND_ACTION) {
+            try {
+                this.networkManager.sendMessage(txtInput.getText());
+                txtInput.setText("");
+            }
+            catch(Exception err) {
+                //HandleException(err);
+            }
+        }
+    }
 }
