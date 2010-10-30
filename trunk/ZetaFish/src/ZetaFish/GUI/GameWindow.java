@@ -1,9 +1,13 @@
 package ZetaFish.GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -31,7 +35,7 @@ import javax.swing.JPanel;
  *
  */
 
-public class GameWindow extends JFrame implements ActionListener, IStatusListener {
+public class GameWindow extends JFrame implements ActionListener {
     /**
      * These local fields create instances of panels that wrap other panels.
      * BackgroundPanel is the primary panel that holds the main BG image.
@@ -45,9 +49,9 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     private BackgroundPanel backgroundPanel;
     private Panel           logoPanel;
     private GamePanel       gamePanel;
-    private JButton serverBtn = new JButton("Start Server");
-    private JButton playBtn   = new JButton("Joing Game");
-    private JButton playNewBtn   = new JButton("Create Game");
+    private JButton serverBtn = new JButton("Start New Game");
+    private JButton playBtn   = new JButton("Join Game");
+    //private JButton playNewBtn   = new JButton("Create Game");
     private JButton instBtn   = new JButton("Instructions");
     private JButton exitBtn   = new JButton("Exit");
     private JPanel  menuPanel;
@@ -106,6 +110,10 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     private void serverCommand() {
         if(server == null) {
             server = new ZetaFishServer(null);
+            
+            String servername = "localhost";
+            String playername = "Player Server";
+            JoinGame(servername, playername);
         }
     }
     
@@ -122,21 +130,24 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     }
 
     private void playCommand() {
-        try {
-            // TODO: Pop up a box asking for player name.
-            networkManager.openConnection("localhost", "My User Name", "My Password");
-            
+        // TODO: Pop up a box asking for player name and server.
+        String servername = "localhost";
+        String playername = "Player Other";
+        JoinGame(servername, playername);
+    }
+    
+    private void JoinGame(String serverName, String playerName)
+    {
+    	try {
             //reset to blank window
             backgroundPanel.removeAll();
             backgroundPanel.repaint();
 
             //setup game screen
-            backgroundPanel.setLayout(new BorderLayout());
-            
+            backgroundPanel.setLayout(new BorderLayout());            
 
-	        gamePanel = new GamePanel(networkManager);
-	        networkManager.addChatListener(gamePanel);
-	        
+            gamePanel = new GamePanel(networkManager, serverName, playerName);
+	        	        	        
 	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
 	
 	        backgroundPanel.repaint();
@@ -146,15 +157,40 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     	}
     	catch(Exception err) {
             HandleException(err);
-    	}
+    	}	
     }
+    
+   
 
     private void setMenuPanel() {
         menuPanel       = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel,1));
         menuPanel.setOpaque(false);
+
+        int pref_height = 25;
+        int pref_width = 150;
+        
+        // TODO: Should center buttons on screen
+        
+        serverBtn.setPreferredSize(new Dimension(pref_width, pref_height));
+        serverBtn.setMaximumSize(new Dimension(Short.MAX_VALUE,
+                Short.MAX_VALUE));
+
+        playBtn.setPreferredSize(new Dimension(pref_width, pref_height));
+        playBtn.setMaximumSize(new Dimension(Short.MAX_VALUE,
+                Short.MAX_VALUE));
+        
+        instBtn.setPreferredSize(new Dimension(pref_width, pref_height));
+        instBtn.setMaximumSize(new Dimension(Short.MAX_VALUE,
+                Short.MAX_VALUE));
+        
+        exitBtn.setPreferredSize(new Dimension(pref_width, pref_height));
+        exitBtn.setMaximumSize(new Dimension(Short.MAX_VALUE,
+                Short.MAX_VALUE));
+        
         menuPanel.add(serverBtn);
         menuPanel.add(playBtn);
+        menuPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         menuPanel.add(instBtn);
         menuPanel.add(exitBtn);
         
@@ -177,13 +213,6 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
     private void setChatPanel() {
         
     }
-
-
-
-
-
-
-
 
 
     /**
@@ -226,10 +255,5 @@ public class GameWindow extends JFrame implements ActionListener, IStatusListene
         else if("exitCMD".equals(e.getActionCommand())) {
             exitCommand();
         }
-    }
-    
-    @Override
-    public void OnGameStausChange(ZFStatus status) {
-      //empty
-    }
+    }      
 }

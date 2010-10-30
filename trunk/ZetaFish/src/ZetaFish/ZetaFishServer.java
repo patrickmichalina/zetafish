@@ -381,13 +381,23 @@ class ZFGame {
 				}			
 			}		
 			UpdateGameStatus();
-						
-			Player current = players.get(currentPlayerNumber); 
-			current.sendMessageFromAdmin("Game is ready to begin");	
+				
+			String msg = "Game is ready to begin";
+			for(Player player:players)
+			{
+				player.sendMessageFromAdmin(msg);
+			}
+//			Player current = players.get(currentPlayerNumber); 
+//			current.sendMessageFromAdmin("Game is ready to begin");	
 		}
 		else
 		{
-			server.display("startGame: Not enough players");		
+			String msg = "startGame: Not enough players";
+			server.display(msg);
+			for(Player player:players)
+			{
+				player.sendMessageFromAdmin(msg);
+			}
 		}
 	}
 	
@@ -399,7 +409,7 @@ class ZFGame {
 		for(int i=0; i< num_players; i++)
 		{			
 			Player player = players.get(i);
-			zps[i] = new ZFPlayer(player.getToken(), player.getScore(), player.getCardsInHand(), player.getHand(), player.getBooks());			
+			zps[i] = new ZFPlayer(player.getToken(), player.getPlayerNumber(), player.getScore(), player.getCardsInHand(), player.getHand(), player.getBooks());			
 		}
 		
 		ZFStatus status = new ZFStatus(ZFStatus.StatusType.GAME_STARTED,

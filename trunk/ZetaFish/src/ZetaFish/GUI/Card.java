@@ -20,9 +20,24 @@ public class Card extends JLabel {
 
     Card(ImageIcon image) {
        super();
-       this.img     = image;
-       //this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue-150-1.png"    ));
-       this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue.png"    ));
+       InternalConstruct(image, false);
+    }
+    
+    Card(ImageIcon image, boolean show)
+    {
+    	  super();
+    	  InternalConstruct(image, show);
+    }
+    
+    private void InternalConstruct(ImageIcon image, boolean show)
+    {
+    	this.img     = image;
+        //this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue-150-1.png"    ));
+        this.imgBack = new ImageIcon(getClass().getResource("/Resources/CardImages/back-blue.png"    ));
+        
+        this.shown = show;
+        
+        this.setIcon(this.getImage());
     }
 
     public ImageIcon getImage() {
