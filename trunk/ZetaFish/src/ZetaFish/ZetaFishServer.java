@@ -479,6 +479,8 @@ class ZFGame {
 			ZFCard[] cards = new ZFCard[passback.size()]; 
 			cards = passback.toArray(cards);								
 			response = new ZFCardRequestResponse(result,cards, result.toString());
+			
+			UpdateGameStatus();
 		}
 		else
 		{

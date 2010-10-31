@@ -75,11 +75,11 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private JButton      btnking           = new JButton("K");
     
     private ButtonGroup  reqPlayerGroup    = new ButtonGroup();
-    private JRadioButton btnReqPlayer1     = new JRadioButton("Player1", true);
-    private JRadioButton btnReqPlayer2     = new JRadioButton("Player2");
-    private JRadioButton btnReqPlayer3     = new JRadioButton("Player3");
-    private JRadioButton btnReqPlayer4     = new JRadioButton("Player4");
-    private JRadioButton btnReqPlayer5     = new JRadioButton("Player5");
+    private PlayerButton btnReqPlayer1     = new PlayerButton("Player1", true);
+    private PlayerButton btnReqPlayer2     = new PlayerButton("Player2");
+    private PlayerButton btnReqPlayer3     = new PlayerButton("Player3");
+    private PlayerButton btnReqPlayer4     = new PlayerButton("Player4");
+    private PlayerButton btnReqPlayer5     = new PlayerButton("Player5");
     
     private JButton      btnSend           = new JButton("Send");
     
@@ -581,9 +581,15 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				}
 				else // Update other players
 				{
+					String playerName = player.getPlayerName();
 					JLayeredPane playerPane = (JLayeredPane)this.opponentPanel.getComponent(i);
 					playerPane.setVisible(true);
-					JRadioButton playerButton = (JRadioButton)this.goFishPlayerButtons.getComponent(i);
+					TitledBorder border = (TitledBorder)playerPane.getBorder();
+			    	border.setTitle(playerName);   
+					
+			    	PlayerButton playerButton = (PlayerButton)this.goFishPlayerButtons.getComponent(i);
+					playerButton.setPlayerNumber(player.getPlayerNumber());
+			    	playerButton.setText(playerName);
 					playerButton.setVisible(true);
 
 					playerPane.removeAll();
@@ -697,20 +703,21 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	{
 		ShowCardRequestResponse(response);
 
-		List<ZFCard> hand = new ArrayList<ZFCard>();
-		
-		for(ZFCard card : this.CurrentHand)
-		{
-			hand.add(card);
-		}
-		
-		for(ZFCard card : response.getCards())
-		{
-			hand.add(card);			
-		}
-		
-		this.CurrentHand = hand.toArray(this.CurrentHand);
-		addCardsToPane(playerPanel, this.CurrentHand, true, true);		
+//		// TODO: This is ugly, refactor this reponse back to a status reponse?
+//		List<ZFCard> hand = new ArrayList<ZFCard>();
+//		
+//		for(ZFCard card : this.CurrentHand)
+//		{
+//			hand.add(card);
+//		}
+//		
+//		for(ZFCard card : response.getCards())
+//		{
+//			hand.add(card);			
+//		}
+//		
+//		this.CurrentHand = hand.toArray(this.CurrentHand);
+//		addCardsToPane(playerPanel, this.CurrentHand, true, true);		
 	}
 	
 	private void ShowCardRequestResponse(ZFCardRequestResponse response)
@@ -812,13 +819,25 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         }
     }
     
+    /**
+     * Pulls the selected playernumber from the radio button group
+     * @return
+     */
     private int GetRequestPlayer()
-    {
+    {    
     	int retval = -1;
-    	    	
-    	if(btnReqPlayer1.isSelected())
-    		retval = 1;
-    	
+    	for(Component cmp : goFishPlayerButtons.getComponents())
+    	{
+    		if(cmp.getClass() == PlayerButton.class)
+    		{
+    			PlayerButton btn = (PlayerButton)cmp;
+    			if(btn.isSelected())
+    			{
+    				retval = btn.getPlayerNumber();
+    			}    			    			
+    		}    		
+    	}
+    	    	    	
     	return retval;
     }
         
@@ -829,4 +848,29 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private void HandleException(Exception err) {
     	err.printStackTrace();
     }
+}
+
+class PlayerButton extends JRadioButton
+{
+	private int playerNumber = -1;
+	
+	public PlayerButton(String text)
+	{
+		super(text);
+	}
+	
+	public PlayerButton(String text, boolean selected)
+	{
+		super(text, selected);
+	}
+	
+	public int getPlayerNumber()
+	{
+		return this.playerNumber;		
+	}
+	
+	public void setPlayerNumber(int playerNumber)
+	{
+		this.playerNumber = playerNumber;
+	}	
 }
