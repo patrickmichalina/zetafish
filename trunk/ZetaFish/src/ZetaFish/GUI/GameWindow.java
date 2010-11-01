@@ -79,10 +79,9 @@ public class GameWindow extends JFrame implements ActionListener {
     }
 
     private void initStartConditions() {
-        //create the baclground, logo, and menu panels
+        //create the background, logo, and menu panels
         backgroundPanel = new BackgroundPanel(new ImageIcon(getClass().getResource("/Resources/water.jpg")));
         logoPanel       = new Panel(new ImageIcon(getClass().getResource("/Resources/logo.png" )));
-
         setMenuPanel();
 
         //attach the logoPanel and menuPanel to the primary panel and set layout
@@ -136,7 +135,7 @@ public class GameWindow extends JFrame implements ActionListener {
         JoinGame(servername, playername, false);
     }
     
-    private void JoinGame(String serverName, String playerName, boolean CanStartGame)
+    private void JoinGame(String serverName, String playerName, boolean canStartGame)
     {
     	try {
             //reset to blank window
@@ -146,7 +145,7 @@ public class GameWindow extends JFrame implements ActionListener {
             //setup game screen
             backgroundPanel.setLayout(new BorderLayout());            
 
-            gamePanel = new GamePanel(networkManager, serverName, playerName, CanStartGame);
+            gamePanel = new GamePanel(networkManager, serverName, playerName, canStartGame);
 	        	        	        
 	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
 	
@@ -154,9 +153,9 @@ public class GameWindow extends JFrame implements ActionListener {
 	        
 	        backgroundPanel.validate();
             
-	        // TODO: Tighten this up
-	        this.setSize(1024,1024);
-	        //this.setSize(1024,768);
+	        //TODO: Tighten this up
+	        //this.setSize(1024,1024);
+	        this.setSize(1024,768);
             this.setLocationRelativeTo(null);
     	}
     	catch(Exception err) {

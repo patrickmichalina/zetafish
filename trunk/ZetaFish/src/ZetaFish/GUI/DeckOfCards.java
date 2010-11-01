@@ -1,7 +1,6 @@
 package ZetaFish.GUI;
 
 import java.util.*;
-
 import javax.swing.ImageIcon;
 
 /**
@@ -16,7 +15,6 @@ public class DeckOfCards {
      */
     private Map<Suits, ArrayList <Card>> deck = new HashMap<Suits, ArrayList <Card>>();
     
-
     // declare the memory space for each card
     private Card aceOfSpades      = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/spades-ace.png"    )));
     private Card aceOfClubs       = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/clubs-ace.png"     )));
@@ -89,9 +87,8 @@ public class DeckOfCards {
     public DeckOfCards() 
     {
     	// add a list for all the suits
-    	for(Suits suit: Suits.values())
-    	{
-    		deck.put(suit, new ArrayList <Card>());
+    	for(Suits suit: Suits.values()) {
+            deck.put(suit, new ArrayList <Card>());
     	}
     	
         // fill the array list with 52 defined cards
@@ -161,16 +158,12 @@ public class DeckOfCards {
         deck.get(Suits.DIAMONDS).add(kingOfDiamonds );       
     }
         
-    
-    public Card getCard(int value, Suits suit)
-    {
+    public Card getCard(int value, Suits suit) {
     	Card card = null;
-    	try
-    	{
-    		card = deck.get(suit).get(value - 1);
+    	try {
+            card = deck.get(suit).get(value - 1);
     	}
-    	catch(Exception err)
-    	{
+        catch(Exception err) {
     		err.printStackTrace();    	
     	}
     	return card;
