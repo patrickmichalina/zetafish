@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
@@ -15,6 +16,7 @@ import ZetaFish.NetworkObjects.ZFStatus;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,16 +34,16 @@ import java.util.List;
  *  @author Chad Albrecht
  *  @author Melanie
  */
-public class GamePanel extends JPanel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ActionListener {
-    private JLayeredPane playerPanel       = new JLayeredPane();
-    private JLayeredPane poolPanel         = new JLayeredPane();
-    private JLayeredPane bookPanel         = new JLayeredPane();
-    private JLayeredPane opponentPanel     = new JLayeredPane();
-    private JLayeredPane opponentSubPanel1 = new JLayeredPane();
-    private JLayeredPane opponentSubPanel2 = new JLayeredPane();
-    private JLayeredPane opponentSubPanel3 = new JLayeredPane();
-    private JLayeredPane opponentSubPanel4 = new JLayeredPane();
-    private JLayeredPane opponentSubPanel5 = new JLayeredPane();
+public class GamePanel extends JPanel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ActionListener, MouseListener {
+    private JLayeredPane panelPlayer       = new JLayeredPane();
+    private JLayeredPane panelPool         = new JLayeredPane();
+    private JLayeredPane panelBook         = new JLayeredPane();
+    private JLayeredPane panelOpponent     = new JLayeredPane();
+    private JLayeredPane panelOpponentSub1 = new JLayeredPane();
+    private JLayeredPane panelOpponentSub2 = new JLayeredPane();
+    private JLayeredPane panelOpponentSub3 = new JLayeredPane();
+    private JLayeredPane panelOpponentSub4 = new JLayeredPane();
+    private JLayeredPane panelOpponentSub5 = new JLayeredPane();
     private JLayeredPane panelBookAce      = new JLayeredPane();
     private JLayeredPane panelBookKing     = new JLayeredPane();
     private JLayeredPane panelBookQueen    = new JLayeredPane();
@@ -55,9 +57,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private JLayeredPane panelBook4        = new JLayeredPane();
     private JLayeredPane panelBook3        = new JLayeredPane();
     private JLayeredPane panelBook2        = new JLayeredPane();
-    private JPanel       infoPanel         = new JPanel();
-    private JPanel       goFishPlayerButtons = new JPanel();
-    private JPanel       goFishCardButtons = new JPanel();
+    private JPanel       panelInfo         = new JPanel();
+    private JPanel       panelPlayerButtons= new JPanel();
+    private JPanel       panelCardButtons  = new JPanel();
     private JPanel       panelChat         = new JPanel();
     private JPanel       panelButtons      = new JPanel();
     private JButton      btn1              = new JButton("A");
@@ -73,35 +75,30 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private JButton      btnjack           = new JButton("J");
     private JButton      btnqueen          = new JButton("Q");
     private JButton      btnking           = new JButton("K");
-    
+    private JButton      btnSend           = new JButton("Send");
+    private JButton      btnEndTurn        = new JButton("End Turn");    
+    private JButton      btnPlayBook       = new JButton("Play Book");    
+    private JButton      btnStartGame      = new JButton("Start Game");
     private ButtonGroup  reqPlayerGroup    = new ButtonGroup();
     private PlayerButton btnReqPlayer1     = new PlayerButton("Player1", true);
     private PlayerButton btnReqPlayer2     = new PlayerButton("Player2");
     private PlayerButton btnReqPlayer3     = new PlayerButton("Player3");
     private PlayerButton btnReqPlayer4     = new PlayerButton("Player4");
     private PlayerButton btnReqPlayer5     = new PlayerButton("Player5");
-    
-    private JButton      btnSend           = new JButton("Send");
-    
-    private JButton      btnEndTurn        = new JButton("End Turn");    
-    private JButton      btnPlayBook       = new JButton("Play Book");    
-    private JButton      btnStartGame      = new JButton("Start Game");    
-    
-    private JLabel       poolTxt           = new JLabel("Pool: ");
-    private JLabel       bookTxt           = new JLabel("Book: ");
-    private JLabel       winsTxt           = new JLabel("Wins: ");
-    private JLabel       lossTxt           = new JLabel("Losses: ");
-    private JLabel       statusTxt         = new JLabel("Network Status: ");
-    private JLabel       myTrnTxt          = new JLabel("My Turn!");
+    private JLabel       lblPool           = new JLabel("Pool: ");
+    private JLabel       lblBook           = new JLabel("Book: ");
+    private JLabel       lblWins           = new JLabel("Wins: ");
+    private JLabel       lblLoss           = new JLabel("Losses: ");
+    private JLabel       lblStatus         = new JLabel("Network Status: ");
+    private JLabel       lblMyTurn         = new JLabel("My Turn!");
     private JLabel       lblCardCount      = new JLabel("Count: ");
     private JTextArea    txtOutput         = new JTextArea(5,0);
     private JTextField   txtInput          = new JTextField();
-    private Dimension    btnSize           = new Dimension(50,35);
+    private Dimension    dimButtonSize     = new Dimension(50,35);
 
     private final String SEND_ACTION = "send";
     private final String START_GAME_ACTION = "start_game";
     private final String END_TURN_ACTION = "end_turn";
-    
     private final String REQ_1_ACTION = "request_1_from_player";
     private final String REQ_2_ACTION = "request_2_from_player";
     private final String REQ_3_ACTION = "request_3_from_player";
@@ -116,18 +113,18 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private final String REQ_QUEEN_ACTION = "request_queen_from_player";
     private final String REQ_KING_ACTION = "request_king_from_player";
 
+    private String serverName = "";
+    private String playerName = "";
+
     private INetworkManager networkManager = null;
 
     private DeckOfCards deck = null;
 
-    private String serverName = "";
-    private String playerName = "";
-    
     private boolean CanStartGame = true;
     
     private ZFCard[] CurrentHand = null;
 
-    public GamePanel(INetworkManager networkManager, String serverName, String playerName, boolean CanStartGame) throws Exception{
+    public GamePanel(INetworkManager networkManager, String serverName, String playerName, boolean CanStartGame) throws Exception {
         super();
         this.setLayout(new FlowLayout(1,0,0));
         this.networkManager = networkManager;
@@ -142,22 +139,15 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         setSeeThrough();
         setInitVisLayers();
         setTextColors();
-        
         setNetworkListeners();
+        setMouseListerner();
 
         this.CanStartGame = CanStartGame;
         this.serverName = serverName;
         this.playerName = playerName;
         this.networkManager.openConnection(this.serverName, this.playerName, "My Password");
-        
-        //testDrawCards();
-        
+                
         DrawOcean();
-    }
-
-    private void testDrawCards()
-    {    
-    	// this is just for testing at the moment!
     }
     
     /**
@@ -173,9 +163,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         		for(int val = 1; val <= 13; val++)
         		{
         			Card card= deck.getCard(val, suit);
-        			poolPanel.add(card, new Integer(i));
+        			panelPool.add(card, new Integer(i));
         			card.setIcon(card.getImage());
-        			card.setBounds((i++ * 18) + 30, 45,  60, 60);
+        			card.setBounds((i++ * 18) + 30, 20,  60, 60);
         		}
       		}   
       	}
@@ -184,27 +174,27 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private void setComponents() {
         //All these components are added in a flowlayout. The order DOES matter.
-        this.add(infoPanel);
-        this.add(opponentPanel);
-        this.add(bookPanel);
-        this.add(poolPanel);
-        this.add(playerPanel);
-        this.add(goFishPlayerButtons);
-        this.add(goFishCardButtons);
+        this.add(panelInfo);
+        this.add(panelOpponent);
+        this.add(panelBook);
+        this.add(panelPool);
+        this.add(panelPlayer);
+        this.add(panelPlayerButtons);
+        this.add(panelCardButtons);
         this.add(panelChat);
         this.add(panelButtons);
 
-        opponentPanel.add(opponentSubPanel1);
-        opponentPanel.add(opponentSubPanel2);
-        opponentPanel.add(opponentSubPanel3);
-        opponentPanel.add(opponentSubPanel4);
-        opponentPanel.add(opponentSubPanel5);
+        panelOpponent.add(panelOpponentSub1);
+        panelOpponent.add(panelOpponentSub2);
+        panelOpponent.add(panelOpponentSub3);
+        panelOpponent.add(panelOpponentSub4);
+        panelOpponent.add(panelOpponentSub5);
         
-        opponentSubPanel1.setVisible(false);
-        opponentSubPanel2.setVisible(false);
-        opponentSubPanel3.setVisible(false);
-        opponentSubPanel4.setVisible(false);
-        opponentSubPanel5.setVisible(false);
+        panelOpponentSub1.setVisible(false);
+        panelOpponentSub2.setVisible(false);
+        panelOpponentSub3.setVisible(false);
+        panelOpponentSub4.setVisible(false);
+        panelOpponentSub5.setVisible(false);
         
         reqPlayerGroup.add(btnReqPlayer1);
         reqPlayerGroup.add(btnReqPlayer2);
@@ -212,11 +202,11 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         reqPlayerGroup.add(btnReqPlayer4);
         reqPlayerGroup.add(btnReqPlayer5);
         
-        goFishPlayerButtons.add(btnReqPlayer1);
-        goFishPlayerButtons.add(btnReqPlayer2);
-        goFishPlayerButtons.add(btnReqPlayer3);
-        goFishPlayerButtons.add(btnReqPlayer4);
-        goFishPlayerButtons.add(btnReqPlayer5);
+        panelPlayerButtons.add(btnReqPlayer1);
+        panelPlayerButtons.add(btnReqPlayer2);
+        panelPlayerButtons.add(btnReqPlayer3);
+        panelPlayerButtons.add(btnReqPlayer4);
+        panelPlayerButtons.add(btnReqPlayer5);
         
         btnReqPlayer1.setVisible(false);
         btnReqPlayer2.setVisible(false);
@@ -224,43 +214,43 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         btnReqPlayer4.setVisible(false);
         btnReqPlayer5.setVisible(false);
         
-        goFishCardButtons.add(myTrnTxt);        
+        panelCardButtons.add(lblMyTurn);
         
-        goFishCardButtons.add(btn1);
-        goFishCardButtons.add(btn2);
-        goFishCardButtons.add(btn3);
-        goFishCardButtons.add(btn4);
-        goFishCardButtons.add(btn5);
-        goFishCardButtons.add(btn6);
-        goFishCardButtons.add(btn7);
-        goFishCardButtons.add(btn8);
-        goFishCardButtons.add(btn9);
-        goFishCardButtons.add(btn10);
-        goFishCardButtons.add(btnjack);
-        goFishCardButtons.add(btnqueen);
-        goFishCardButtons.add(btnking);
+        panelCardButtons.add(btn1);
+        panelCardButtons.add(btn2);
+        panelCardButtons.add(btn3);
+        panelCardButtons.add(btn4);
+        panelCardButtons.add(btn5);
+        panelCardButtons.add(btn6);
+        panelCardButtons.add(btn7);
+        panelCardButtons.add(btn8);
+        panelCardButtons.add(btn9);
+        panelCardButtons.add(btn10);
+        panelCardButtons.add(btnjack);
+        panelCardButtons.add(btnqueen);
+        panelCardButtons.add(btnking);
         
-        infoPanel.add(poolTxt);
-        infoPanel.add(bookTxt);
-        infoPanel.add(winsTxt);
-        infoPanel.add(lossTxt);
-        infoPanel.add(statusTxt);
+        panelInfo.add(lblPool);
+        panelInfo.add(lblBook);
+        panelInfo.add(lblWins);
+        panelInfo.add(lblLoss);
+        panelInfo.add(lblStatus);
 
-        bookPanel.add(panelBookAce);
-        bookPanel.add(panelBookKing);
-        bookPanel.add(panelBookQueen);
-        bookPanel.add(panelBookJack);
-        bookPanel.add(panelBook10);
-        bookPanel.add(panelBook9);
-        bookPanel.add(panelBook8);
-        bookPanel.add(panelBook7);
-        bookPanel.add(panelBook6);
-        bookPanel.add(panelBook5);
-        bookPanel.add(panelBook4);
-        bookPanel.add(panelBook3);
-        bookPanel.add(panelBook2);
+        panelBook.add(panelBookAce);
+        panelBook.add(panelBookKing);
+        panelBook.add(panelBookQueen);
+        panelBook.add(panelBookJack);
+        panelBook.add(panelBook10);
+        panelBook.add(panelBook9);
+        panelBook.add(panelBook8);
+        panelBook.add(panelBook7);
+        panelBook.add(panelBook6);
+        panelBook.add(panelBook5);
+        panelBook.add(panelBook4);
+        panelBook.add(panelBook3);
+        panelBook.add(panelBook2);
 
-        poolPanel.add(lblCardCount);
+        panelPool.add(lblCardCount);
 
         panelChat.add(new JScrollPane(txtOutput), BorderLayout.PAGE_START);
         panelChat.add(txtInput, BorderLayout.CENTER);
@@ -275,7 +265,6 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         this.btnStartGame.setEnabled(this.CanStartGame);
 
         this.txtOutput.setLineWrap(true);
-                
     }
     
     private void setTextColors() 
@@ -283,47 +272,47 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	Color DefaultForeColor = Color.WHITE;
     	TitledBorder border = null;
     	
-    	for(Component comp : opponentPanel.getComponents())
+    	for(Component comp : panelOpponent.getComponents())
     	{
     		JLayeredPane pane = (JLayeredPane)comp;
     		border = (TitledBorder)pane.getBorder();
         	border.setTitleColor(DefaultForeColor);    	
     	}
     	
-    	border = (TitledBorder)this.bookPanel.getBorder();
+    	border = (TitledBorder)this.panelBook.getBorder();
     	border.setTitleColor(DefaultForeColor);   
     	
-    	border = (TitledBorder)this.poolPanel.getBorder();
+    	border = (TitledBorder)this.panelPool.getBorder();
     	border.setTitleColor(DefaultForeColor);
     	
-    	border = (TitledBorder)this.playerPanel.getBorder();
+    	border = (TitledBorder)this.panelPlayer.getBorder();
     	border.setTitleColor(DefaultForeColor);
     	
-    	border = (TitledBorder)this.goFishPlayerButtons.getBorder();
+    	border = (TitledBorder)this.panelPlayerButtons.getBorder();
     	border.setTitleColor(DefaultForeColor);
     	
-    	border = (TitledBorder)this.goFishCardButtons.getBorder();
+    	border = (TitledBorder)this.panelCardButtons.getBorder();
     	border.setTitleColor(DefaultForeColor);
     	
     	this.lblCardCount.setForeground(DefaultForeColor);    	
-    	this.myTrnTxt.setForeground(DefaultForeColor);
+    	this.lblMyTurn.setForeground(DefaultForeColor);
     }
     
 
     private void setBorders() {
-        opponentSubPanel1.setBorder(BorderFactory.createTitledBorder("Player 2" ));
-        opponentSubPanel2.setBorder(BorderFactory.createTitledBorder("Player 3"));
-        opponentSubPanel3.setBorder(BorderFactory.createTitledBorder("Player 4"));
-        opponentSubPanel4.setBorder(BorderFactory.createTitledBorder("Player 5"));
-        opponentSubPanel5.setBorder(BorderFactory.createTitledBorder("Player 6"));
-        poolPanel.setBorder(        BorderFactory.createTitledBorder("Ocean"));
-        bookPanel.setBorder(        BorderFactory.createTitledBorder("Books"));
-        playerPanel.setBorder(      BorderFactory.createTitledBorder("Your Hand"));
+        panelOpponentSub1.setBorder(BorderFactory.createTitledBorder("Player 2" ));
+        panelOpponentSub2.setBorder(BorderFactory.createTitledBorder("Player 3"));
+        panelOpponentSub3.setBorder(BorderFactory.createTitledBorder("Player 4"));
+        panelOpponentSub4.setBorder(BorderFactory.createTitledBorder("Player 5"));
+        panelOpponentSub5.setBorder(BorderFactory.createTitledBorder("Player 6"));
+        panelPool.setBorder(        BorderFactory.createTitledBorder("Ocean"));
+        panelBook.setBorder(        BorderFactory.createTitledBorder("Books"));
+        panelPlayer.setBorder(      BorderFactory.createTitledBorder("Your Hand"));
         
-        goFishPlayerButtons.setBorder(	BorderFactory.createTitledBorder("Request from Player"));
-        goFishCardButtons.setBorder(	BorderFactory.createTitledBorder("Request Cards"));
+        panelPlayerButtons.setBorder(	BorderFactory.createTitledBorder("Request from Player"));
+        panelCardButtons.setBorder(	BorderFactory.createTitledBorder("Request Cards"));
         
-        infoPanel.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
+        panelInfo.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
         
         panelBookAce.setBorder(     BorderFactory.createLineBorder(Color.black, 2));
         panelBookKing.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
@@ -344,37 +333,37 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     }
 
     private void setComponentDimensions() {
-        infoPanel.setPreferredSize(        new Dimension(1024, 30));
-        panelChat.setPreferredSize(        new Dimension( 890,110));
-        panelButtons.setPreferredSize(     new Dimension( 124,130));
+        panelInfo.setPreferredSize(          new Dimension(1024, 30));
+        panelBook.setPreferredSize(        new Dimension(1024,200));
+        panelPool.setPreferredSize(        new Dimension(1024,100));
+        panelPlayer.setPreferredSize(      new Dimension(1024,100));
+
+        panelPlayerButtons.setPreferredSize(new Dimension(1024,60));
+        panelCardButtons.setPreferredSize(  new Dimension(1024,60));
         
-        goFishPlayerButtons.setPreferredSize(  new Dimension(1024,75));
-        goFishCardButtons.setPreferredSize(	   new Dimension(1024,75));
+        panelChat.setPreferredSize(          new Dimension( 890,110));
+        panelButtons.setPreferredSize(       new Dimension( 124,130));
 
-        playerPanel.setPreferredSize(      new Dimension(1024,100));
-        poolPanel.setPreferredSize(        new Dimension(1024,150));
-        bookPanel.setPreferredSize(        new Dimension(1024,200));
+        panelOpponent.setPreferredSize(    new Dimension(1024,100));
+        panelOpponentSub1.setPreferredSize(new Dimension( 205,100));
+        panelOpponentSub2.setPreferredSize(new Dimension( 205,100));
+        panelOpponentSub3.setPreferredSize(new Dimension( 205,100));
+        panelOpponentSub4.setPreferredSize(new Dimension( 205,100));
+        panelOpponentSub5.setPreferredSize(new Dimension( 204,100));
 
-        opponentPanel.setPreferredSize(    new Dimension(1024,100));
-        opponentSubPanel1.setPreferredSize(new Dimension( 205,100));
-        opponentSubPanel2.setPreferredSize(new Dimension( 205,100));
-        opponentSubPanel3.setPreferredSize(new Dimension( 205,100));
-        opponentSubPanel4.setPreferredSize(new Dimension( 205,100));
-        opponentSubPanel5.setPreferredSize(new Dimension( 204,100));
-
-        btn1.setPreferredSize(    btnSize);
-        btn2.setPreferredSize(    btnSize);
-        btn3.setPreferredSize(    btnSize);
-        btn4.setPreferredSize(    btnSize);
-        btn5.setPreferredSize(    btnSize);
-        btn6.setPreferredSize(    btnSize);
-        btn7.setPreferredSize(    btnSize);
-        btn8.setPreferredSize(    btnSize);
-        btn9.setPreferredSize(    btnSize);
-        btn10.setPreferredSize(   btnSize);
-        btnjack.setPreferredSize( btnSize);
-        btnqueen.setPreferredSize(btnSize);
-        btnking.setPreferredSize( btnSize);
+        btn1.setPreferredSize(    dimButtonSize);
+        btn2.setPreferredSize(    dimButtonSize);
+        btn3.setPreferredSize(    dimButtonSize);
+        btn4.setPreferredSize(    dimButtonSize);
+        btn5.setPreferredSize(    dimButtonSize);
+        btn6.setPreferredSize(    dimButtonSize);
+        btn7.setPreferredSize(    dimButtonSize);
+        btn8.setPreferredSize(    dimButtonSize);
+        btn9.setPreferredSize(    dimButtonSize);
+        btn10.setPreferredSize(   dimButtonSize);
+        btnjack.setPreferredSize( dimButtonSize);
+        btnqueen.setPreferredSize(dimButtonSize);
+        btnking.setPreferredSize( dimButtonSize);
         
         setBookPaneBounds();
     }
@@ -399,23 +388,23 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private void setSeeThrough() {
         this.setOpaque(         false);
-        infoPanel.setOpaque(    false);
-        playerPanel.setOpaque(  false);
-        poolPanel.setOpaque(    false);
-        bookPanel.setOpaque(    false);
-        opponentPanel.setOpaque(false);
-        goFishPlayerButtons.setOpaque(false);
-        goFishCardButtons.setOpaque(false);
+        panelInfo.setOpaque(    false);
+        panelPlayer.setOpaque(  false);
+        panelPool.setOpaque(    false);
+        panelBook.setOpaque(    false);
+        panelOpponent.setOpaque(false);
+        panelPlayerButtons.setOpaque(false);
+        panelCardButtons.setOpaque(false);
         panelButtons.setOpaque( false);
     }
 
     private void setLayouts() {
-        opponentPanel.setLayout(new FlowLayout(0,0,0));
+        panelOpponent.setLayout(new FlowLayout(0,0,0));
         panelChat.setLayout(new BorderLayout(3,3));
     }
 
     private void setInitVisLayers() {
-        myTrnTxt.setVisible(false);
+        lblMyTurn.setVisible(false);
     }
 
     private void setButtonListeners() {
@@ -468,6 +457,14 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         this.btnking.addActionListener(this);
     }
 
+    private void setMouseListerner() {
+        panelOpponentSub1.addMouseListener(this);
+        panelOpponentSub2.addMouseListener(this);
+        panelOpponentSub3.addMouseListener(this);
+        panelOpponentSub4.addMouseListener(this);
+        panelOpponentSub5.addMouseListener(this);
+    }
+
     private void setNetworkListeners() {
     	this.networkManager.addChatListener(this);
     	this.networkManager.addStatusListener(this);
@@ -484,15 +481,15 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      *
      */
     public JLayeredPane getPoolPanel() {
-        return poolPanel;
+        return panelPool;
     }
 
     public JLayeredPane getPlayerPanel() {
-        return playerPanel;
+        return panelPlayer;
     }
 
     public JLayeredPane getOpponentPanel() {
-        return opponentPanel;
+        return panelOpponent;
     }
 
 
@@ -529,7 +526,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		card.setShown(isShown);
 
             if(isHeld) {
-                card.setBounds((i * 60) + 20, 18,  45, 65);
+                card.setBounds((i * 20) + 20, 18,  45, 65);
             }
             else {
                 card.setBounds((i * 8) + 15, 20,  45, 65);
@@ -576,18 +573,18 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				if(player.getPlayerNumber() == this.networkManager.getMyPlayerNumber())
 				{
 					this.CurrentHand = player.getHand();
-					this.playerPanel.removeAll();
-					addCardsToPane(playerPanel, this.CurrentHand, true, true);
+					this.panelPlayer.removeAll();
+					addCardsToPane(panelPlayer, this.CurrentHand, true, true);
 				}
 				else // Update other players
 				{
 					String playerName = player.getPlayerName();
-					JLayeredPane playerPane = (JLayeredPane)this.opponentPanel.getComponent(i);
+					JLayeredPane playerPane = (JLayeredPane)this.panelOpponent.getComponent(i);
 					playerPane.setVisible(true);
 					TitledBorder border = (TitledBorder)playerPane.getBorder();
 			    	border.setTitle(playerName);   
 					
-			    	PlayerButton playerButton = (PlayerButton)this.goFishPlayerButtons.getComponent(i);
+			    	PlayerButton playerButton = (PlayerButton)this.panelPlayerButtons.getComponent(i);
 					playerButton.setPlayerNumber(player.getPlayerNumber());
 			    	playerButton.setText(playerName);
 					playerButton.setVisible(true);
@@ -597,7 +594,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 					i++;
 				}
             }
-			lblCardCount.setText("Count: " + poolPanel.getComponentCount());
+			lblCardCount.setText("Count: " + panelPool.getComponentCount());
         }
 
 	}
@@ -665,7 +662,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		btnking.setEnabled(false);    		
     	}
     	
-    	myTrnTxt.setVisible(IsTurn);    	    
+    	lblMyTurn.setVisible(IsTurn);
     }
     
     private void EnableCardRequestChoiceByHand()
@@ -717,7 +714,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 //		}
 //		
 //		this.CurrentHand = hand.toArray(this.CurrentHand);
-//		addCardsToPane(playerPanel, this.CurrentHand, true, true);		
+//		addCardsToPane(panelPlayer, this.CurrentHand, true, true);
 	}
 	
 	private void ShowCardRequestResponse(ZFCardRequestResponse response)
@@ -757,7 +754,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        }
 	        else if(action == END_TURN_ACTION)
 	        {
-	        	myTrnTxt.setVisible(false);
+	        	lblMyTurn.setVisible(false);
 	        	this.networkManager.DoneWithTurn();
 
 	        }	        
@@ -825,8 +822,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      */
     private int GetRequestPlayer()
     {    
-    	int retval = -1;
-    	for(Component cmp : goFishPlayerButtons.getComponents())
+    	/*int retval = -1;
+    	for(Component cmp : panelPlayerButtons.getComponents())
     	{
     		if(cmp.getClass() == PlayerButton.class)
     		{
@@ -837,8 +834,23 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     			}    			    			
     		}    		
     	}
-    	    	    	
-    	return retval;
+    	    	*/
+    	return whichComponentWasClicked();
+    }
+
+    public int whichComponentWasClicked() {
+        int x = 0;
+
+        String name = paneWasClicked.getContainerListeners().toString();
+
+        System.out.println(name);
+
+        if(name.equalsIgnoreCase("paneOpponentSub1")) {
+            x = 0;
+        }
+
+
+        return x;
     }
         
     /**
@@ -848,7 +860,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private void HandleException(Exception err) {
     	err.printStackTrace();
     }
-}
+
+
 
 class PlayerButton extends JRadioButton
 {
@@ -872,5 +885,94 @@ class PlayerButton extends JRadioButton
 	public void setPlayerNumber(int playerNumber)
 	{
 		this.playerNumber = playerNumber;
-	}	
+	}
+
+    }
+
+
+    //Test code for mouse hover over opponent hands to choose who to fish from
+    @Override
+    public void mouseClicked(MouseEvent me) {
+            System.out.println(me.toString());
+
+
+
+
+    }
+
+    private JLayeredPane paneWasClicked;
+
+    @Override
+    public void mousePressed(MouseEvent me) {
+        JLayeredPane clickedPane = (JLayeredPane) me.getSource();
+        
+        if (clickedPane == panelOpponentSub1) {
+            paneWasClicked = panelOpponentSub1;
+
+            panelOpponentSub2.setBackground(Color.WHITE);
+            panelOpponentSub3.setBackground(Color.WHITE);
+            panelOpponentSub4.setBackground(Color.WHITE);
+            panelOpponentSub5.setBackground(Color.WHITE);
+
+            panelOpponentSub2.setOpaque(false);
+        }
+        
+        if (clickedPane == panelOpponentSub2) {
+            paneWasClicked = panelOpponentSub2;
+
+            panelOpponentSub1.setBackground(Color.WHITE);
+            panelOpponentSub3.setBackground(Color.WHITE);
+            panelOpponentSub4.setBackground(Color.WHITE);
+            panelOpponentSub5.setBackground(Color.WHITE);
+
+            panelOpponentSub1.setOpaque(false);
+
+        }
+
+        this.repaint();
+
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+        JLayeredPane enteredPane = (JLayeredPane)me.getSource();
+
+        if (enteredPane == panelOpponentSub1) {
+            enteredPane.setBackground(Color.GREEN);
+            enteredPane.setOpaque(true);
+        }
+        
+        if (enteredPane == panelOpponentSub2) {
+            enteredPane.setBackground(Color.GREEN);
+            enteredPane.setOpaque(true);
+        }
+
+        this.repaint();
+    }
+
+    @Override
+    public void mouseExited(MouseEvent me) {
+       JLayeredPane enteredPane = (JLayeredPane) me.getSource();
+
+        if (enteredPane == panelOpponentSub1 && enteredPane != paneWasClicked) {
+            //System.out.println(me.getSource().toString());
+            enteredPane.setBackground(Color.WHITE);
+            enteredPane.setOpaque(false);
+        }
+
+       if (enteredPane == panelOpponentSub2 && enteredPane != paneWasClicked) {
+            //System.out.println(me.getSource().toString());
+            enteredPane.setBackground(Color.WHITE);
+            enteredPane.setOpaque(false);
+        }
+
+       this.repaint();
+    }
+
 }
