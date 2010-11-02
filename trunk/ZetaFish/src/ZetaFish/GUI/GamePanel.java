@@ -38,12 +38,19 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private JLayeredPane panelPlayer       = new JLayeredPane();
     private JLayeredPane panelPool         = new JLayeredPane();
     private JLayeredPane panelBook         = new JLayeredPane();
+    
     private JLayeredPane panelOpponent     = new JLayeredPane();
-    private JLayeredPane panelOpponentSub1 = new JLayeredPane();
-    private JLayeredPane panelOpponentSub2 = new JLayeredPane();
-    private JLayeredPane panelOpponentSub3 = new JLayeredPane();
-    private JLayeredPane panelOpponentSub4 = new JLayeredPane();
-    private JLayeredPane panelOpponentSub5 = new JLayeredPane();
+//    private JLayeredPane panelOpponentSub1 = new JLayeredPane();
+//    private JLayeredPane panelOpponentSub2 = new JLayeredPane();
+//    private JLayeredPane panelOpponentSub3 = new JLayeredPane();
+//    private JLayeredPane panelOpponentSub4 = new JLayeredPane();
+//    private JLayeredPane panelOpponentSub5 = new JLayeredPane();
+    private PlayerPane panelOpponentSub1 = new PlayerPane();
+    private PlayerPane panelOpponentSub2 = new PlayerPane();
+    private PlayerPane panelOpponentSub3 = new PlayerPane();
+    private PlayerPane panelOpponentSub4 = new PlayerPane();
+    private PlayerPane panelOpponentSub5 = new PlayerPane();
+   
     private JLayeredPane panelBookAce      = new JLayeredPane();
     private JLayeredPane panelBookKing     = new JLayeredPane();
     private JLayeredPane panelBookQueen    = new JLayeredPane();
@@ -579,8 +586,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				else // Update other players
 				{
 					String playerName = player.getPlayerName();
-					JLayeredPane playerPane = (JLayeredPane)this.panelOpponent.getComponent(i);
+					PlayerPane playerPane = (PlayerPane)this.panelOpponent.getComponent(i);
 					playerPane.setVisible(true);
+					playerPane.setPlayerNumber(player.getPlayerNumber());
 					TitledBorder border = (TitledBorder)playerPane.getBorder();
 			    	border.setTitle(playerName);   
 					
@@ -841,18 +849,19 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     }
 
     public int whichComponentWasClicked() {
-        int x = 0;
-
-        String name = paneWasClicked.getContainerListeners().toString();
-
-        System.out.println(name);
-
-        if(name.equalsIgnoreCase("paneOpponentSub1")) {
-            x = 0;
-        }
-
-
-        return x;
+//        int x = 0;
+//
+//        String name = paneWasClicked.getContainerListeners().toString();
+//
+//        System.out.println(name);
+//
+//        if(name.equalsIgnoreCase("paneOpponentSub1")) {
+//            x = 0;
+//        }
+//
+//
+//        return x;
+    	return clickedPlayerPaneNumber;
     }
         
     /**
@@ -863,8 +872,137 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	err.printStackTrace();
     }
 
+    //Test code for mouse hover over opponent hands to choose who to fish from
+    @Override
+    public void mouseClicked(MouseEvent me) {
+            System.out.println(me.toString());
+    }
+
+    //private JLayeredPane paneWasClicked;
+    int clickedPlayerPaneNumber = -1;
+
+    @Override
+    public void mousePressed(MouseEvent me) {
+    	PlayerPane clickedPane = (PlayerPane) me.getSource();
+    	//paneWasClicked = clickedPane;
+    	clickedPlayerPaneNumber = clickedPane.getPlayerNumber();
+    	
+    	for(Component cmp : this.panelOpponent.getComponents())
+    	{
+    		PlayerPane pane = (PlayerPane)cmp;
+    		if(pane == clickedPane)
+    		{
+    			pane.setBackground(Color.GREEN);
+    			pane.setOpaque(true);
+    		}
+    		else
+    		{
+    			pane.setBackground(Color.WHITE);
+    			pane.setOpaque(false);
+    		}
+    	}
+        
+//        if (clickedPane == panelOpponentSub1) {
+//            paneWasClicked = panelOpponentSub1;
+//
+//            panelOpponentSub2.setBackground(Color.WHITE);
+//            panelOpponentSub3.setBackground(Color.WHITE);
+//            panelOpponentSub4.setBackground(Color.WHITE);
+//            panelOpponentSub5.setBackground(Color.WHITE);
+//
+//            panelOpponentSub2.setOpaque(false);
+//        }
+//        
+//        if (clickedPane == panelOpponentSub2) {
+//            paneWasClicked = panelOpponentSub2;
+//
+//            panelOpponentSub1.setBackground(Color.WHITE);
+//            panelOpponentSub3.setBackground(Color.WHITE);
+//            panelOpponentSub4.setBackground(Color.WHITE);
+//            panelOpponentSub5.setBackground(Color.WHITE);
+//
+//            panelOpponentSub1.setOpaque(false);
+//
+//        }
+
+        this.repaint();
+
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+//        JLayeredPane enteredPane = (JLayeredPane)me.getSource();
+//
+//        if (enteredPane == panelOpponentSub1) {
+//            enteredPane.setBackground(Color.GREEN);
+//            enteredPane.setOpaque(true);
+//        }
+//        
+//        if (enteredPane == panelOpponentSub2) {
+//            enteredPane.setBackground(Color.GREEN);
+//            enteredPane.setOpaque(true);
+//        }
+//
+//        this.repaint();
+    }
+
+    
+    @Override
+    public void mouseExited(MouseEvent me) {
+//       JLayeredPane enteredPane = (JLayeredPane) me.getSource();
+//
+//        if (enteredPane == panelOpponentSub1 && enteredPane != paneWasClicked) {
+//            //System.out.println(me.getSource().toString());
+//            enteredPane.setBackground(Color.WHITE);
+//            enteredPane.setOpaque(false);
+//        }
+//
+//       if (enteredPane == panelOpponentSub2 && enteredPane != paneWasClicked) {
+//            //System.out.println(me.getSource().toString());
+//            enteredPane.setBackground(Color.WHITE);
+//            enteredPane.setOpaque(false);
+//        }
+//
+//       this.repaint();
+    }
+
+}
 
 
+/**
+ * Custom pane to hold player info
+ *
+ */
+class PlayerPane extends JLayeredPane
+{
+	private int playerNumber = -1;
+	
+	public PlayerPane()
+	{
+		super();
+	}
+	
+	public int getPlayerNumber()
+	{
+		return this.playerNumber;		
+	}
+	
+	public void setPlayerNumber(int playerNumber)
+	{
+		this.playerNumber = playerNumber;
+	}
+}
+
+/**
+ *  Custom button to hold player info 
+ *
+ */
 class PlayerButton extends JRadioButton
 {
 	private int playerNumber = -1;
@@ -888,93 +1026,5 @@ class PlayerButton extends JRadioButton
 	{
 		this.playerNumber = playerNumber;
 	}
-
-    }
-
-
-    //Test code for mouse hover over opponent hands to choose who to fish from
-    @Override
-    public void mouseClicked(MouseEvent me) {
-            System.out.println(me.toString());
-
-
-
-
-    }
-
-    private JLayeredPane paneWasClicked;
-
-    @Override
-    public void mousePressed(MouseEvent me) {
-        JLayeredPane clickedPane = (JLayeredPane) me.getSource();
-        
-        if (clickedPane == panelOpponentSub1) {
-            paneWasClicked = panelOpponentSub1;
-
-            panelOpponentSub2.setBackground(Color.WHITE);
-            panelOpponentSub3.setBackground(Color.WHITE);
-            panelOpponentSub4.setBackground(Color.WHITE);
-            panelOpponentSub5.setBackground(Color.WHITE);
-
-            panelOpponentSub2.setOpaque(false);
-        }
-        
-        if (clickedPane == panelOpponentSub2) {
-            paneWasClicked = panelOpponentSub2;
-
-            panelOpponentSub1.setBackground(Color.WHITE);
-            panelOpponentSub3.setBackground(Color.WHITE);
-            panelOpponentSub4.setBackground(Color.WHITE);
-            panelOpponentSub5.setBackground(Color.WHITE);
-
-            panelOpponentSub1.setOpaque(false);
-
-        }
-
-        this.repaint();
-
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent me) {
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent me) {
-        JLayeredPane enteredPane = (JLayeredPane)me.getSource();
-
-        if (enteredPane == panelOpponentSub1) {
-            enteredPane.setBackground(Color.GREEN);
-            enteredPane.setOpaque(true);
-        }
-        
-        if (enteredPane == panelOpponentSub2) {
-            enteredPane.setBackground(Color.GREEN);
-            enteredPane.setOpaque(true);
-        }
-
-        this.repaint();
-    }
-
-    @Override
-    public void mouseExited(MouseEvent me) {
-       JLayeredPane enteredPane = (JLayeredPane) me.getSource();
-
-        if (enteredPane == panelOpponentSub1 && enteredPane != paneWasClicked) {
-            //System.out.println(me.getSource().toString());
-            enteredPane.setBackground(Color.WHITE);
-            enteredPane.setOpaque(false);
-        }
-
-       if (enteredPane == panelOpponentSub2 && enteredPane != paneWasClicked) {
-            //System.out.println(me.getSource().toString());
-            enteredPane.setBackground(Color.WHITE);
-            enteredPane.setOpaque(false);
-        }
-
-       this.repaint();
-    }
 
 }
