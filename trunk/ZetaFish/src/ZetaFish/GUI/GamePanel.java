@@ -563,8 +563,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         	this.btnPlayBook.setEnabled(CanPlayBook());
         	this.btnEndTurn.setEnabled(true);
             if(gameJustStarted) {
-                playSound("shuffling.wav");
-                SetDefaultOpponent();
+                playSound("shuffling.wav");             
             }
             
                 
@@ -606,9 +605,16 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
             }
 			lblCardCount.setText("Count: " + panelPool.getComponentCount());
         }
+		
+		
 
 		if(status.getIsGameRunning())
+		{
+			if(gameJustStarted) {             
+                SetDefaultOpponent();
+            }
 			gameJustStarted = false;
+		}
 	}
 
 	private void ShowGameStatus(ZFStatus status)
@@ -634,6 +640,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
 	private void SetDefaultOpponent()
 	{
+		System.out.println("SetDefaultOpponent");
 		SelectOpponentPane((PlayerPane)this.panelOpponent.getComponents()[0]);
 	}
 	
@@ -646,6 +653,12 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		// TODO: Check hand for books
 		return false;
 	}
+	
+	private void EndTurn() throws Exception
+	{
+		lblMyTurn.setVisible(false);
+    	this.networkManager.DoneWithTurn();
+	}
 
 	private void HandleTurnChange(boolean IsTurn)
     {
@@ -654,7 +667,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
 
     	if(IsTurn)
-    	{
+    	{    		
     		EnableCardRequestChoiceByHand();
     	}
     	else
@@ -674,6 +687,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		btnking.setEnabled(false);
     	}
 
+    	this.btnEndTurn.setEnabled(IsTurn);
     	lblMyTurn.setVisible(IsTurn);
     }
 
@@ -711,22 +725,18 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	public void OnCardRequestResponse(ZFCardRequestResponse response)
 	{
 		ShowCardRequestResponse(response);
-
-//		// TODO: This is ugly, refactor this reponse back to a status reponse?
-//		List<ZFCard> hand = new ArrayList<ZFCard>();
-//
-//		for(ZFCard card : this.CurrentHand)
-//		{
-//			hand.add(card);
-//		}
-//
-//		for(ZFCard card : response.getCards())
-//		{
-//			hand.add(card);
-//		}
-//
-//		this.CurrentHand = hand.toArray(this.CurrentHand);
-//		addCardsToPane(panelPlayer, this.CurrentHand, true, true);
+		
+		if(!CanPlayBook())
+		{
+			try
+			{
+				EndTurn();
+			}
+			catch(Exception err)
+			{
+				HandleException(err);
+			}
+		}
 	}
 
 	private void ShowCardRequestResponse(ZFCardRequestResponse response)
@@ -762,13 +772,10 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        else if(action == START_GAME_ACTION)
 	        {
 	        	this.networkManager.startGame();
-
 	        }
 	        else if(action == END_TURN_ACTION)
 	        {
-	        	lblMyTurn.setVisible(false);
-	        	this.networkManager.DoneWithTurn();
-
+	        	EndTurn();
 	        }
 	        else if(action == REQ_1_ACTION)
 	        {
