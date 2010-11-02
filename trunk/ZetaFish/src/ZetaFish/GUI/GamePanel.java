@@ -112,6 +112,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private final String REQ_QUEEN_ACTION = "request_queen_from_player";
     private final String REQ_KING_ACTION = "request_king_from_player";
 
+    private final Color SELECTED_COLOR = Color.GREEN;
+    private final Color HOVER_COLOR = Color.WHITE;
+    
     private String serverName = "";
     private String playerName = "";
 
@@ -138,7 +141,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         setBorders();
         setSeeThrough();
         setInitVisLayers();
-        setTextColors();
+        setTextColors();        
         setNetworkListeners();
         setMouseListerner();
         setTextRules();
@@ -385,7 +388,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         panelBook2.setBounds(    830,  70, 99, 65);
 
         lblCardCount.setBounds(10, 10, 100, 20);
-    }
+    }     
 
     private void setSeeThrough() {
         this.setOpaque(         false);
@@ -559,10 +562,11 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 			this.btnStartGame.setEnabled(false);
         	this.btnPlayBook.setEnabled(CanPlayBook());
         	this.btnEndTurn.setEnabled(true);
-                if(gameJustStarted) {
-                    playSound("shuffling.wav");
-                }
-                gameJustStarted = false;
+            if(gameJustStarted) {
+                playSound("shuffling.wav");
+                SetDefaultOpponent();
+            }
+            
                 
 		}
 		else
@@ -595,18 +599,16 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 					TitledBorder border = (TitledBorder)playerPane.getBorder();
 			    	border.setTitle(playerName);
 
-			    	
-
 					playerPane.removeAll();
 					addCardsToPane(playerPane, player.getHand(), false, false);
 					i++;
-
-                                      
 				}
             }
 			lblCardCount.setText("Count: " + panelPool.getComponentCount());
         }
 
+		if(status.getIsGameRunning())
+			gameJustStarted = false;
 	}
 
 	private void ShowGameStatus(ZFStatus status)
@@ -630,6 +632,11 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         }
 	}
 
+	private void SetDefaultOpponent()
+	{
+		SelectOpponentPane((PlayerPane)this.panelOpponent.getComponents()[0]);
+	}
+	
 	/**
 	 * Determines if there are 4 or more of a kind in players hand
 	 * @return
@@ -826,7 +833,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      * @return
      */
     private int GetRequestPlayer() {
-    	return clickedPlayerPaneNumber;
+    	return selectedOpponentNumber;
     }
 
     /**
@@ -836,101 +843,113 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private void HandleException(Exception err) {
     	err.printStackTrace();
     }
-
-    //Test code for mouse hover over opponent hands to choose who to fish from
-    @Override
-    public void mouseClicked(MouseEvent me) {
-
-    playSound("select.wav");
-        PlayerPane clickedPane = (PlayerPane) me.getSource();
-    	clickedPlayerPaneNumber = clickedPane.getPlayerNumber();
+    
+    private void SelectOpponentPane(PlayerPane selectedPane)
+    {
     	for(Component cmp : this.panelOpponent.getComponents())
     	{
     		PlayerPane pane = (PlayerPane) cmp;
-    		if(pane == clickedPane)
+    		if(pane == selectedPane)
     		{
-    			pane.setBackground(Color.GREEN);
+    			pane.setBackground(SELECTED_COLOR);
     			pane.setOpaque(true);
-                        
+    			pane.setSelected(true);  
+    			selectedOpponentNumber = pane.getPlayerNumber();
     		}
     		else
     		{
     			pane.setBackground(Color.WHITE);
     			pane.setOpaque(false);
+    			pane.setSelected(false);
     		}
     	}
 
         this.validate();
     }
-
+    
     //private JLayeredPane paneWasClicked;
-    int clickedPlayerPaneNumber = -1;
+    int selectedOpponentNumber = -1;
     int hoveredlayerPaneNumber = -1;
 
+    //Test code for mouse hover over opponent hands to choose who to fish from
     @Override
-    public void mousePressed(MouseEvent me) {
+    public void mouseClicked(MouseEvent me) {
+    	playSound("select.wav");
+        PlayerPane clickedPane = (PlayerPane) me.getSource();
     	
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
+    	SelectOpponentPane(clickedPane);
+    } 
 
     @Override
-    public void mouseReleased(MouseEvent me) {
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
+    public void mousePressed(MouseEvent me) { }
 
+    @Override
+    public void mouseReleased(MouseEvent me) {   }
+
+    int oldAlpha = 0xFF000000;
+    
     @Override
     public void mouseEntered(MouseEvent me) {
         PlayerPane clickedPane = (PlayerPane) me.getSource();
         playSound("hover.wav");
-        for(Component cmp : this.panelOpponent.getComponents()) {
-            PlayerPane pane = (PlayerPane) cmp;
-            
-            if(pane == clickedPane) {
-                pane.setBackground(Color.GREEN);
-                pane.setOpaque(true);
-            }
-            
-            else if (pane.getPlayerNumber() == clickedPlayerPaneNumber) {
-                // keep clicked selection highlighted
-            }
-            
-            else {
-                pane.setBackground(Color.WHITE);
-                pane.setOpaque(false);
-            }
-    	}
+        
+        // Set the pane to translucent
+        Color backColor = clickedPane.getBackground();
+        if(!clickedPane.isSelected())
+        {
+        	backColor = Color.WHITE;
+        	clickedPane.setOpaque(true);
+        }
+        oldAlpha = backColor.getAlpha();
+        backColor = new Color(backColor.getRed(), backColor.getGreen(), backColor.getBlue(), 0x7F);
+        
+        clickedPane.setBackground(backColor);
+              
         this.repaint();
     }
 
     @Override
     public void mouseExited(MouseEvent me) {
         PlayerPane clickedPane = (PlayerPane) me.getSource();
+        
+        Color backColor = clickedPane.getBackground(); 
+        if(!clickedPane.isSelected())
+        {
+        	backColor = Color.WHITE;
+        	clickedPane.setOpaque(false);
+        }
+        backColor = new Color(backColor.getRed(), backColor.getGreen(), backColor.getBlue(), oldAlpha);
+        
+        clickedPane.setBackground(backColor);
 
-        for(Component cmp : this.panelOpponent.getComponents()) {
-            PlayerPane pane = (PlayerPane) cmp;
-
-            if(pane == clickedPane && clickedPlayerPaneNumber != clickedPane.getPlayerNumber()) {
-                pane.setBackground(Color.WHITE);
-                pane.setOpaque(false);
-            }
-    	}
         this.repaint();
     }
 
     private class PlayerPane extends JLayeredPane {
         private int playerNumber = -1;
+        private boolean isSelected = false;
 
-	public PlayerPane() {
-            super();
-	}
+		public PlayerPane() {
+	            super();
+		}
+	
+		public int getPlayerNumber() {
+	            return this.playerNumber;
+		}
+	
+		public void setPlayerNumber(int playerNumber) {
+	            this.playerNumber = playerNumber;
+		}
 
-	public int getPlayerNumber() {
-            return this.playerNumber;
-	}
+		public boolean isSelected() {
+			return isSelected;
+		}
 
-	public void setPlayerNumber(int playerNumber) {
-            this.playerNumber = playerNumber;
-	}
+		public void setSelected(boolean isSelected) {
+			this.isSelected = isSelected;
+		}
 
+		
+		
     }
 }
