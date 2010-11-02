@@ -509,6 +509,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     {
     	pane.removeAll();
     	int i = 0;
+    	int CardCount = cards.length;
     	// TODO: This is ugly.  Refactor to follow DRY
     	for(ZFCard zfCard : cards)
     	{
@@ -540,13 +541,12 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
             }
 
             pane.add(card, i);
-    		pane.setComponentZOrder(card, i);
-    		i++;
-                this.repaint();
-                pane.repaint();
-                this.validate();
-    	}
-    	pane.repaint();
+            pane.setLayer(card, i);
+    		i++;               
+    	}    	    	    
+//    	this.repaint();
+//        pane.repaint();
+        this.validate();
     }
    
 	@Override
