@@ -15,6 +15,7 @@ import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -59,6 +60,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private PlayerPane   panelOpponentSub3 = new PlayerPane();
     private PlayerPane   panelOpponentSub4 = new PlayerPane();
     private PlayerPane   panelOpponentSub5 = new PlayerPane();
+
+    private JLabel sub1BackDrop = new JLabel();
+
     private JPanel       panelInfo         = new JPanel();
     private JPanel       panelCardButtons  = new JPanel();
     private JPanel       panelChat         = new JPanel();
@@ -138,6 +142,13 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         setNetworkListeners();
         setMouseListerner();
         setTextRules();
+
+        //testing!!!!
+        //sub1BackDrop.setIcon(new ImageIcon(getClass().getResource("/Resources/fishtest.png")));
+        //sub1BackDrop.setBounds(50, 50, 50, 50);
+        //panelOpponentSub1.add(sub1BackDrop, 10);
+        
+        //sub1BackDrop.repaint();
 
         this.CanStartGame = CanStartGame;
         this.serverName = serverName;
@@ -292,6 +303,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private void setBorders() {
         panelOpponentSub1.setBorder(BorderFactory.createTitledBorder("Player 2" ));
+        panelOpponentSub1.paint(null);
         panelOpponentSub2.setBorder(BorderFactory.createTitledBorder("Player 3"));
         panelOpponentSub3.setBorder(BorderFactory.createTitledBorder("Player 4"));
         panelOpponentSub4.setBorder(BorderFactory.createTitledBorder("Player 5"));
@@ -530,7 +542,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     		i++;               
     	this.repaint();
         }
-
+        pane.repaint();
         this.validate();
     }
 
@@ -588,6 +600,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 					playerPane.removeAll();
 					addCardsToPane(playerPane, player.getHand(), false, false);
 					i++;
+
+                                      
 				}
             }
 			lblCardCount.setText("Count: " + panelPool.getComponentCount());
@@ -827,7 +841,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     @Override
     public void mouseClicked(MouseEvent me) {
 
-    playSound("click.wav");
+    playSound("select.wav");
         PlayerPane clickedPane = (PlayerPane) me.getSource();
     	clickedPlayerPaneNumber = clickedPane.getPlayerNumber();
     	for(Component cmp : this.panelOpponent.getComponents())
@@ -867,7 +881,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     @Override
     public void mouseEntered(MouseEvent me) {
         PlayerPane clickedPane = (PlayerPane) me.getSource();
-        
+        playSound("hover.wav");
         for(Component cmp : this.panelOpponent.getComponents()) {
             PlayerPane pane = (PlayerPane) cmp;
             
@@ -917,5 +931,6 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	public void setPlayerNumber(int playerNumber) {
             this.playerNumber = playerNumber;
 	}
+
     }
 }
