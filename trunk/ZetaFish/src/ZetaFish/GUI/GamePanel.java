@@ -822,7 +822,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      */
     private int GetRequestPlayer()
     {    
-    	/*int retval = -1;
+    	int retval = -1;
     	for(Component cmp : panelPlayerButtons.getComponents())
     	{
     		if(cmp.getClass() == PlayerButton.class)
@@ -834,8 +834,10 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     			}    			    			
     		}    		
     	}
-    	    	*/
-    	return whichComponentWasClicked();
+    	
+    	//retval = whichComponentWasClicked();
+    	
+    	return retval;
     }
 
     public int whichComponentWasClicked() {
