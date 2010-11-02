@@ -1,7 +1,6 @@
 package ZetaFish.GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -16,8 +15,6 @@ import javax.swing.JTextArea;
 import ZetaFish.ZetaFishClient;
 import ZetaFish.ZetaFishServer;
 import ZetaFish.Interfaces.*;
-import ZetaFish.NetworkObjects.ZFPlayer;
-import ZetaFish.NetworkObjects.ZFStatus;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -51,7 +48,6 @@ public class GameWindow extends JFrame implements ActionListener {
     private GamePanel       gamePanel;
     private JButton serverBtn = new JButton("Start New Game");
     private JButton playBtn   = new JButton("Join Game");
-    //private JButton playNewBtn   = new JButton("Create Game");
     private JButton instBtn   = new JButton("Instructions");
     private JButton exitBtn   = new JButton("Exit");
     private JPanel  menuPanel;
@@ -154,8 +150,7 @@ public class GameWindow extends JFrame implements ActionListener {
 	        backgroundPanel.validate();
             
 	        //TODO: Tighten this up
-	        //this.setSize(1024,1024);
-	        this.setSize(1024,768);
+	    this.setSize(1024,768);
             this.setLocationRelativeTo(null);
     	}
     	catch(Exception err) {
@@ -243,6 +238,7 @@ public class GameWindow extends JFrame implements ActionListener {
         instructionFrame.validate();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
     	if("serverCMD".equals(e.getActionCommand())) {
             serverCommand();
