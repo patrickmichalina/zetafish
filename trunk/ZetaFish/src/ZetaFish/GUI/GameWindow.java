@@ -19,6 +19,7 @@ import ZetaFish.Interfaces.*;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -108,37 +109,73 @@ public class GameWindow extends JFrame implements ActionListener {
         this.setVisible(true);
         this.validate();
     }
+    private String getServerName() {
+        try {
+            //our little fishy
+            ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
 
-    private int getPlayerName() {
-        JFrame window = new JFrame("Name Entry");
-        JLabel lblName = new JLabel("Name:");
-        JButton btnSubmit = new JButton("Accept");
-        JTextField txtName = new JTextField(20);
+            String playername = (String)JOptionPane.showInputDialog(this,
+                    "Please enter server",
+                    "Server Entry",
+                    JOptionPane.PLAIN_MESSAGE,
+                    image,
+                    null,
+                    null);
 
-        window.setLayout(new FlowLayout());
-        window.add(lblName);
-        window.add(txtName);
-        window.add(btnSubmit);
+            //TODO server validations
 
-        window.setSize(300, 200);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setLocationRelativeTo(null);
-        window.setResizable(false);
-        window.getState();
-        window.setVisible(true);
 
-        return -1;
+        } catch(Exception e) {
+            //TODO
+        }
+
+        return null;
+    }
+    private String getPlayerName() {
+        try {
+            //our little fishy
+            ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
+
+            String playername = (String)JOptionPane.showInputDialog(this,
+                    "Please enter your name:",
+                    "Name Entry",
+                    JOptionPane.PLAIN_MESSAGE,
+                    image,
+                    null,
+                    null);
+            
+            //check if name is too short
+            //if so, inform user
+            if (playername.length() < 4) {
+                JOptionPane.showMessageDialog(this,
+                        "Name must contain more than four characters.",
+                        "Error",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        image);
+            }
+
+            else {
+                //TODO Maybe add a confirmation dialog
+                return playername;
+            }
+            
+            
+        } catch(Exception e) {
+            //TODO
+        }
+
+        return null;
     }
 
     private void serverCommand() {
-        getPlayerName();
 
+        String playername = getPlayerName();
+        
 
-        if(server == null) {
+        if(server == null && playername != null) {
             server = new ZetaFishServer(null, false);
             
             String servername = "localhost";
-            String playername = "Player Server";
             JoinGame(servername, playername, true);
         }
     }
@@ -156,10 +193,13 @@ public class GameWindow extends JFrame implements ActionListener {
     }
 
     private void playCommand() {
-        // TODO: Pop up a box asking for player name and server.
-        String servername = "localhost";
-        String playername = "Player Other";
-        JoinGame(servername, playername, false);
+        // TODO: Pop up a box asking for server.
+        String playerName = getPlayerName();
+
+        if(playerName != null) {
+            JoinGame(getServerName(), playerName, false);
+        }
+        
     }
     
     private void JoinGame(String serverName, String playerName, boolean canStartGame)
@@ -275,5 +315,7 @@ public class GameWindow extends JFrame implements ActionListener {
         else if("exitCMD".equals(e.getActionCommand())) {
             exitCommand();
         }
-    }      
+
+        
+    }
 }
