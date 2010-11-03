@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -52,8 +53,8 @@ public class GameWindow extends JFrame implements ActionListener {
     private JButton exitBtn   = new JButton("Exit");
     private JPanel  menuPanel;
 
-    private FlowLayout windowLayout = new FlowLayout(0,220,80);
-    
+    private FlowLayout windowLayout = new FlowLayout(FlowLayout.CENTER,220,80);
+        
     private INetworkManager networkManager;
     private ZetaFishServer  server = null;
 
@@ -96,6 +97,10 @@ public class GameWindow extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        
+//        backgroundPanel.setBorder(BorderFactory.createTitledBorder("bg"));
+//        logoPanel.setBorder(BorderFactory.createTitledBorder("logo"));
+//        menuPanel.setBorder(BorderFactory.createTitledBorder("menu"));
         
         //set visibility to on and refresh
         this.setVisible(true);
@@ -149,8 +154,7 @@ public class GameWindow extends JFrame implements ActionListener {
 	        
 	        backgroundPanel.validate();
             
-	        //TODO: Tighten this up
-	    this.setSize(1024,768);
+	        this.setSize(1024,768);
             this.setLocationRelativeTo(null);
     	}
     	catch(Exception err) {
@@ -162,7 +166,7 @@ public class GameWindow extends JFrame implements ActionListener {
 
     private void setMenuPanel() {
         menuPanel       = new JPanel();
-        menuPanel.setLayout(new BoxLayout(menuPanel,1));
+        menuPanel.setLayout(new BoxLayout(menuPanel,BoxLayout.Y_AXIS));
         menuPanel.setOpaque(false);
 
         int pref_height = 25;
@@ -203,16 +207,7 @@ public class GameWindow extends JFrame implements ActionListener {
         instBtn.addActionListener(this);
         exitBtn.addActionListener(this);
     }
-
-    private void setGamePanel() {
-
-    }
-
-    private void setChatPanel() {
-        
-    }
-
-
+    
     /**
      * Single spot to determine how to handle exceptions
      * @param err

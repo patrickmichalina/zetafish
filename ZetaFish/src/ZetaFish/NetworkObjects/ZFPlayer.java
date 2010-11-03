@@ -13,9 +13,9 @@ public class ZFPlayer implements Serializable
 	private int score = 0;
 	private int cardsInHand = 0;
 	private ZFCard[] hand = null;
-	private List<ZFCard[]> books = null;
+	private ZFCard[][] books = null;
 	
-	public ZFPlayer(String PlayerName, int PlayerNumber, int score, int cardsInHand, ZFCard[] hand, List<ZFCard[]> books)
+	public ZFPlayer(String PlayerName, int PlayerNumber, int score, int cardsInHand, ZFCard[] hand, ZFCard[][] books)
 	{
 		this.PlayerName = PlayerName;
 		this.PlayerNumber = PlayerNumber;
@@ -50,7 +50,7 @@ public class ZFPlayer implements Serializable
 		return hand;
 	}
 	
-	public List<ZFCard[]> getBooks()
+	public ZFCard[][] getBooks()
 	{
 		return books;
 	}

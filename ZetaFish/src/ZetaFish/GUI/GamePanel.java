@@ -82,7 +82,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private JButton      btnking           = new JButton("K");
     private JButton      btnSend           = new JButton("Send");
     private JButton      btnEndTurn        = new JButton("End Turn");
-    private JButton      btnPlayBook       = new JButton("Play Book");
+    private JButton      btnPlayBook       = new JButton("Play Books");
     private JButton      btnStartGame      = new JButton("Start Game");
     private JLabel       lblPool           = new JLabel("Pool: ");
     private JLabel       lblBook           = new JLabel("Book: ");
@@ -98,6 +98,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private final String SEND_ACTION = "send";
     private final String START_GAME_ACTION = "start_game";
     private final String END_TURN_ACTION = "end_turn";
+    private final String PLAY_BOOK_ACTION = "play_book";
     private final String REQ_1_ACTION = "request_1_from_player";
     private final String REQ_2_ACTION = "request_2_from_player";
     private final String REQ_3_ACTION = "request_3_from_player";
@@ -244,18 +245,18 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         panelInfo.add(lblStatus);
 
         panelBook.add(panelBookAce);
-        panelBook.add(panelBookKing);
-        panelBook.add(panelBookQueen);
-        panelBook.add(panelBookJack);
-        panelBook.add(panelBook10);
-        panelBook.add(panelBook9);
-        panelBook.add(panelBook8);
-        panelBook.add(panelBook7);
-        panelBook.add(panelBook6);
-        panelBook.add(panelBook5);
-        panelBook.add(panelBook4);
-        panelBook.add(panelBook3);
         panelBook.add(panelBook2);
+        panelBook.add(panelBook3);
+        panelBook.add(panelBook4);
+        panelBook.add(panelBook5);
+        panelBook.add(panelBook6);
+        panelBook.add(panelBook7);
+        panelBook.add(panelBook8);
+        panelBook.add(panelBook9);
+        panelBook.add(panelBook10);
+        panelBook.add(panelBookJack);
+        panelBook.add(panelBookQueen);
+        panelBook.add(panelBookKing);               
 
         panelPool.add(lblCardCount);
 
@@ -419,7 +420,10 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
         this.btnEndTurn.setActionCommand(END_TURN_ACTION);
         this.btnEndTurn.addActionListener(this);
-
+                
+        this.btnPlayBook.setActionCommand(PLAY_BOOK_ACTION);
+        this.btnPlayBook.addActionListener(this);
+        
         this.btn1.setActionCommand(REQ_1_ACTION);
         this.btn1.addActionListener(this);
 
@@ -498,8 +502,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     public JLayeredPane getOpponentPanel() {
         return panelOpponent;
     }
-
-
+    
+    
+    
     /**
      * Adds one or more cards coming in from a request to a pane
      * @param pane
@@ -582,12 +587,16 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
                         
 			for(ZFPlayer player: players)
             {
+				// Update player books
+				AddBooks(player.getBooks());
+				
 				// Update my hand
 				if(player.getPlayerNumber() == this.networkManager.getMyPlayerNumber())
 				{
 					this.CurrentHand = player.getHand();
 					this.panelPlayer.removeAll();
 					addCardsToPane(panelPlayer, this.CurrentHand, true, true);
+					
 				}
 				else // Update other players
 				{
@@ -646,16 +655,73 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	
 	/**
 	 * Determines if there are 4 or more of a kind in players hand
-	 * @return
+	 * @return True if there are, false otherwise
 	 */
 	private boolean CanPlayBook()
-	{
-		// TODO: Check hand for books
-		return false;
+	{	
+		boolean retval = false;
+		if(this.CurrentHand != null)
+		{
+			
+			for(ZFCard card : this.CurrentHand)
+	    	{
+				int cardcount = 1;
+				for(ZFCard othercard : this.CurrentHand)
+		    	{
+					if(othercard.getValue() == card.getValue())
+						cardcount++;
+		    	}				
+				if(cardcount > 4)
+				{
+					retval = true;
+					break;
+				}    	
+	    	}
+		}
+		return retval;
 	}
 	
+	private void AddBooks(ZFCard[][] books)
+    {
+		if(books != null)
+		{
+			for(ZFCard[] book : books)
+			{
+				int bookval = book[0].getValue();
+				JLayeredPane bp = (JLayeredPane)panelBook.getComponents()[bookval-1];
+				this.addCardsToPane(bp, book, false, true);
+				
+			}
+		}
+    }
+
+	private void PlayBooks() throws Exception
+	{
+		List<ZFCard> possible_book = new ArrayList<ZFCard>();
+		for(ZFCard card : this.CurrentHand)
+    	{
+			possible_book.clear();			
+			for(ZFCard othercard : this.CurrentHand)
+	    	{
+				if(othercard.getValue() == card.getValue())
+					possible_book.add(othercard);
+	    	}
+			if(possible_book.size() >= 4)
+			{
+				ZFCard[] book = new ZFCard[possible_book.size()];
+				possible_book.toArray(book);
+				this.networkManager.PlayBook(book);
+			}    	
+    	}
+	}
+	
+	/**
+	 * Ends player turn
+	 * @throws Exception
+	 */
 	private void EndTurn() throws Exception
 	{
+		this.btnEndTurn.setEnabled(false);
 		lblMyTurn.setVisible(false);
     	this.networkManager.DoneWithTurn();
 	}
@@ -688,6 +754,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	}
 
     	this.btnEndTurn.setEnabled(IsTurn);
+    	
     	lblMyTurn.setVisible(IsTurn);
     }
 
@@ -726,7 +793,12 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	{
 		ShowCardRequestResponse(response);
 		
-		if(!CanPlayBook())
+		boolean canPlayBook = CanPlayBook();
+		
+		this.btnPlayBook.setEnabled(canPlayBook);
+		
+		// Auto end turn
+		if(!canPlayBook)
 		{
 			try
 			{
@@ -736,7 +808,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 			{
 				HandleException(err);
 			}
-		}
+		}		
 	}
 
 	private void ShowCardRequestResponse(ZFCardRequestResponse response)
@@ -776,6 +848,10 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        else if(action == END_TURN_ACTION)
 	        {
 	        	EndTurn();
+	        }
+	        else if(action == PLAY_BOOK_ACTION)
+	        {
+	        	PlayBooks();
 	        }
 	        else if(action == REQ_1_ACTION)
 	        {
