@@ -852,6 +852,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        else if(action == PLAY_BOOK_ACTION)
 	        {
 	        	PlayBooks();
+	        	EndTurn();
 	        }
 	        else if(action == REQ_1_ACTION)
 	        {
