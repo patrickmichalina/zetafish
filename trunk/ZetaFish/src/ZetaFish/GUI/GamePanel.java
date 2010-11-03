@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private JLabel sub1BackDrop = new JLabel();
 
-    private JPanel       panelInfo         = new JPanel();
+    //private JPanel       panelInfo         = new JPanel();
     private JPanel       panelCardButtons  = new JPanel();
     private JPanel       panelChat         = new JPanel();
     private JPanel       panelButtons      = new JPanel();
@@ -201,7 +201,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private void setComponents() {
         //All these components are added in a flowlayout. The order DOES matter.
-        this.add(panelInfo);
+       //this.add(panelInfo);
         this.add(panelOpponent);
         this.add(panelBook);
         this.add(panelPool);
@@ -238,11 +238,11 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         panelCardButtons.add(btnqueen);
         panelCardButtons.add(btnking);
 
-        panelInfo.add(lblPool);
-        panelInfo.add(lblBook);
-        panelInfo.add(lblWins);
-        panelInfo.add(lblLoss);
-        panelInfo.add(lblStatus);
+//        panelInfo.add(lblPool);
+//        panelInfo.add(lblBook);
+//        panelInfo.add(lblWins);
+//        panelInfo.add(lblLoss);
+//        panelInfo.add(lblStatus);
 
         panelBook.add(panelBookAce);
         panelBook.add(panelBook2);
@@ -318,7 +318,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
         panelCardButtons.setBorder(	BorderFactory.createTitledBorder("Request Cards"));
 
-        panelInfo.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
+//        panelInfo.setBorder(        BorderFactory.createLineBorder(Color.black, 2));
 
         panelBookAce.setBorder(     BorderFactory.createLineBorder(Color.black, 2));
         panelBookKing.setBorder(    BorderFactory.createLineBorder(Color.black, 2));
@@ -339,7 +339,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     }
 
     private void setComponentDimensions() {
-        panelInfo.setPreferredSize(        new Dimension(1024, 30));
+//        panelInfo.setPreferredSize(        new Dimension(1024, 30));
         panelBook.setPreferredSize(        new Dimension(1024,200));
         panelPool.setPreferredSize(        new Dimension(1024,110));
         panelPlayer.setPreferredSize(      new Dimension(1024,110));
@@ -395,7 +395,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private void setSeeThrough() {
         this.setOpaque(         false);
-        panelInfo.setOpaque(    false);
+//        panelInfo.setOpaque(    false);
         panelPlayer.setOpaque(  false);
         panelPool.setOpaque(    false);
         panelBook.setOpaque(    false);
