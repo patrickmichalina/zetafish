@@ -15,7 +15,6 @@ import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -610,12 +609,12 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				}
 				else // Update other players
 				{
-					String playerName = player.getPlayerName();
+					String playerNameVar = player.getPlayerName();
 					PlayerPane playerPane = (PlayerPane)this.panelOpponent.getComponent(i);
 					playerPane.setVisible(true);
 					playerPane.setPlayerNumber(player.getPlayerNumber());
 					TitledBorder border = (TitledBorder)playerPane.getBorder();
-			    	border.setTitle(playerName);
+			    	border.setTitle(playerNameVar);
 
 					playerPane.removeAll();
 					addCardsToPane(playerPane, player.getHand(), false, false, status);
@@ -834,56 +833,59 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		}
 	}
 
+    @Override
     public void run() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void OnNewMessage(String from, String msg) {
         txtOutput.setText(txtOutput.getText() + from + ": " + msg + "\n");
     }
 
+    @Override
     public void actionPerformed(ActionEvent ae)
     {
     	String action = ae.getActionCommand();
     	try {
-	        if(action == SEND_ACTION)
+	        if(action == null ? SEND_ACTION == null : action.equals(SEND_ACTION))
 	        {
 	        	this.networkManager.sendMessage(txtInput.getText());
 	            txtInput.setText("");
 	        }
-	        else if(action == START_GAME_ACTION)
+	        else if(action.equals(START_GAME_ACTION))
 	        {
 	        	this.networkManager.startGame();
 	        }
-	        else if(action == END_TURN_ACTION)
+	        else if(action.equals(END_TURN_ACTION))
 	        {
 	        	EndTurn();
 	        }
-	        else if(action == PLAY_BOOK_ACTION)
+	        else if(action.equals(PLAY_BOOK_ACTION))
 	        {
 	        	PlayBooks();
 	        }
-	        else if(action == REQ_1_ACTION)
+	        else if(action.equals(REQ_1_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 1);
 	        }
-	        else if(action == REQ_2_ACTION)
+	        else if(action.equals(REQ_2_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 2);
 	        }
-	        else if(action == REQ_3_ACTION)
+	        else if(action.equals(REQ_3_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 3);
 	        }
-	        else if(action == REQ_4_ACTION)
+	        else if(action.equals(REQ_4_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 4);
 	        }
-	        else if(action == REQ_5_ACTION)
+	        else if(action.equals(REQ_5_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 5);
 	        }
-	        else if(action == REQ_6_ACTION)
+	        else if(action.equals(REQ_6_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 6);
 	        }
@@ -891,27 +893,27 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 7);
 	        }
-	        else if(action == REQ_8_ACTION)
+	        else if(action.equals(REQ_8_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 8);
 	        }
-	        else if(action == REQ_9_ACTION)
+	        else if(action.equals(REQ_9_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 9);
 	        }
-	        else if(action == REQ_10_ACTION)
+	        else if(action.equals(REQ_10_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 10);
 	        }
-	        else if(action == REQ_JACK_ACTION)
+	        else if(action.equals(REQ_JACK_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 11);
 	        }
-	        else if(action == REQ_QUEEN_ACTION)
+	        else if(action.equals(REQ_QUEEN_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 12);
 	        }
-	        else if(action == REQ_KING_ACTION)
+	        else if(action.equals(REQ_KING_ACTION))
 	        {
 	        	this.networkManager.RequestCards(GetRequestPlayer(), 13);
 	        }
