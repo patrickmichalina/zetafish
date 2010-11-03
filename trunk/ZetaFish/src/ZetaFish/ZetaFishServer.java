@@ -582,9 +582,13 @@ class Player {
 		return hand.size();
 	}
 	
-	public List<ZFCard[]> getBooks()
+	public ZFCard[][] getBooks()
 	{		
-		return books;
+		ZFCard[][] bks = new ZFCard[books.size()][];
+		
+		bks = books.toArray(bks);
+		
+		return bks;
 	}
 	
 	public void playBook(ZFCard[] book)
