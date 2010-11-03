@@ -120,7 +120,7 @@ public class GameWindow extends JFrame implements ActionListener {
                     JOptionPane.PLAIN_MESSAGE,
                     image,
                     null,
-                    null);
+                    "localhost");
 
             //TODO server validations
 
@@ -142,7 +142,7 @@ public class GameWindow extends JFrame implements ActionListener {
                     JOptionPane.PLAIN_MESSAGE,
                     image,
                     null,
-                    null);
+                    "Your Name");
             
             //check if name is too short
             //if so, inform user
