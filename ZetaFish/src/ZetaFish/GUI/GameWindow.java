@@ -18,7 +18,9 @@ import ZetaFish.ZetaFishServer;
 import ZetaFish.Interfaces.*;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *  Summary:
@@ -107,7 +109,31 @@ public class GameWindow extends JFrame implements ActionListener {
         this.validate();
     }
 
+    private int getPlayerName() {
+        JFrame window = new JFrame("Name Entry");
+        JLabel lblName = new JLabel("Name:");
+        JButton btnSubmit = new JButton("Accept");
+        JTextField txtName = new JTextField(20);
+
+        window.setLayout(new FlowLayout());
+        window.add(lblName);
+        window.add(txtName);
+        window.add(btnSubmit);
+
+        window.setSize(300, 200);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setLocationRelativeTo(null);
+        window.setResizable(false);
+        window.getState();
+        window.setVisible(true);
+
+        return -1;
+    }
+
     private void serverCommand() {
+        getPlayerName();
+
+
         if(server == null) {
             server = new ZetaFishServer(null, false);
             

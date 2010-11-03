@@ -38,7 +38,7 @@ import javax.sound.sampled.AudioSystem;
  *  @author Melanie
  */
 public class GamePanel extends JPanel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ActionListener, MouseListener {
-    private JLayeredPane panelPlayer       = new JLayeredPane();
+    private PlayerPane panelPlayer       = new PlayerPane();
     private JLayeredPane panelPool         = new JLayeredPane();
     private JLayeredPane panelBook         = new JLayeredPane();
     private JLayeredPane panelOpponent     = new JLayeredPane();
@@ -389,6 +389,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         panelBook2.setBounds(    830,  70, 99, 65);
 
         lblCardCount.setBounds(10, 10, 100, 20);
+
+        sub1BackDrop.setBounds(120,30,65,50);
     }     
 
     private void setSeeThrough() {
@@ -510,9 +512,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      * @param pane
      * @param cards
      */
-    private void addCardsToPane(JLayeredPane pane, ZFCard[] cards, boolean isHeld, boolean isShown)
-    {
-    	pane.removeAll();
+
+    private void addCardsToPane(PlayerPane pane, ZFCard[] cards, boolean isHeld, boolean isShown, ZFStatus status) {
+        pane.removeAll();
     	int i = 0;
     	int CardCount = cards.length;
     	// TODO: This is ugly.  Refactor to follow DRY
@@ -547,12 +549,20 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
             pane.add(card, i);
             pane.setLayer(card, i);
-    		i++;               
+    		i++;
     	this.repaint();
         }
+
+        //turn indicator fish image
+        if(status.getCurrentPlayer() == pane.getPlayerNumber()) {
+            sub1BackDrop.setIcon(new ImageIcon(getClass().getResource("/Resources/fishtest.png")));
+            pane.add(sub1BackDrop, pane.getComponentCount() + 1);
+        }
+
         pane.repaint();
         this.validate();
     }
+
 
 	@Override
 	public void OnGameStausChange(ZFStatus status)
@@ -595,7 +605,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				{
 					this.CurrentHand = player.getHand();
 					this.panelPlayer.removeAll();
-					addCardsToPane(panelPlayer, this.CurrentHand, true, true);
+					addCardsToPane(panelPlayer, this.CurrentHand, true, true, status);
 					
 				}
 				else // Update other players
@@ -608,7 +618,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 			    	border.setTitle(playerName);
 
 					playerPane.removeAll();
-					addCardsToPane(playerPane, player.getHand(), false, false);
+					addCardsToPane(playerPane, player.getHand(), false, false, status);
 					i++;
 				}
             }
@@ -688,8 +698,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 			for(ZFCard[] book : books)
 			{
 				int bookval = book[0].getValue();
-				JLayeredPane bp = (JLayeredPane)panelBook.getComponents()[bookval-1];
-				this.addCardsToPane(bp, book, false, true);
+				PlayerPane bp = (PlayerPane)panelBook.getComponents()[bookval-1];
+				this.addCardsToPane(bp, book, false, true, null);
 				
 			}
 		}
@@ -852,7 +862,6 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        else if(action == PLAY_BOOK_ACTION)
 	        {
 	        	PlayBooks();
-	        	EndTurn();
 	        }
 	        else if(action == REQ_1_ACTION)
 	        {
