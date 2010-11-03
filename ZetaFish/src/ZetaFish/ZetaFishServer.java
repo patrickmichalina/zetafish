@@ -348,8 +348,8 @@ class ZFGame {
 			newPlayer = new Player(numPlayers, "Player" + numPlayers);
 			newPlayer.setOutput(out);
 			players.add(newPlayer);			
-			
-			String token = newPlayer.getToken();
+
+                        String token = newPlayer.getToken();
 			server.display("Server --> Client: Player connected " + token);
 			newPlayer.sendMessageFromAdmin("Player connected " + token);
 			newPlayer.sendObject(new ZFStatus(ZFStatus.StatusType.ASSIGN_PLAYER_NUMBER, numPlayers, null, gameEnabled, isGameOver));			
@@ -617,7 +617,7 @@ class Player {
 	
 	public void sendMessageFromAdmin(String msg)
 	{
-		ZFChat chat = new ZFChat("GameAdmin", msg);
+		ZFChat chat = new ZFChat("Server ", msg);
 		try
 		{
 			out.writeObject(chat);
