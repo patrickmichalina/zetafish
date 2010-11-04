@@ -367,8 +367,27 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private void setTextRules() {
         txtOutput.setEditable(false);
     }
-   
-
+    
+    private String BuildWinMessage(ZFStatus status)
+    {
+    	int max_score = 0;
+    	ZFPlayer max_player = null;
+    	for(ZFPlayer player: status.getPlayers())
+        {
+    		if(player.getScore() > max_score)
+    		{
+    			max_player = player;
+    			max_score = player.getScore();
+    		}    		
+        }
+    	
+    	String name = "Player";
+    	if(max_player != null)
+    		name = max_player.getPlayerName();
+    	
+    	return name + " wins!";
+    }
+      
 	@Override
 	public void OnGameStausChange(ZFStatus status)
 	{
@@ -377,20 +396,31 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		// Enable controls used during game play
 		if(status.getIsGameRunning())
 		{
-			HandleTurnChange(false);
-
-			this.btnStartGame.setEnabled(false);
-        	this.btnPlayBook.setEnabled(CanPlayBook());
-        	
-            if(gameJustStarted) {
-                GUIUtilities.playSound("shuffling.wav", this.getClass());             
-            }
+			if(!status.getIsGameOver())
+			{
+				HandleTurnChange(false);
+	
+				this.btnStartGame.setEnabled(false);
+	        	this.btnPlayBook.setEnabled(CanPlayBook());
+	        	
+	            if(gameJustStarted) {
+	                GUIUtilities.playSound("shuffling.wav", this.getClass());             
+	            }
+			}
+			else
+			{
+				
+				String msg = BuildWinMessage(status);
+				JOptionPane.showMessageDialog(this, msg, "Game Over", JOptionPane.OK_OPTION);
+			}
 		}
 		else
-		{
+		{					
 			this.btnStartGame.setEnabled(this.CanStartGame);
         	this.btnPlayBook.setEnabled(false);
         	this.btnEndTurn.setEnabled(false);
+        	
+        	gameJustStarted = true;
 		}
 
 		ZFPlayer[] players = status.getPlayers();
