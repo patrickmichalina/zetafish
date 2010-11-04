@@ -14,7 +14,7 @@ import java.io.Serializable;
  * different jokers.
  */
 
-public class ZFCard implements Serializable  
+public class ZFCard implements Serializable, Comparable<ZFCard>
 {
    
    public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
@@ -169,5 +169,11 @@ public class ZFCard implements Serializable
 	   
 	   return retval;
    }
+
+	@Override
+	public int compareTo(ZFCard arg0) {
+	
+		return this.getValue() - arg0.getValue();
+	}
 
 } // end class Card
