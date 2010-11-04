@@ -599,8 +599,11 @@ class Player {
 			for(int i=0; i<hand.size(); i++)
 			{
 				ZFCard handcard = hand.get(i);
-				if(handcard.equals(bookcard))					
+				if(handcard.equals(bookcard))
+				{
 					hand.remove(handcard);
+					break;
+				}
 			}
 		}
 	}
