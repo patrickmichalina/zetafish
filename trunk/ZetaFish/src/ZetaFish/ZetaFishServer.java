@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -98,7 +99,7 @@ class ZFServerThread extends Thread
 	{		
 		game = new ZFGame(ZFserver, this.includeJokers);
 		try {
-			ServerSocket server = new ServerSocket(port);
+			ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));
 			Socket connection;
 			while (true) {
 				ZFserver.display("Waiting for players to connect...");
