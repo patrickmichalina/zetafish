@@ -163,25 +163,28 @@ public class CardSelectorPane extends JPanel implements ActionListener
 	
 	public void EnableCardRequestChoiceByHand(ZFCard[] hand)
 	{
-		List<Integer> handvals = new ArrayList<Integer>();
-		for(ZFCard card : hand)
+		if(hand != null)
 		{
-			handvals.add(card.getValue());
-		}
+			List<Integer> handvals = new ArrayList<Integer>();
+			for(ZFCard card : hand)
+			{
+				handvals.add(card.getValue());
+			}
 
-		btn1.setEnabled(handvals.contains(1));
-		btn2.setEnabled(handvals.contains(2));
-		btn3.setEnabled(handvals.contains(3));
-		btn4.setEnabled(handvals.contains(4));
-		btn5.setEnabled(handvals.contains(5));
-		btn6.setEnabled(handvals.contains(6));
-		btn7.setEnabled(handvals.contains(7));
-		btn8.setEnabled(handvals.contains(8));
-		btn9.setEnabled(handvals.contains(9));
-		btn10.setEnabled(handvals.contains(10));
-		btnjack.setEnabled(handvals.contains(11));
-		btnqueen.setEnabled(handvals.contains(12));
-		btnking.setEnabled(handvals.contains(13));
+			btn1.setEnabled(handvals.contains(1));
+			btn2.setEnabled(handvals.contains(2));
+			btn3.setEnabled(handvals.contains(3));
+			btn4.setEnabled(handvals.contains(4));
+			btn5.setEnabled(handvals.contains(5));
+			btn6.setEnabled(handvals.contains(6));
+			btn7.setEnabled(handvals.contains(7));
+			btn8.setEnabled(handvals.contains(8));
+			btn9.setEnabled(handvals.contains(9));
+			btn10.setEnabled(handvals.contains(10));
+			btnjack.setEnabled(handvals.contains(11));
+			btnqueen.setEnabled(handvals.contains(12));
+			btnking.setEnabled(handvals.contains(13));
+		}
 	}
 	
 	/**
