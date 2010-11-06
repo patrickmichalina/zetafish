@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import ZetaFish.VersionInfo;
 import ZetaFish.ZetaFishClient;
 import ZetaFish.ZetaFishServer;
 import ZetaFish.Interfaces.INetworkManager;
@@ -62,7 +63,7 @@ public class GameWindow extends JFrame implements ActionListener {
      *
      */
     public GameWindow() {
-        super("ZetaFish"); //give the window a title
+        super("ZetaFish - " + VersionInfo.version()); //give the window a title
         initStartConditions(); //start the game with the inital view
         networkManager = new ZetaFishClient(); // start the network manager
     }
