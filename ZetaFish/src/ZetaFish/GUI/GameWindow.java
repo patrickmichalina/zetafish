@@ -82,10 +82,7 @@ public class GameWindow extends JFrame implements ActionListener {
         logoPanel       = new Panel(new ImageIcon(getClass().getResource("/Resources/logo.png" )));
         setMenuPanel();
 
-        //attach the logoPanel and menuPanel to the primary panel and set layout
-        backgroundPanel.setLayout(windowLayout);
-        backgroundPanel.add(logoPanel);
-        backgroundPanel.add(menuPanel);
+        showMenu();
 
         //finally, attach the panel to the current JFrame
         this.add(backgroundPanel);
@@ -107,12 +104,26 @@ public class GameWindow extends JFrame implements ActionListener {
         this.setVisible(true);
         this.validate();
     }
+    
+    private void showMenu()
+    {
+    	backgroundPanel.removeAll();
+    	
+    	 //attach the logoPanel and menuPanel to the primary panel and set layout
+        backgroundPanel.setLayout(windowLayout);
+        backgroundPanel.add(logoPanel);
+        backgroundPanel.add(menuPanel);
+        
+        backgroundPanel.repaint();
+    }
+    
     private String getServerName() {
+    	String servername = "";
         try {
             //our little fishy
             ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
 
-            String playername = (String)JOptionPane.showInputDialog(this,
+            servername = (String)JOptionPane.showInputDialog(this,
                     "Please enter server",
                     "Server Entry",
                     JOptionPane.PLAIN_MESSAGE,
@@ -127,7 +138,7 @@ public class GameWindow extends JFrame implements ActionListener {
             //TODO
         }
 
-        return null;
+        return servername;
     }
     private String getPlayerName() {
         try {
@@ -144,9 +155,9 @@ public class GameWindow extends JFrame implements ActionListener {
             
             //check if name is too short
             //if so, inform user
-            if (playername.length() < 4) {
+            if (playername.length() < 2) {
                 JOptionPane.showMessageDialog(this,
-                        "Name must contain more than four characters.",
+                        "Name must contain more than two characters.",
                         "Error",
                         JOptionPane.INFORMATION_MESSAGE,
                         image);
@@ -202,6 +213,7 @@ public class GameWindow extends JFrame implements ActionListener {
     
     private void JoinGame(String serverName, String playerName, boolean canStartGame)
     {
+    	boolean started = false;
     	try {
             //reset to blank window
             backgroundPanel.removeAll();
@@ -220,10 +232,18 @@ public class GameWindow extends JFrame implements ActionListener {
             
 	        this.setSize(1024,768);
             this.setLocationRelativeTo(null);
+            started = true;
     	}
     	catch(Exception err) {
             HandleException(err);
-    	}	
+            String msg = "Could not connect to game server\n" + err.getMessage();
+            JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.OK_OPTION);
+    	}
+    	finally
+    	{
+    		if(!started)
+    			showMenu();
+    	}
     }
     
    
