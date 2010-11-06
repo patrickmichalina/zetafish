@@ -168,4 +168,22 @@ public class DeckOfCards {
     	}
     	return card;
     }
+    
+    /**
+     * hides all the cards
+     */
+    public void reset()
+    {
+    	for(DeckOfCards.Suits suit : DeckOfCards.Suits.values())
+    	{
+    		if(suit != DeckOfCards.Suits.JOKER)
+    		{
+    			for(int val = 1; val <= 13; val++)
+    			{
+    				Card card= this.getCard(val, suit);
+    				card.setShown(false);
+    			}
+    		}
+    	}
+    }
 }

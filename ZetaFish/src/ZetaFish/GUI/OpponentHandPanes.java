@@ -88,6 +88,15 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
 		this.SelectOpponentPane((OpponentHandPane)this.getComponents()[0]);
 	}
 	
+	public void reset()
+	{
+		for(Component cmp : this.getComponents())
+    	{ 
+			OpponentHandPane pane = (OpponentHandPane)cmp;
+			pane.removeAll();
+    	}
+	}
+	
 	public void SelectOpponentPane(OpponentHandPane selectedPane)
     {
 		for(Component cmp : this.getComponents())

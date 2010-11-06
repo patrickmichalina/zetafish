@@ -368,9 +368,11 @@ class ZFGame {
 			deck.shuffle();
 			gameEnabled = true;
 			currentPlayerNumber = 0;
+			isGameOver = false;
 			
 			for(Player player:players)
 			{
+				player.reset();
 				for(int i=0; i<INITIAL_HAND_SIZE; i++)
 				{
 					try
@@ -585,6 +587,22 @@ class Player {
 			}
 		}		
 		return removed;
+	}
+	
+	public void removeAllCardsFromHand()
+	{
+		this.hand.clear();
+	}
+	
+	public void removeAllBooks()
+	{
+		this.books.clear();
+	}
+	
+	public void reset()
+	{
+		this.removeAllCardsFromHand();
+		this.removeAllBooks();
 	}
 	
 	public ZFCard[] getHand()

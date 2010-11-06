@@ -1,6 +1,7 @@
 package ZetaFish.GUI;
 
 import java.awt.Color;
+import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
@@ -106,5 +107,14 @@ public class BookPanes extends JLayeredPane
 			}
 		}
     }
+    
+    public void reset()
+	{
+		for(Component cmp : this.getComponents())
+    	{ 
+			BookPane pane = (BookPane)cmp;
+			pane.removeAll();
+    	}
+	}
 	
 }

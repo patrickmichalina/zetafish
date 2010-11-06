@@ -92,6 +92,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         super();
         this.setLayout(new FlowLayout(1,0,0));
         this.networkManager = networkManager;
+        this.CanStartGame = CanStartGame;
+        this.serverName = serverName;
+        this.playerName = playerName;
 
         setButtonListeners();
         setLayouts();
@@ -111,13 +114,10 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         //panelOpponentSub1.add(sub1BackDrop, 10);
         
         //sub1BackDrop.repaint();
-
-        this.CanStartGame = CanStartGame;
-        this.serverName = serverName;
-        this.playerName = playerName;
-        this.networkManager.openConnection(this.serverName, this.playerName, "My Password");
-
-        DrawOcean();
+        
+        this.networkManager.openConnection(this.serverName, this.playerName, "My Password");     
+        
+        this.invalidate();
     }
 
     /**
@@ -126,6 +126,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private void DrawOcean()
     {
     	int i = 0;
+    	panelPool.removeAll();
+    	panelPool.add(lblCardCount);
       	for(DeckOfCards.Suits suit : DeckOfCards.Suits.values())
       	{
       		if(suit != DeckOfCards.Suits.JOKER)
@@ -140,7 +142,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
       		}
       	}
         lblCardCount.setText("Count: " + i);
-        this.repaint();
+        this.invalidate();
     }
 
     /**
@@ -171,9 +173,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
         this.btnPlayBook.setEnabled(false);
         this.btnEndTurn.setEnabled(false);
-        this.btnStartGame.setVisible(this.CanStartGame);
         this.btnStartGame.setEnabled(this.CanStartGame);
-
+        this.btnStartGame.setVisible(this.CanStartGame);
+        
         this.txtOutput.setLineWrap(true);
     }
 
@@ -272,8 +274,11 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         this.btnSend.setActionCommand(SEND_ACTION);
         this.btnSend.addActionListener(this);
 
-        this.btnStartGame.setActionCommand(START_GAME_ACTION);
-        this.btnStartGame.addActionListener(this);
+        if(this.CanStartGame)
+        {
+        	this.btnStartGame.setActionCommand(START_GAME_ACTION);
+        	this.btnStartGame.addActionListener(this);
+        }
 
         this.btnEndTurn.setActionCommand(END_TURN_ACTION);
         this.btnEndTurn.addActionListener(this);
@@ -305,7 +310,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      * @param status
      * @return
      */
-    private String BuildWinMessage(ZFStatus status)
+    private String buildWinMessage(ZFStatus status)
     {
     	int max_score = 0;
     	ZFPlayer max_player = null;
@@ -325,7 +330,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	return name + " wins!";
     }
     
-    private void UpdatePlayerHands(ZFPlayer[] players)
+    private void updatePlayerHands(ZFPlayer[] players)
     {
     	if(players != null)
         {
@@ -366,39 +371,54 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		{
 			if(!status.getIsGameOver())
 			{
-				HandleTurnChange(false);
-	
-				this.btnStartGame.setEnabled(false);
-	        	this.btnPlayBook.setEnabled(CanPlayBook());
-	        	
-	            if(gameJustStarted) {
-	                GUIUtilities.playSound("shuffling.wav", this.getClass());             
-	            }
-	            
-	            // Update player hands and turn indicator
-	            ZFPlayer[] players = status.getPlayers();
-	            UpdatePlayerHands(players);
-	    		this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
-	    		
-	    		if(gameJustStarted) {             
-	                SetDefaultOpponent();
-	            }
+				boolean isTurn = (status.getCurrentPlayer() == this.networkManager.getMyPlayerNumber());
+				ZFPlayer[] players = status.getPlayers();
+				switch(status.getStatus())
+				{
+					case GAME_STARTED:
+						deck.reset();
+						this.panelOpponent.reset();
+						this.panelBook.reset();
+						this.panelPlayer.reset();
+						DrawOcean();
+						GUIUtilities.playSound("shuffling.wav", this.getClass());				    
+			            updatePlayerHands(players);			           
+						handleTurnChange(isTurn);
+						setDefaultOpponent();
+						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
+			            break;
+						
+					case TURN_CHANGE:						
+						handleTurnChange(isTurn);
+						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
+						break;
+
+					case BOOK_PLAY:
+					case CARDS_CHANGE:						
+			            updatePlayerHands(players);			           
+						handleTurnChange(isTurn);
+						this.btnPlayBook.setEnabled(canPlayBook());
+						break;
+						
+					case GAME_OVER:					
+						break;
+				}
+						            	    		
 				gameJustStarted = false;
 				this.repaint();
 			}
 			else if(status.getStatus() == ZFStatus.StatusType.GAME_OVER)  //Game end?
 			{
-				this.btnStartGame.setEnabled(this.CanStartGame);
+
 	        	this.btnPlayBook.setEnabled(false);
 	        	this.btnEndTurn.setEnabled(false);
 	        	
-				String msg = BuildWinMessage(status);
+				String msg = buildWinMessage(status);
 				JOptionPane.showMessageDialog(this, msg, "Game Over", JOptionPane.OK_OPTION);
 			}	
 		}
 		else
 		{					
-			this.btnStartGame.setEnabled(this.CanStartGame);
         	this.btnPlayBook.setEnabled(false);
         	this.btnEndTurn.setEnabled(false);
         	
@@ -409,7 +429,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	/**
 	 * SetDefaultOpponent
 	 */
-	private void SetDefaultOpponent()
+	private void setDefaultOpponent()
 	{
 		System.out.println("SetDefaultOpponent");
 		this.panelOpponent.SetDefaultOpponent();
@@ -419,7 +439,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	 * Determines if there are 4 or more of a kind in players hand
 	 * @return True if there are, false otherwise
 	 */
-	private boolean CanPlayBook()
+	private boolean canPlayBook()
 	{	
 		boolean retval = false;
 		if(this.CurrentHand != null)
@@ -447,7 +467,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	 * PlayBooks
 	 * @throws Exception
 	 */
-	private void PlayBooks() throws Exception
+	private void playBooks() throws Exception
 	{
 		List<ZFCard> hand = new ArrayList<ZFCard>(Arrays.asList(this.CurrentHand));
 		ZFCard[] book = getBook(hand); 
@@ -496,7 +516,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	 * Ends player turn
 	 * @throws Exception
 	 */
-	private void EndTurn() throws Exception
+	private void endTurn() throws Exception
 	{
 		this.btnEndTurn.setEnabled(false);
 		this.btnPlayBook.setEnabled(false);
@@ -508,7 +528,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	 * HandleTurnChange
 	 * @param IsTurn
 	 */
-	private void HandleTurnChange(boolean IsTurn)
+	private void handleTurnChange(boolean IsTurn)
     {
     	if(IsTurn)
     	{   
@@ -524,10 +544,20 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	this.panelCardButtons.ShowMyTurn(IsTurn);
     }
 	
+	/**
+	 * startGame
+	 */
+	private void startGame() throws Exception
+	{		
+		gameJustStarted = true;
+    	this.networkManager.startGame();
+    	this.btnStartGame.setText("New Game");
+	}
+	
 	@Override
 	public void OnGameTurn()
 	{
-		HandleTurnChange(true);
+		// Currently not used
 	}
 
 	@Override
@@ -535,7 +565,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	{
 		GUIUtilities.ShowCardRequestResponse(response);
 		
-		boolean canPlayBook = CanPlayBook();
+		boolean canPlayBook = canPlayBook();
 		
 		this.btnPlayBook.setEnabled(canPlayBook);
 		this.panelCardButtons.SetAllEnabledState(false);
@@ -545,7 +575,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		{
 			try
 			{
-				EndTurn();
+				endTurn();
 			}
 			catch(Exception err)
 			{
@@ -570,7 +600,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	try {
 			this.networkManager.RequestCards(selectedOpponent, cardValue);
 		} catch (Exception e) {
-			e.printStackTrace();
+			HandleException(e);
 		}		
 	}     
 
@@ -586,17 +616,16 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	        }
 	        else if(action.equals(START_GAME_ACTION))
 	        {
-	        	gameJustStarted = true;
-	        	this.networkManager.startGame();
+	        	startGame();
 	        }
 	        else if(action.equals(END_TURN_ACTION))
 	        {
-	        	EndTurn();
+	        	endTurn();
 	        }
 	        else if(action.equals(PLAY_BOOK_ACTION))
 	        {
-	        	PlayBooks();
-	        	EndTurn();
+	        	playBooks();
+	        	endTurn();
 	        }
     	}
         catch(Exception err) {

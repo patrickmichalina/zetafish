@@ -191,7 +191,6 @@ public class GameWindow extends JFrame implements ActionListener {
     }
 
     private void playCommand() {
-        // TODO: Pop up a box asking for server.
         String playerName = getPlayerName();
 
         if(playerName != null) {

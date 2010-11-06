@@ -25,4 +25,9 @@ public class PlayerHandPane extends PlayerPane
 		Arrays.sort(cards);
 		super.addCards(cards);
 	}
+	
+	public void reset()
+	{
+		this.removeAll();
+	}
 }
