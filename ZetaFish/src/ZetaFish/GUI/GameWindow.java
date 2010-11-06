@@ -167,10 +167,11 @@ public class GameWindow extends JFrame implements ActionListener {
     private void serverCommand() {
 
         String playername = getPlayerName();
-        
+
+        boolean ShowServerWindow = false;
 
         if(server == null && playername != null) {
-            server = new ZetaFishServer(null, false);
+            server = new ZetaFishServer(null, ShowServerWindow);
             
             String servername = "localhost";
             JoinGame(servername, playername, true);

@@ -127,18 +127,14 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
                 pane.add(sub1BackDrop, pane.getComponentCount() + 1);
             }
     	}
-
     }
-    
-    public void addCardsToOpponent(int paneNumber, ZFCard[] cards, int PlayerNumer, String name)
+        
+    public void addCardsToOpponent(int paneNumber, ZFCard[] cards, int PlayerNumer, String name, int score)
     {    
     	OpponentHandPane op = (OpponentHandPane)this.getComponent(paneNumber);
 		op.setVisible(true);
 		op.setPlayerNumber(PlayerNumer);
-                            
-		TitledBorder border = (TitledBorder)op.getBorder();
-        border.setTitle(name);
-        
+        op.setTitle(name + " - " + score);                   		
         op.addCards(cards);
     }
 	
