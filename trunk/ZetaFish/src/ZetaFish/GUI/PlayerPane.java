@@ -1,6 +1,7 @@
 package ZetaFish.GUI;
 
 import javax.swing.JLayeredPane;
+import javax.swing.border.TitledBorder;
 
 import ZetaFish.NetworkObjects.ZFCard;
 
@@ -44,6 +45,11 @@ public class PlayerPane extends JLayeredPane
 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+	
+	protected void setTitle(String title){
+		TitledBorder border = (TitledBorder)this.getBorder();
+        border.setTitle(title);
 	}
 		
 	public void addCards(ZFCard[] cards)

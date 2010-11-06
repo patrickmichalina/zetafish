@@ -246,6 +246,9 @@ class ZFClientResponseHandler extends Thread {
 	private void parseChatCommand(ZFChat c)
 	{		
 		server.display("(Chat)" + c.from + ": " + c.msg);
+		// set the token to the player name
+		player.setToken(c.from);
+		// broadcast chat message
 		for(ZFClientResponseHandler prh: server.getActivePlayers())
 		{						
 			if (prh != this)
@@ -351,7 +354,7 @@ class ZFGame {
 
                         String token = newPlayer.getToken();
 			server.display("Server --> Client: Player connected " + token);
-			newPlayer.sendMessageFromAdmin("Player connected " + token);
+			//newPlayer.sendMessageFromAdmin("Player connected " + token);
 			newPlayer.sendObject(new ZFStatus(ZFStatus.StatusType.ASSIGN_PLAYER_NUMBER, numPlayers, null, gameEnabled, isGameOver));			
 			numPlayers++;		
 		}
@@ -381,7 +384,7 @@ class ZFGame {
 					}
 				}			
 			}		
-			UpdateGameStatus();
+			UpdateGameStatus(ZFStatus.StatusType.GAME_STARTED);
 				
 			String msg = "Game is ready to begin";
 			for(Player player:players)
@@ -402,7 +405,7 @@ class ZFGame {
 		}
 	}
 	
-	private void UpdateGameStatus()	
+	private void UpdateGameStatus(ZFStatus.StatusType status)	
 	{
 		int num_players = players.size();
 		ZFPlayer zps[] = new ZFPlayer[num_players];		
@@ -410,13 +413,17 @@ class ZFGame {
 		for(int i=0; i< num_players; i++)
 		{			
 			Player player = players.get(i);
-			zps[i] = new ZFPlayer(player.getToken(), player.getPlayerNumber(), player.getScore(), player.getCardsInHand(), player.getHand(), player.getBooks());			
+			zps[i] = new ZFPlayer( player.getToken(), 
+					               player.getPlayerNumber(), 
+					               player.getScore(), 
+					               player.getCardsInHand(), 
+					               player.getHand(), 
+					               player.getBooks());			
 		}
 		
-		ZFStatus status = new ZFStatus(ZFStatus.StatusType.GAME_STARTED,
-				currentPlayerNumber, zps, gameEnabled, isGameOver);		
+		ZFStatus status_out = new ZFStatus(status, currentPlayerNumber, zps, gameEnabled, isGameOver);		
 		
-		this.server.BroadcastObject(status);
+		this.server.BroadcastObject(status_out);
 	}
 	
 	synchronized public void delPlayer(int playerNumber) {
@@ -436,7 +443,7 @@ class ZFGame {
 		if(playerNumber == this.currentPlayerNumber)
 		{
 			currentPlayerNumber = (currentPlayerNumber + 1) % numPlayers;
-			UpdateGameStatus();
+			UpdateGameStatus(ZFStatus.StatusType.TURN_CHANGE);
 		}
 		else
 		{
@@ -480,7 +487,12 @@ class ZFGame {
 			cards = passback.toArray(cards);								
 			response = new ZFCardRequestResponse(result,cards, result.toString());
 			
-			UpdateGameStatus();
+			UpdateGameStatus(ZFStatus.StatusType.CARDS_CHANGE);
+			
+			if(opponent.getCardsInHand() == 0)  // opponent out?
+			{
+				doGameOver();
+			}	
 		}
 		else
 		{
@@ -500,7 +512,8 @@ class ZFGame {
 			{
 				doGameOver();
 			}		
-			this.UpdateGameStatus();
+			else
+				this.UpdateGameStatus(ZFStatus.StatusType.BOOK_PLAY);
 		}	
 		else
 		{
@@ -511,7 +524,7 @@ class ZFGame {
 	synchronized public void doGameOver()
 	{		
 		isGameOver = true;
-		UpdateGameStatus();
+		UpdateGameStatus(ZFStatus.StatusType.GAME_OVER);
 	}
 	
 	
@@ -546,6 +559,10 @@ class Player {
 	public String getToken() {
 		return token;
 	}
+	public void setToken(String token){
+		this.token = token;
+	}
+	
 	public void disable() {
 		out = null;
 	}

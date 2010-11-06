@@ -40,6 +40,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		boolean done = false;
 		try
 		{
+			this.sendMessage("(Joined the game)");
 			in = new ObjectInputStream(client.getInputStream());			
 			while (!done) 
 			{

@@ -16,10 +16,10 @@ public class PlayerHandPane extends PlayerPane
 		super.cardOffsetX = 20;
 		super.cardOffsetY = 18;
 	}		
-	
-	@Override
-	public void addCards(ZFCard[] cards)
+		
+	public void addCards(ZFCard[] cards, int score)
 	{
+		this.setTitle("Your Hand - " + score);
 		// sort cards low to high
 		ArrayList<ZFCard> list = new ArrayList<ZFCard>(Arrays.asList(cards));
 		Arrays.sort(cards);

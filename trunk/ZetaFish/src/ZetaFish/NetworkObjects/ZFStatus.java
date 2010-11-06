@@ -4,12 +4,15 @@ import java.io.Serializable;
 
 public class ZFStatus implements Serializable
 {
+	private static int seqNumber = 0;
 	public enum StatusType
 	{
 		NONE,
 		GAME_STARTED,
 		GAME_OVER,
-		TURN_CHANGE,	
+		TURN_CHANGE,
+		CARDS_CHANGE,
+		BOOK_PLAY,
 		
 		ASSIGN_PLAYER_NUMBER
 	}
