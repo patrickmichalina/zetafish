@@ -79,17 +79,17 @@ public class BookPanes extends JLayeredPane
     private void setBookPaneBounds() {
         panelBookAce.setBounds(   30,  70, 101, 65);
         panelBookKing.setBounds( 134,  40, 101, 65);
-        panelBookQueen.setBounds(134, 100, 101, 65);
+        panelBookQueen.setBounds(134, 108, 101, 65);
 
         panelBookJack.setBounds( 238,  70, 101, 65);
         panelBook10.setBounds(   342,  40, 101, 65);
-        panelBook9.setBounds(    342, 100, 101, 65);
+        panelBook9.setBounds(    342, 108, 101, 65);
         panelBook8.setBounds(    446,  70, 101, 65);
         panelBook7.setBounds(    550,  40, 101, 65);
-        panelBook6.setBounds(    550, 100, 101, 65);
+        panelBook6.setBounds(    550, 108, 101, 65);
         panelBook5.setBounds(    654,  70, 101, 65);
         panelBook4.setBounds(    758,  40, 101, 65);
-        panelBook3.setBounds(    758, 100, 101, 65);
+        panelBook3.setBounds(    758, 108, 101, 65);
         panelBook2.setBounds(    862,  70, 101, 65);
 
               
