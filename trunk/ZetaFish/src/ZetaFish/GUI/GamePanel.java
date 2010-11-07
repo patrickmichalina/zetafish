@@ -11,6 +11,7 @@ import ZetaFish.Interfaces.*;
 import ZetaFish.NetworkObjects.ZFCard;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse;
 import ZetaFish.NetworkObjects.ZFPlayer;
+import ZetaFish.NetworkObjects.ZFRemovePlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,12 +37,20 @@ import javax.sound.sampled.AudioSystem;
  *  @author Chad Albrecht
  *  @author Melanie
  */
-public class GamePanel extends JPanel implements IStatusListener, ITurnListener, ICardRequestResponseListener, Runnable, IChatListener, ICardButtonPush, ActionListener{
+public class GamePanel extends JPanel implements 	IStatusListener, 
+  													ITurnListener, 
+  													ICardRequestResponseListener,   													 
+  													IChatListener, 
+  													IRemovePlayerListener, 
+  													ICardButtonPush, 
+  													ActionListener,
+  													Runnable
+{
 	private DeckOfCards deck 					= new DeckOfCards();
 
     private OpponentHandPanes   panelOpponent   = new OpponentHandPanes(deck);
     private BookPanes panelBook         		= new BookPanes(deck);    
-    private PlayerPane panelPool         		= new PlayerPane();   
+    private OceanPane panelPool         		= new OceanPane(deck);   
     private PlayerHandPane panelPlayer      	= new PlayerHandPane(deck);	
          
     private JPanel       panelChat         = new JPanel();
@@ -56,12 +65,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     private JButton      btnEndTurn        = new JButton("End Turn");
     private JButton      btnPlayBook       = new JButton("Play Books");
     private JButton      btnStartGame      = new JButton("Start Game");
-    private JLabel       lblPool           = new JLabel("Pool: ");
-    private JLabel       lblBook           = new JLabel("Book: ");
-    private JLabel       lblWins           = new JLabel("Wins: ");
-    private JLabel       lblLoss           = new JLabel("Losses: ");
-    private JLabel       lblStatus         = new JLabel("Network Status: ");
-    private JLabel       lblCardCount      = new JLabel("Count: ");
+
     private JTextArea    txtOutput         = new JTextArea(5,0);
     private JTextField   txtInput          = new JTextField(50);
 
@@ -75,9 +79,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     private INetworkManager networkManager = null;
 
-    private boolean CanStartGame = true;
-    private boolean gameJustStarted = true;
-
+    private boolean CanStartGame = true;   
     private ZFCard[] CurrentHand = null;
 
     /**
@@ -121,31 +123,6 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     }
 
     /**
-     * DrawOcean - Draws Ocean cards
-     */
-    private void DrawOcean()
-    {
-    	int i = 0;
-    	panelPool.removeAll();
-    	panelPool.add(lblCardCount);
-      	for(DeckOfCards.Suits suit : DeckOfCards.Suits.values())
-      	{
-      		if(suit != DeckOfCards.Suits.JOKER)
-      		{
-        		for(int val = 1; val <= 13; val++)
-        		{
-        			Card card= deck.getCard(val, suit);
-        			panelPool.add(card, new Integer(i));
-        			card.setIcon(card.getImage());
-        			card.setBounds((i++ * 18) + 30, 30,  60, 60);
-        		}
-      		}
-      	}
-        lblCardCount.setText("Count: " + i);
-        this.invalidate();
-    }
-
-    /**
      * setComponents
      */
     private void setComponents() {
@@ -158,9 +135,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
         this.add(panelCardButtons);
         this.add(panelChat);
         this.add(panelButtons);
-
-        panelPool.add(lblCardCount);
-
+        
         panelChat.add(new JScrollPane(txtOutput), BorderLayout.CENTER);
         panelChat.add(panelChatOut, BorderLayout.PAGE_END);
 
@@ -206,8 +181,6 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
     	border = (TitledBorder)this.panelCardButtons.getBorder();
     	border.setTitleColor(DefaultForeColor);
-
-    	this.lblCardCount.setForeground(DefaultForeColor);
     }
 
     /**
@@ -241,9 +214,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 
         panelButtons.setPreferredSize(     new Dimension( 124,130));
 
-        panelOpponent.setPreferredSize(    new Dimension(1024,100));
-       
-        lblCardCount.setBounds(10, 10, 100, 20); 
+        panelOpponent.setPreferredSize(    new Dimension(1024,100));       
     }   
 
     /**
@@ -296,6 +267,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
     	this.networkManager.addStatusListener(this);
     	this.networkManager.addTurnListener(this);
     	this.networkManager.addCardRequestResponseListener(this);
+    	this.networkManager.addRemovePlayerListener(this);
     }
 
     /**
@@ -356,8 +328,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 															 player.getScore());
 					i++;
 				}
-            }
-			lblCardCount.setText("Count: " + panelPool.getComponentCount());			
+            }			
+			this.panelPool.UpdateCardCount();
         }
     }
       
@@ -375,20 +347,18 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				ZFPlayer[] players = status.getPlayers();
 				switch(status.getStatus())
 				{
-					case GAME_STARTED:
-						gameJustStarted = true;
+					case GAME_STARTED:						
 						deck.reset();
 						this.panelOpponent.reset();
 						this.panelBook.reset();
 						this.panelPlayer.reset();
-						DrawOcean();
+						this.panelPool.DrawOcean();
 						GUIUtilities.playSound("shuffling.wav", this.getClass());				    
 			            updatePlayerHands(players);			           
 						handleTurnChange(isTurn);
 						setDefaultOpponent();
 						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
-						this.btnStartGame.setText("New Game");
-						gameJustStarted = false;
+						this.btnStartGame.setText("New Game");						
 			            break;
 						
 					case TURN_CHANGE:						
@@ -396,20 +366,14 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
 						break;
 
+					case PLAYER_DELETE:
 					case BOOK_PLAY:
 					case CARDS_CHANGE:						
 			            updatePlayerHands(players);			           
 						handleTurnChange(isTurn);
 						this.btnPlayBook.setEnabled(canPlayBook());
 						break;
-						
-					case PLAYER_DELETE:
-						updatePlayerHands(players);			           
-						handleTurnChange(isTurn);
-						this.btnPlayBook.setEnabled(canPlayBook());
-						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
-						break;
-						
+												
 					case GAME_OVER:					
 						break;
 				}
@@ -428,9 +392,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 		else
 		{					
         	this.btnPlayBook.setEnabled(false);
-        	this.btnEndTurn.setEnabled(false);
-        	
-        	gameJustStarted = true;
+        	this.btnEndTurn.setEnabled(false);        	
 		}
 	}
 
@@ -556,10 +518,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	 * startGame
 	 */
 	private void startGame() throws Exception
-	{		
-		
-    	this.networkManager.startGame();
-    	
+	{				
+    	this.networkManager.startGame();    	
 	}
 	
 	@Override
@@ -591,6 +551,18 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 			}
 		}		
 	}
+	
+	@Override
+	public void OnRemovePlayer(ZFRemovePlayer remove) 
+	{
+		ZFPlayer player = remove.getPlayer();
+		int playerNumber = player.getPlayerNumber();
+		this.panelOpponent.removePlayer(playerNumber);
+		
+		Component[] cards = this.panelOpponent.getPlayerCards(playerNumber);	
+		
+		this.panelPool.returnCardsToOcean(cards);
+	}	 
 
     @Override
     public void run() {
@@ -647,5 +619,5 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
      */
     private void HandleException(Exception err) {
     	err.printStackTrace();
-    }	 
+    }	
 }

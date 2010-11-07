@@ -19,6 +19,8 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private transient Vector StatusListeners;
 	private transient Vector TurnListeners;
 	private transient Vector CardRequestResponseListeners;
+	private transient Vector RemovePlayerListeners;
+	private transient Vector ServerErrorListeners;
 	
 	private String WhoAmI;
 	private int myPlayerNumber = -1;
@@ -38,8 +40,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	{		
 		String fromServer;
 		boolean done = false;
+		boolean serverExited = false;
+		boolean runtimeException = false;
 		try
 		{
+			String msg = "";
 			this.sendMessage("(Joined the game)");
 			in = new ObjectInputStream(client.getInputStream());			
 			while (!done) 
@@ -54,17 +59,30 @@ public class ZetaFishClient extends Thread implements INetworkManager
 						parseObjectIn(oin);					
 					}						
 				}
+				catch(RuntimeException rex)
+				{
+					done = true;
+					runtimeException = true;
+					msg = rex.getMessage();
+				}
 				catch(Exception err)
 				{
-					String msg = err.getMessage();
+					msg = err.getMessage();
 					System.out.println("CLIENT EXCEPTION(1):" + msg);
 					err.printStackTrace();
 					if((msg == "Connection reset") || (msg == "socket closed"))
+					{
 						done = true;
+						serverExited = true;
+					}
 				}			
 			}
 			in.close();
-			client.close();
+			client.close();			
+			if(serverExited)
+				NotifyServerErrorListeners("Game server exited.");
+			else 
+				NotifyServerErrorListeners(msg);
 		}
 		catch(Exception err)
 		{
@@ -91,8 +109,18 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		{
 			parseRemovePlayer((ZFRemovePlayer)oin);
 		}
+		else if(oin.getClass() == RuntimeException.class)
+		{
+			parseRuntimeException((RuntimeException)oin);
+		}
 	}
 	
+	private void parseRuntimeException(RuntimeException exception)
+	{
+		System.out.print("RuntimeException from server:" + exception.getMessage());
+		throw(exception);					
+	}
+
 	private void parseChatCommand(ZFChat c)
 	{	
 		// Notify all event listeners
@@ -141,7 +169,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	
 	private void parseRemovePlayer(ZFRemovePlayer remove)
 	{
-		// TODO: Implement this
+		NotifyRemovePlayerListeners(remove);
 	}
 	
 	private void NotifyStatusListeners()
@@ -174,6 +202,21 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    }
 	}
 	
+	private void NotifyRemovePlayerListeners(ZFRemovePlayer remove)
+	{
+		// Notify all remove player event listeners
+		Vector targets;
+	    synchronized (this) {
+	    	targets = (Vector) RemovePlayerListeners.clone();
+	    }
+	    Enumeration e = targets.elements();
+	    while (e.hasMoreElements()) 
+	    {
+	    	IRemovePlayerListener l = (IRemovePlayerListener) e.nextElement();
+	        l.OnRemovePlayer(remove);
+	    }
+	}
+	
 	private void NotifyCardRequestResponseListeners(ZFCardRequestResponse response)
 	{
 		// Notify all turn event listeners
@@ -186,6 +229,21 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    {
 	    	ICardRequestResponseListener l = (ICardRequestResponseListener) e.nextElement();
 	        l.OnCardRequestResponse(response);
+	    }
+	}
+	
+	private void NotifyServerErrorListeners(String msg)
+	{
+		// Notify all turn event listeners
+		Vector targets;
+	    synchronized (this) {
+	    	targets = (Vector) ServerErrorListeners.clone();
+	    }
+	    Enumeration e = targets.elements();
+	    while (e.hasMoreElements()) 
+	    {
+	    	IServerErrorListener l = (IServerErrorListener) e.nextElement();
+	        l.OnServerError(msg);
 	    }
 	}
 	
@@ -285,6 +343,22 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		if (TurnListeners == null)
 			TurnListeners = new Vector();
 		TurnListeners.addElement(listener);
+	}
+	
+	@Override
+	public synchronized void addRemovePlayerListener(IRemovePlayerListener listener)
+	{
+		if (RemovePlayerListeners == null)
+			RemovePlayerListeners = new Vector();
+		RemovePlayerListeners.addElement(listener);
+	}
+	
+	@Override
+	public synchronized void addServerErrorListener(IServerErrorListener listener)
+	{
+		if (ServerErrorListeners == null)
+			ServerErrorListeners = new Vector();
+		ServerErrorListeners.addElement(listener);
 	}
 	
 	@Override

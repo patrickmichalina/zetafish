@@ -145,6 +145,35 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
         op.setTitle(name + " - " + score);                   		
         op.addCards(cards);
     }
+    
+    public void removePlayer(int playerNumber)
+    {
+    	for(Component cmp : this.getComponents())
+    	{    		
+			OpponentHandPane pane = (OpponentHandPane)cmp;  		
+    		if(playerNumber == pane.getPlayerNumber()) 
+    		{
+    			pane.setVisible(false);
+
+    		}
+    	}    	
+    }
+    
+    public Component[] getPlayerCards(int playerNumber)
+    {
+    	Component[] retval = null;
+    	
+    	for(Component cmp : this.getComponents())
+    	{    		
+			OpponentHandPane pane = (OpponentHandPane)cmp;  		
+    		if(playerNumber == pane.getPlayerNumber()) 
+    		{
+    			retval = pane.getComponents();
+    			break;    			    			
+    		}
+    	}
+    	return retval;
+    }
 	
 	 /**
      * Pulls the selected playernumber from the radio button group

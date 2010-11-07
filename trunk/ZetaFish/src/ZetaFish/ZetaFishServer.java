@@ -192,7 +192,7 @@ class ZFClientResponseHandler extends Thread {
 	
 	private void HandleLocalException(Exception error)
 	{
-		//System.out.println(err.getMessage());
+		//System.out.println(err.getMessage());		
 		server.display(error.toString());
 	}
 	
@@ -309,6 +309,7 @@ class ZFClientResponseHandler extends Thread {
  */
 class ZFGame {
 	public final int MAX_PLAYERS = 6;
+	//public final int MAX_PLAYERS = 2;
 	public final int INITIAL_HAND_SIZE = 7;
 	
 	private List<Player> players;
@@ -350,7 +351,15 @@ class ZFGame {
 			p.setOutput(out);
 			p.sendObject(new RuntimeException(error));
 		}
-		else if (numPlayers < MAX_PLAYERS)
+		else if (numPlayers >= MAX_PLAYERS)
+		{
+			String error = "Too many players.  Player rejected.";
+			server.display(error);
+			Player p = new Player(numPlayers, "Player" + numPlayers);
+			p.setOutput(out);
+			p.sendObject(new RuntimeException(error));
+		}
+		else
 		{			
 			newPlayer = new Player(numPlayers, "Player" + numPlayers);
 			newPlayer.setOutput(out);
@@ -362,6 +371,7 @@ class ZFGame {
 			newPlayer.sendObject(new ZFStatus(ZFStatus.StatusType.ASSIGN_PLAYER_NUMBER, numPlayers, null, gameEnabled, isGameOver));			
 			numPlayers++;		
 		}
+		
 		return newPlayer;
 	}
 	
@@ -379,15 +389,27 @@ class ZFGame {
 		players.set(playerNumber,null);
 		
 		numPlayers--;						
-		if (numPlayers == 0) 
+		if (numPlayers <= 1) 
 		{
 			gameEnabled = false;
 			isGameOver = true;
 		}
 		
 		players.remove(player);
-		
+		sendRemovePlayer(player);
 		UpdateGameStatus(ZFStatus.StatusType.PLAYER_DELETE);
+	}
+	
+	private void sendRemovePlayer(Player player)
+	{
+		ZFPlayer zp = new ZFPlayer( player.getToken(), 
+	               player.getPlayerNumber(), 
+	               player.getScore(), 
+	               player.getCardsInHand(), 
+	               player.getHand(), 
+	               player.getBooks());	
+		ZFRemovePlayer remove = new ZFRemovePlayer(zp);
+		this.server.BroadcastObject(remove);
 	}
 	
 	synchronized public void startGame() 
@@ -445,12 +467,15 @@ class ZFGame {
 		for(int i=0; i< num_players; i++)
 		{			
 			Player player = players.get(i);
-			zps[i] = new ZFPlayer( player.getToken(), 
-					               player.getPlayerNumber(), 
-					               player.getScore(), 
-					               player.getCardsInHand(), 
-					               player.getHand(), 
-					               player.getBooks());			
+			if(player != null)
+			{
+				zps[i] = new ZFPlayer( player.getToken(), 
+						player.getPlayerNumber(), 
+						player.getScore(), 
+						player.getCardsInHand(), 
+						player.getHand(), 
+						player.getBooks());
+			}
 		}
 		
 		ZFStatus status_out = new ZFStatus(status, currentPlayerNumber, zps, gameEnabled, isGameOver);		
