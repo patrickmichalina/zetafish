@@ -356,7 +356,7 @@ class ZFGame {
 			newPlayer.setOutput(out);
 			players.add(newPlayer);			
 
-                        String token = newPlayer.getToken();
+            String token = newPlayer.getToken();
 			server.display("Server --> Client: Player connected " + token);
 			//newPlayer.sendMessageFromAdmin("Player connected " + token);
 			newPlayer.sendObject(new ZFStatus(ZFStatus.StatusType.ASSIGN_PLAYER_NUMBER, numPlayers, null, gameEnabled, isGameOver));			
@@ -365,10 +365,9 @@ class ZFGame {
 		return newPlayer;
 	}
 	
-	synchronized public void delPlayer(int playerNumber) {
-		
+	synchronized public void delPlayer(int playerNumber) {			
 		Player player = players.get(playerNumber);
-		
+		server.display("delPlayer: " + player.getToken());
 		player.disable();
 
 		/**
