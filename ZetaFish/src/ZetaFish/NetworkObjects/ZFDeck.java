@@ -1,6 +1,7 @@
 package ZetaFish.NetworkObjects;
 
 import java.io.Serializable;
+import java.util.*;
 
 
 
@@ -23,6 +24,9 @@ public class ZFDeck  implements Serializable
     * the deck so far.
     */
    private int cardsUsed;
+   
+   
+   private List<ZFCard> unused_deck = null;
    
    /**
     * Constructs a regular 52-card poker deck.  Initially, the cards
@@ -67,6 +71,8 @@ public class ZFDeck  implements Serializable
       cardsUsed = 0;
    }
    
+   
+   
    /**
     * Put all the used cards back into the deck (if any), and
     * shuffle the deck into a random order.
@@ -78,6 +84,7 @@ public class ZFDeck  implements Serializable
          deck[i] = deck[rand];
          deck[rand] = temp;
       }
+      unused_deck = new ArrayList(Arrays.asList(deck));
       cardsUsed = 0;
    }
    
@@ -91,7 +98,8 @@ public class ZFDeck  implements Serializable
     * is called.
     */
    public int cardsLeft() {
-      return deck.length - cardsUsed;
+      //return deck.length - cardsUsed;
+	   return unused_deck.size();
    }
    
    /**
@@ -102,14 +110,51 @@ public class ZFDeck  implements Serializable
     * @throws IllegalStateException if there are no cards left in the deck
     */
    public ZFCard dealCard() {
-      if (cardsUsed == deck.length)
+	   if(unused_deck == null)
+		   this.shuffle();
+	   
+      if (cardsLeft() == 0)
          throw new IllegalStateException("No cards are left in the deck.");
-      cardsUsed++;
-      return deck[cardsUsed - 1];
+
+      return unused_deck.remove(0);
+      
+      //cardsUsed++;
+      //return deck[cardsUsed - 1];
       // Programming note:  Cards are not literally removed from the array
       // that represents the deck.  We just keep track of how many cards
       // have been used.
    }
+   
+   public void replaceCards(ZFCard[] cards)
+   {
+	   for(ZFCard card : cards)
+	   {
+		   this.replaceCard(card);
+	   }
+   }
+   
+   public void replaceCard(ZFCard card)
+   {
+	   if(unused_deck != null)
+	   {
+		   // add the card to the bottom of the deck
+		   unused_deck.add(unused_deck.size() - 1, card);				   
+	   }	
+	   else
+		   throw new IllegalStateException("Deck not initialized!");
+   }
+   
+   
+   public void mixUpRemainingCards()
+   {
+	   for ( int i = unused_deck.size()-1; i > 0; i-- ) {
+	         int rand = (int)(Math.random()*(i+1));
+	         ZFCard temp = unused_deck.get(i);
+	         unused_deck.set(i, unused_deck.get(rand));
+	         unused_deck.set(rand, temp);
+	      }	   
+   }
+   
    
    /**
     * Test whether the deck contains Jokers.

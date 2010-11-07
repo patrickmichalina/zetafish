@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 
 import ZetaFish.NetworkObjects.*;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse.CardRequestResult;
+import ZetaFish.NetworkObjects.ZFStatus.StatusType;
 
 
 /**
@@ -74,7 +75,6 @@ public class ZetaFishServer extends JFrame
 	 * @param args
 	 */
 	public static void main_SVR(String[] args) {
-		// TODO Auto-generated method stub
 		new ZetaFishServer(args, true);
 	}
 }
@@ -99,7 +99,7 @@ class ZFServerThread extends Thread
 	{		
 		game = new ZFGame(ZFserver, this.includeJokers);
 		try {
-			ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));
+			ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));			
 			Socket connection;
 			while (true) {
 				ZFserver.display("Waiting for players to connect...");
@@ -203,22 +203,25 @@ class ZFClientResponseHandler extends Thread {
 		
 		server.display("Listening for input from " + player.getToken());
 		while (!done) {
-			try
-			{		
+//			try
+//			{		
 				Object oin = in.readObject();
 				if(oin == null)
+				{
+					server.display("Client disconnect");
 					done = true;
+				}
 				else 
 				{							
 					server.display("Client --> Server: " + oin.toString());
 					parseObjectIn(oin);
 				}
 				
-			}
-			catch(IOException e) {
-				server.display(e.toString());
-				done = true;
-			}
+//			}
+//			catch(IOException e) {
+//				server.display(e.toString());
+//				done = true;
+//			}
 		}
 		in.close();
 	}	
@@ -362,6 +365,29 @@ class ZFGame {
 		return newPlayer;
 	}
 	
+	synchronized public void delPlayer(int playerNumber) {
+		
+		Player player = players.get(playerNumber);
+		
+		player.disable();
+
+		/**
+		 * (Requirement 3.1.9)
+		 */
+		deck.replaceCards(player.getHand());
+		
+		player.removeAllCardsFromHand();		
+		players.set(playerNumber,null);
+		
+		numPlayers--;						
+		if (numPlayers == 0) 
+		{
+			gameEnabled = false;
+			isGameOver = true;
+		}
+		UpdateGameStatus(ZFStatus.StatusType.PLAYER_DELETE);
+	}
+	
 	synchronized public void startGame() 
 	{
 		if(numPlayers > 1)		
@@ -429,17 +455,7 @@ class ZFGame {
 		this.server.BroadcastObject(status_out);
 	}
 	
-	synchronized public void delPlayer(int playerNumber) {
-		players.get(playerNumber).disable();
-		players.set(playerNumber,null);
-		numPlayers--;
-		
-		if (numPlayers == 0) 
-		{
-			gameEnabled = false;
-			isGameOver = true;
-		}
-	}
+	
 	
 	synchronized public void doTurnDone(int playerNumber)
 	{

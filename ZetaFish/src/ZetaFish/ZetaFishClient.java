@@ -199,11 +199,8 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	@Override
 	public synchronized void openConnection(String Server, String myUserName, String myPassword)	throws Exception 
 	{
-//		SecurityManager security = System.getSecurityManager();
-//
-//		security.checkConnect(Server, SERVER_PORT);
-
 		this.client = new Socket(Server, SERVER_PORT);
+		this.client.setKeepAlive(true);
 		this.out = new ObjectOutputStream(client.getOutputStream());
 
 		this.WhoAmI = myUserName;

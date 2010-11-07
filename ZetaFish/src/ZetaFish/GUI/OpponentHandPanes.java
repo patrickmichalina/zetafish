@@ -83,8 +83,7 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     }
 	
 	public void SetDefaultOpponent()
-	{
-		System.out.println("SetDefaultOpponent");
+	{		
 		this.SelectOpponentPane((OpponentHandPane)this.getComponents()[0]);
 	}
 	
