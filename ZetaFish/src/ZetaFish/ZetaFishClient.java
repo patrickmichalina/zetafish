@@ -87,6 +87,10 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		{
 			parseCardRequestResponse((ZFCardRequestResponse)oin);
 		}
+		else if(oin.getClass() == ZFRemovePlayer.class)
+		{
+			parseRemovePlayer((ZFRemovePlayer)oin);
+		}
 	}
 	
 	private void parseChatCommand(ZFChat c)
@@ -133,6 +137,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void parseCardRequestResponse(ZFCardRequestResponse response)
 	{
 		NotifyCardRequestResponseListeners(response);
+	}
+	
+	private void parseRemovePlayer(ZFRemovePlayer remove)
+	{
+		// TODO: Implement this
 	}
 	
 	private void NotifyStatusListeners()
