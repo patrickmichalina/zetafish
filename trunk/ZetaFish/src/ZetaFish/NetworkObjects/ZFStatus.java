@@ -14,6 +14,8 @@ public class ZFStatus implements Serializable
 		CARDS_CHANGE,
 		BOOK_PLAY,
 		
+		PLAYER_DELETE,
+		
 		ASSIGN_PLAYER_NUMBER
 	}
 	

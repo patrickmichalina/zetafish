@@ -58,12 +58,14 @@ public class GameWindow extends JFrame implements ActionListener {
         
     private INetworkManager networkManager;
     private ZetaFishServer  server = null;
+    private String 			args[] = null;
 
     /**
      *
      */
-    public GameWindow() {
+    public GameWindow(String args[]) {
         super("ZetaFish - " + VersionInfo.version()); //give the window a title
+        this.args = args;
         initStartConditions(); //start the game with the inital view
         networkManager = new ZetaFishClient(); // start the network manager
     }
@@ -73,7 +75,7 @@ public class GameWindow extends JFrame implements ActionListener {
      * @param args[]
      */
     public static void main(String args[]) {
-         ourGameWindow = new GameWindow();
+         ourGameWindow = new GameWindow(args);
     }
 
     private void initStartConditions() {
@@ -135,7 +137,7 @@ public class GameWindow extends JFrame implements ActionListener {
 
 
         } catch(Exception e) {
-            //TODO
+        	HandleException(e);
         }
 
         return servername;
@@ -170,7 +172,7 @@ public class GameWindow extends JFrame implements ActionListener {
             
             
         } catch(Exception e) {
-            //TODO
+        	HandleException(e);
         }
 
         return null;
@@ -180,7 +182,14 @@ public class GameWindow extends JFrame implements ActionListener {
 
         String playername = getPlayerName();
 
-        boolean ShowServerWindow = false;
+        
+        boolean ShowServerWindow = true;
+        
+        if((args != null) && (args.length > 0))
+        {
+        	if(args[0].toUpperCase() == "TRUE")
+        		ShowServerWindow = true;
+        }
 
         if(server == null && playername != null) {
             server = new ZetaFishServer(null, ShowServerWindow);
@@ -255,9 +264,7 @@ public class GameWindow extends JFrame implements ActionListener {
 
         int pref_height = 25;
         int pref_width = 150;
-        
-        // TODO: Should center buttons on screen
-        
+               
         serverBtn.setPreferredSize(new Dimension(pref_width, pref_height));
         serverBtn.setMaximumSize(new Dimension(Short.MAX_VALUE,
                 Short.MAX_VALUE));

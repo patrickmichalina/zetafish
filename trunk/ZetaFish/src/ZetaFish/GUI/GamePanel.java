@@ -376,6 +376,7 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 				switch(status.getStatus())
 				{
 					case GAME_STARTED:
+						gameJustStarted = true;
 						deck.reset();
 						this.panelOpponent.reset();
 						this.panelBook.reset();
@@ -386,6 +387,8 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 						handleTurnChange(isTurn);
 						setDefaultOpponent();
 						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
+						this.btnStartGame.setText("New Game");
+						gameJustStarted = false;
 			            break;
 						
 					case TURN_CHANGE:						
@@ -400,11 +403,12 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 						this.btnPlayBook.setEnabled(canPlayBook());
 						break;
 						
+					case PLAYER_DELETE:
+						break;
+						
 					case GAME_OVER:					
 						break;
 				}
-						            	    		
-				gameJustStarted = false;
 				this.repaint();
 			}
 			else if(status.getStatus() == ZFStatus.StatusType.GAME_OVER)  //Game end?
@@ -549,9 +553,9 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 	 */
 	private void startGame() throws Exception
 	{		
-		gameJustStarted = true;
+		
     	this.networkManager.startGame();
-    	this.btnStartGame.setText("New Game");
+    	
 	}
 	
 	@Override
