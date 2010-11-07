@@ -384,6 +384,9 @@ class ZFGame {
 			gameEnabled = false;
 			isGameOver = true;
 		}
+		
+		players.remove(player);
+		
 		UpdateGameStatus(ZFStatus.StatusType.PLAYER_DELETE);
 	}
 	
@@ -435,6 +438,7 @@ class ZFGame {
 	
 	private void UpdateGameStatus(ZFStatus.StatusType status)	
 	{
+		server.display("Server --> Clients: UpdateGameStatus " + status);
 		int num_players = players.size();
 		ZFPlayer zps[] = new ZFPlayer[num_players];		
 		

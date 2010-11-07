@@ -404,6 +404,10 @@ public class GamePanel extends JPanel implements IStatusListener, ITurnListener,
 						break;
 						
 					case PLAYER_DELETE:
+						updatePlayerHands(players);			           
+						handleTurnChange(isTurn);
+						this.btnPlayBook.setEnabled(canPlayBook());
+						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
 						break;
 						
 					case GAME_OVER:					
