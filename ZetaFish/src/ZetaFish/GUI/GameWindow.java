@@ -20,6 +20,7 @@ import ZetaFish.VersionInfo;
 import ZetaFish.ZetaFishClient;
 import ZetaFish.ZetaFishServer;
 import ZetaFish.Interfaces.INetworkManager;
+import ZetaFish.Interfaces.IServerErrorListener;
 
 /**
  *  Summary:
@@ -34,7 +35,7 @@ import ZetaFish.Interfaces.INetworkManager;
  *
  */
 
-public class GameWindow extends JFrame implements ActionListener {
+public class GameWindow extends JFrame implements IServerErrorListener, ActionListener {
     /**
      * These local fields create instances of panels that wrap other panels.
      * BackgroundPanel is the primary panel that holds the main BG image.
@@ -67,7 +68,8 @@ public class GameWindow extends JFrame implements ActionListener {
         super("ZetaFish - " + VersionInfo.version()); //give the window a title
         this.args = args;
         initStartConditions(); //start the game with the inital view
-        networkManager = new ZetaFishClient(); // start the network manager
+        this.networkManager = new ZetaFishClient(); // start the network manager
+        this.networkManager.addServerErrorListener(this);
     }
     
     /**
@@ -90,8 +92,7 @@ public class GameWindow extends JFrame implements ActionListener {
         this.add(backgroundPanel);
 
         //Below are aesthetic calls to the JFrame
-        this.pack();
-        this.setSize(800,600);
+        this.pack();        
         this.isDoubleBuffered();
         this.isLightweight();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -109,6 +110,8 @@ public class GameWindow extends JFrame implements ActionListener {
     
     private void showMenu()
     {
+    	this.setSize(800,600);
+    	
     	backgroundPanel.removeAll();
     	
     	 //attach the logoPanel and menuPanel to the primary panel and set layout
@@ -343,4 +346,10 @@ public class GameWindow extends JFrame implements ActionListener {
 
         
     }
+
+	@Override
+	public void OnServerError(String msg) {		
+        JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.OK_OPTION);
+        showMenu();	
+	}
 }

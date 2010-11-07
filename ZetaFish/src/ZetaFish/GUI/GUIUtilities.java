@@ -51,15 +51,14 @@ public class GUIUtilities
 	 */
 	public synchronized static void playSound(final String link, Class cls) 
 	{
-	        try {
-	            javax.sound.sampled.Clip clip = AudioSystem.getClip();
-	            AudioInputStream inputStream = AudioSystem.getAudioInputStream(cls.getResourceAsStream("/Resources/Sounds/" + link));
-	            clip.open(inputStream);
-	            clip.start();
-	        } catch (Exception e) {
-	            System.err.println(e.getMessage());
-	            e.printStackTrace();
-	        }
-	    }
-	
+		try {
+			javax.sound.sampled.Clip clip = AudioSystem.getClip();
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(cls.getResourceAsStream("/Resources/Sounds/" + link));
+			clip.open(inputStream);
+			clip.start();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}	
 }

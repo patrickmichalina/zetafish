@@ -169,6 +169,11 @@ public class DeckOfCards {
     	return card;
     }
     
+    public int size()
+    {
+    	return deck.size();
+    }
+    
     /**
      * hides all the cards
      */

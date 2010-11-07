@@ -68,6 +68,19 @@ public interface INetworkManager
    */
   public void addTurnListener(ITurnListener listener);
   
+  
+  /**
+   * Add a subscriber to remove player events
+   * @param listener
+   */
+  public void addRemovePlayerListener(IRemovePlayerListener listener);
+  
+  /**
+   * Add a subscriber to server error/exit events
+   * @param listener
+   */
+  public void addServerErrorListener(IServerErrorListener listener);
+  
   /**
    * Returns a player's score
    * @param p Player to get score for

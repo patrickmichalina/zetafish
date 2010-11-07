@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import ZetaFish.*;
 
-
 public class ZFCardRequestResponse implements Serializable 
 {
 	public enum CardRequestResult

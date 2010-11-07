@@ -10,7 +10,7 @@ public class PlayerPane extends JLayeredPane
     private int playerNumber = -1;
     private boolean isSelected = false;
     
-    private DeckOfCards deck = null;
+    protected DeckOfCards deck = null;
     
     protected int cardSpacing = 20;
     protected int cardOffsetX = 0;
@@ -51,6 +51,8 @@ public class PlayerPane extends JLayeredPane
 		TitledBorder border = (TitledBorder)this.getBorder();
         border.setTitle(title);
 	}
+	
+	
 		
 	public void addCards(ZFCard[] cards)
 	{
