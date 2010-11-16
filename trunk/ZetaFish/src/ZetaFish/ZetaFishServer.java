@@ -1,7 +1,6 @@
 package ZetaFish;
 
 import java.awt.BorderLayout;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -15,7 +14,6 @@ import javax.swing.JTextArea;
 
 import ZetaFish.NetworkObjects.*;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse.CardRequestResult;
-import ZetaFish.NetworkObjects.ZFStatus.StatusType;
 
 
 /**
@@ -25,7 +23,9 @@ import ZetaFish.NetworkObjects.ZFStatus.StatusType;
  *
  */
 public class ZetaFishServer extends JFrame
-{
+{	
+	private static final long serialVersionUID = 1L;
+
 	private ZFServerThread serverThread = null;
 	
 	public static final int DEFAULT_PORT = 5000;
@@ -52,7 +52,7 @@ public class ZetaFishServer extends JFrame
 				display(e.toString());
 			}
 		}
-		serverThread = new ZFServerThread(this, port, this.INCLUDE_JOKERS);
+		serverThread = new ZFServerThread(this, port, ZetaFishServer.INCLUDE_JOKERS);
 		serverThread.start();
 	}
 	
@@ -63,7 +63,7 @@ public class ZetaFishServer extends JFrame
 	
 	public synchronized Set<ZFClientResponseHandler> getActivePlayers()
 	{
-		return serverThread.activePlayers;
+		return ZFServerThread.activePlayers;
 	}
 	
 	public synchronized void BroadcastObject(Object obj)
@@ -117,12 +117,12 @@ class ZFServerThread extends Thread
 	
 	public synchronized Set<ZFClientResponseHandler> getActivePlayers()
 	{
-		return this.activePlayers;
+		return ZFServerThread.activePlayers;
 	}
 	
 	public synchronized void BroadcastObject(Object obj)
 	{
-		for(ZFClientResponseHandler prh: this.activePlayers)
+		for(ZFClientResponseHandler prh: ZFServerThread.activePlayers)
 		{						
 			prh.getPlayer().sendObject(obj);								
 		}

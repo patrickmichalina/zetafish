@@ -2,6 +2,8 @@ package ZetaFish.GUI;
 
 public class BookPane extends PlayerPane
 {
+	private static final long serialVersionUID = 1L;
+	
 	public BookPane(DeckOfCards deck)
 	{
 		super(deck);

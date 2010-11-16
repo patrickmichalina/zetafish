@@ -1,13 +1,11 @@
 package ZetaFish.NetworkObjects;
 
 import java.io.Serializable;
-import java.util.*;
-
-
-import ZetaFish.*;
 
 public class ZFPlayer implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	private String PlayerName = "";
 	private int PlayerNumber = -1;
 	private int score = 0;

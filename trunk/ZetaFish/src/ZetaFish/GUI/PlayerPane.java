@@ -7,6 +7,8 @@ import ZetaFish.NetworkObjects.ZFCard;
 
 public class PlayerPane extends JLayeredPane  
 {
+	private static final long serialVersionUID = 1L;
+	
     private int playerNumber = -1;
     private boolean isSelected = false;
     
@@ -61,7 +63,7 @@ public class PlayerPane extends JLayeredPane
 		{
 			this.removeAll();
 	    	int i = 0;
-	    	int CardCount = cards.length;
+	    	
 	    	// TODO: This is ugly.  Refactor to follow DRY
 	    	for(ZFCard zfCard : cards)
 	    	{

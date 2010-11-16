@@ -6,10 +6,10 @@ import java.awt.Rectangle;
 
 import javax.swing.JLabel;
 
-import ZetaFish.NetworkObjects.ZFCard;
-
 public class OceanPane extends PlayerPane 
 {
+	private static final long serialVersionUID = 1L;
+	
 	private JLabel       lblCardCount      = new JLabel("Count: ");
 	
 	public OceanPane(DeckOfCards deck)

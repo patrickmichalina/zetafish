@@ -15,12 +15,12 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	
-	private transient Vector ChatListeners;
-	private transient Vector StatusListeners;
-	private transient Vector TurnListeners;
-	private transient Vector CardRequestResponseListeners;
-	private transient Vector RemovePlayerListeners;
-	private transient Vector ServerErrorListeners;
+	private transient Vector<IChatListener> ChatListeners;
+	private transient Vector<IStatusListener> StatusListeners;
+	private transient Vector<ITurnListener> TurnListeners;
+	private transient Vector<ICardRequestResponseListener> CardRequestResponseListeners;
+	private transient Vector<IRemovePlayerListener> RemovePlayerListeners;
+	private transient Vector<IServerErrorListener> ServerErrorListeners;
 	
 	private String WhoAmI;
 	private int myPlayerNumber = -1;
@@ -37,11 +37,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	 * Entry point for the thread
 	 */
 	public void run()
-	{		
-		String fromServer;
+	{				
 		boolean done = false;
-		boolean serverExited = false;
-		boolean runtimeException = false;
+		boolean serverExited = false;		
 		try
 		{
 			String msg = "";
@@ -61,8 +59,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 				}
 				catch(RuntimeException rex)
 				{
-					done = true;
-					runtimeException = true;
+					done = true;					
 					msg = rex.getMessage();
 				}
 				catch(Exception err)
@@ -124,11 +121,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void parseChatCommand(ZFChat c)
 	{	
 		// Notify all event listeners
-		Vector targets;
+		Vector<IChatListener> targets;
 	    synchronized (this) {
-	    	targets = (Vector) ChatListeners.clone();
+	    	targets =  new Vector<IChatListener>(ChatListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<IChatListener> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	IChatListener l = (IChatListener) e.nextElement();
@@ -171,15 +168,15 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	{
 		NotifyRemovePlayerListeners(remove);
 	}
-	
+		
 	private void NotifyStatusListeners()
 	{
 		// Notify all status event listeners
-		Vector targets;
+		Vector<IStatusListener> targets;
 	    synchronized (this) {
-	    	targets = (Vector) StatusListeners.clone();
+	    	targets = new Vector<IStatusListener>(StatusListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<IStatusListener> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	IStatusListener l = (IStatusListener) e.nextElement();
@@ -190,11 +187,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void NotifyTurnListeners()
 	{
 		// Notify all turn event listeners
-		Vector targets;
+		Vector<ITurnListener> targets;
 	    synchronized (this) {
-	    	targets = (Vector) TurnListeners.clone();
+	    	targets = new Vector<ITurnListener>(TurnListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<ITurnListener> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	ITurnListener l = (ITurnListener) e.nextElement();
@@ -205,11 +202,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void NotifyRemovePlayerListeners(ZFRemovePlayer remove)
 	{
 		// Notify all remove player event listeners
-		Vector targets;
+		Vector<IRemovePlayerListener> targets;
 	    synchronized (this) {
-	    	targets = (Vector) RemovePlayerListeners.clone();
+	    	targets =  new Vector<IRemovePlayerListener>(RemovePlayerListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<IRemovePlayerListener> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	IRemovePlayerListener l = (IRemovePlayerListener) e.nextElement();
@@ -220,11 +217,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void NotifyCardRequestResponseListeners(ZFCardRequestResponse response)
 	{
 		// Notify all turn event listeners
-		Vector targets;
+		Vector<ICardRequestResponseListener> targets;
 	    synchronized (this) {
-	    	targets = (Vector) CardRequestResponseListeners.clone();
+	    	targets =  new Vector<ICardRequestResponseListener>(CardRequestResponseListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<ICardRequestResponseListener> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	ICardRequestResponseListener l = (ICardRequestResponseListener) e.nextElement();
@@ -235,11 +232,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void NotifyServerErrorListeners(String msg)
 	{
 		// Notify all turn event listeners
-		Vector targets;
+		Vector<IServerErrorListener> targets;
 	    synchronized (this) {
-	    	targets = (Vector) ServerErrorListeners.clone();
+	    	targets =  new Vector<IServerErrorListener>(ServerErrorListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<IServerErrorListener> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	IServerErrorListener l = (IServerErrorListener) e.nextElement();
@@ -318,7 +315,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	public synchronized void addChatListener(IChatListener listener)
 	{
 		if (ChatListeners == null)
-			ChatListeners = new Vector();
+			ChatListeners = new Vector<IChatListener>();
 		ChatListeners.addElement(listener);		
 	}
 
@@ -333,7 +330,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	public synchronized void addStatusListener(IStatusListener listener)
 	{
 		if (StatusListeners == null)
-			StatusListeners = new Vector();
+			StatusListeners = new Vector<IStatusListener>();
 		StatusListeners.addElement(listener);
 	}
 		
@@ -341,7 +338,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	public synchronized void addTurnListener(ITurnListener listener)
 	{
 		if (TurnListeners == null)
-			TurnListeners = new Vector();
+			TurnListeners = new Vector<ITurnListener>();
 		TurnListeners.addElement(listener);
 	}
 	
@@ -349,7 +346,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	public synchronized void addRemovePlayerListener(IRemovePlayerListener listener)
 	{
 		if (RemovePlayerListeners == null)
-			RemovePlayerListeners = new Vector();
+			RemovePlayerListeners = new Vector<IRemovePlayerListener>();
 		RemovePlayerListeners.addElement(listener);
 	}
 	
@@ -357,7 +354,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	public synchronized void addServerErrorListener(IServerErrorListener listener)
 	{
 		if (ServerErrorListeners == null)
-			ServerErrorListeners = new Vector();
+			ServerErrorListeners = new Vector<IServerErrorListener>();
 		ServerErrorListeners.addElement(listener);
 	}
 	
@@ -372,7 +369,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	public synchronized void addCardRequestResponseListener(ICardRequestResponseListener listener)
 	{
 		if (CardRequestResponseListeners == null)
-			CardRequestResponseListeners = new Vector();
+			CardRequestResponseListeners = new Vector<ICardRequestResponseListener>();
 		CardRequestResponseListeners.addElement(listener);
 	}
 	

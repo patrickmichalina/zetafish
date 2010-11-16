@@ -15,16 +15,10 @@ import java.io.Serializable;
  */
 
 public class ZFCard implements Serializable, Comparable<ZFCard>
-{
-   
-   public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
-	
-//   public final static int SPADES   = 0;       // Codes for the 4 suits, plus Joker.
-//   public final static int HEARTS   = 1;
-//   public final static int DIAMONDS = 2;
-//   public final static int CLUBS    = 3;
+{      
+	private static final long serialVersionUID = 1L;
 
-   //public final static int JOKER = 4;       
+	public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};	   
    
    public final static int ACE   = 1;          // Codes for the non-numeric cards.
    public final static int JACK  = 11;        //   Cards 2 through 10 have their

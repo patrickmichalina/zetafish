@@ -1,8 +1,5 @@
 package ZetaFish.Interfaces;
 
-import java.util.*;
-
-import ZetaFish.*;
 import ZetaFish.NetworkObjects.*;
 
 public interface INetworkManager 

@@ -1,13 +1,12 @@
 package ZetaFish.GUI;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
 import ZetaFish.NetworkObjects.ZFCard;
 
 public class PlayerHandPane extends PlayerPane
-{		
+{	
+	private static final long serialVersionUID = 1L;
+	
 	public PlayerHandPane(DeckOfCards deck)
 	{
 		super(deck);
@@ -21,7 +20,7 @@ public class PlayerHandPane extends PlayerPane
 	{
 		this.setTitle("Your Hand - " + score);
 		// sort cards low to high
-		ArrayList<ZFCard> list = new ArrayList<ZFCard>(Arrays.asList(cards));
+		//ArrayList<ZFCard> list = new ArrayList<ZFCard>(Arrays.asList(cards));
 		Arrays.sort(cards);
 		super.addCards(cards);
 	}

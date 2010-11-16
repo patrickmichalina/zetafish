@@ -46,10 +46,11 @@ public class GUIUtilities
 	
 	/**
 	 * Plays a sound from contained in the embedded resources
+	 * @param <T>
 	 * @param link
 	 * @param cls
 	 */
-	public synchronized static void playSound(final String link, Class cls) 
+	public synchronized static <T> void playSound(final String link, Class<T> cls) 
 	{
 		try {
 			javax.sound.sampled.Clip clip = AudioSystem.getClip();

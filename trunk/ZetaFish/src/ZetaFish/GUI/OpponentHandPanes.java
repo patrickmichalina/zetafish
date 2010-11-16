@@ -5,19 +5,16 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.border.TitledBorder;
-
 import ZetaFish.NetworkObjects.ZFCard;
 
 public class OpponentHandPanes extends JLayeredPane implements MouseListener
 {
+	private static final long serialVersionUID = 1L;
+	
     private final Color SELECTED_COLOR = Color.GREEN;
     private final Color HOVER_COLOR = Color.WHITE;
 	
@@ -29,7 +26,8 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     
     private JLabel sub1BackDrop = new JLabel();
     
-    private DeckOfCards deck = null;
+    @SuppressWarnings("unused")
+	private DeckOfCards deck = null;
 	
 	public OpponentHandPanes(DeckOfCards deck)
 	{

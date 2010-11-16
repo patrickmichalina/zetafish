@@ -14,12 +14,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ZetaFish.Interfaces.ICardButtonPush;
-import ZetaFish.Interfaces.IStatusListener;
-import ZetaFish.Interfaces.ITurnListener;
 import ZetaFish.NetworkObjects.ZFCard;
 
 public class CardSelectorPane extends JPanel implements ActionListener
 {
+	private static final long serialVersionUID = 1L;
+	
  	private final String REQ_1_ACTION = "request_1_from_player";
     private final String REQ_2_ACTION = "request_2_from_player";
     private final String REQ_3_ACTION = "request_3_from_player";
@@ -52,7 +52,7 @@ public class CardSelectorPane extends JPanel implements ActionListener
 	
 	private Dimension    dimButtonSize     = new Dimension(50,35);
 	
-	private transient Vector CardPushListeners;
+	private transient Vector<ICardButtonPush> CardPushListeners;
 	
 	public CardSelectorPane()
 	{
@@ -194,18 +194,18 @@ public class CardSelectorPane extends JPanel implements ActionListener
 	public void addCardButtonPushListener(ICardButtonPush listener)
 	{
 		if (CardPushListeners == null)
-			CardPushListeners = new Vector();
+			CardPushListeners = new Vector<ICardButtonPush>();
 		CardPushListeners.addElement(listener);	
 	}
 	
 	private void NotifyCardPushListeners(int cardValue)
 	{
 		// Notify all turn event listeners
-		Vector targets;
+		Vector<ICardButtonPush> targets;
 	    synchronized (this) {
-	    	targets = (Vector) CardPushListeners.clone();
+	    	targets =  new Vector<ICardButtonPush>(CardPushListeners);
 	    }
-	    Enumeration e = targets.elements();
+	    Enumeration<ICardButtonPush> e = targets.elements();
 	    while (e.hasMoreElements()) 
 	    {
 	    	ICardButtonPush l = (ICardButtonPush) e.nextElement();
