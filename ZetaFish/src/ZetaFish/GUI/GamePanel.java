@@ -16,12 +16,9 @@ import ZetaFish.NetworkObjects.ZFStatus;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 
 /**
  *  Summary: Class GamePanel represents the playing area that houses 3 sections.
@@ -29,13 +26,6 @@ import javax.sound.sampled.AudioSystem;
  *           can see what is happening during the game. Mainly, it can give an
  *           intuitive feeling of how many cards are left in the deck and what is
  *           in the player's hand.
- *  Imports: java.awt.BorderLayout, java.awt.Color, javax.swing.BorderFactory
- *  Exports: GamePanel Object.
- *  {author= Zeta Dragons, version=1.0, since=2010}
- *
- *  @author Patrick Michalina
- *  @author Chad Albrecht
- *  @author Melanie
  */
 public class GamePanel extends JPanel implements 	IStatusListener, 
   													ITurnListener, 
@@ -45,7 +35,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
   													ICardButtonPush, 
   													ActionListener,
   													Runnable
-{
+{	
+	private static final long serialVersionUID = 1L;
+
 	private DeckOfCards deck 					= new DeckOfCards();
 
     private OpponentHandPanes   panelOpponent   = new OpponentHandPanes(deck);

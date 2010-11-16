@@ -3,8 +3,6 @@ package ZetaFish.NetworkObjects;
 import java.io.Serializable;
 import java.util.*;
 
-
-
 /**
  *  An object of type Deck represents a deck of playing cards.  The deck
  *  is a regulate poker deck that contains 52 regular cards and that can
@@ -12,20 +10,14 @@ import java.util.*;
  */
 public class ZFDeck  implements Serializable 
 {
-   
+	private static final long serialVersionUID = 1L;
+	
    /**
     * An array of 52 or 54 cards.  A 54-card deck contains two Jokers,
-    * in addtion to the 52 cards of a regular poker deck.
+    * in addition to the 52 cards of a regular poker deck.
     */
-   private ZFCard[] deck;
-   
-   /**
-    * Keeps track of the number of cards that have been dealt from
-    * the deck so far.
-    */
-   private int cardsUsed;
-   
-   
+   private ZFCard[] deck;   
+      
    private List<ZFCard> unused_deck = null;
    
    /**
@@ -67,8 +59,7 @@ public class ZFDeck  implements Serializable
       if (includeJokers) {
          deck[52] = new ZFCard(1,ZFCard.Suits.JOKER);
          deck[53] = new ZFCard(2,ZFCard.Suits.JOKER);
-      }
-      cardsUsed = 0;
+      }      
    }
    
    
@@ -84,8 +75,7 @@ public class ZFDeck  implements Serializable
          deck[i] = deck[rand];
          deck[rand] = temp;
       }
-      unused_deck = new ArrayList(Arrays.asList(deck));
-      cardsUsed = 0;
+      unused_deck = new ArrayList<ZFCard>(Arrays.asList(deck));      
    }
    
    /**
@@ -97,8 +87,7 @@ public class ZFDeck  implements Serializable
     * shuffled.  It decreases by 1 each time the dealCard() method
     * is called.
     */
-   public int cardsLeft() {
-      //return deck.length - cardsUsed;
+   public int cardsLeft() {      
 	   return unused_deck.size();
    }
    
@@ -116,13 +105,7 @@ public class ZFDeck  implements Serializable
       if (cardsLeft() == 0)
          throw new IllegalStateException("No cards are left in the deck.");
 
-      return unused_deck.remove(0);
-      
-      //cardsUsed++;
-      //return deck[cardsUsed - 1];
-      // Programming note:  Cards are not literally removed from the array
-      // that represents the deck.  We just keep track of how many cards
-      // have been used.
+      return unused_deck.remove(0);    
    }
    
    public void replaceCards(ZFCard[] cards)

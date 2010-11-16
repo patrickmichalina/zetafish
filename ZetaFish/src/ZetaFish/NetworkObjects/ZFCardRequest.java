@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 public class ZFCardRequest implements Serializable 
 {
+	private static final long serialVersionUID = 1L;
+	
 	private int Player;
 	private int Opponent;
 	private int CardValue;

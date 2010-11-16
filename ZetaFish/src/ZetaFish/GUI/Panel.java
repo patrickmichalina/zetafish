@@ -10,7 +10,10 @@ import javax.swing.JPanel;
  * @author Patrick
  */
 
-public class Panel extends JPanel {
+public class Panel extends JPanel 
+{
+	private static final long serialVersionUID = 1L;
+	
     private ImageIcon background = null;
 
     /**

@@ -3,8 +3,6 @@ package ZetaFish;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-
 import ZetaFish.Interfaces.*;
 import ZetaFish.NetworkObjects.*;
 
@@ -12,7 +10,6 @@ public class TestConsole implements IChatListener, IStatusListener, ITurnListene
 {
 	private static ZetaFishClient _client = new ZetaFishClient();
 	private static INetworkManager nm = _client;
-	private int gameID = -1;
 		
 	public final int OPEN_CONN_1 = 1;
 	public final int OPEN_CONN_2 = 2;

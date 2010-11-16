@@ -1,6 +1,5 @@
 package ZetaFish.Interfaces;
 
-import ZetaFish.*;
 import ZetaFish.NetworkObjects.*;
 
 public interface IRemovePlayerListener {

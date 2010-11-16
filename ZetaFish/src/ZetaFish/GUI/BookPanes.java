@@ -10,6 +10,8 @@ import ZetaFish.NetworkObjects.ZFCard;
 
 public class BookPanes extends JLayeredPane  
 {
+	private static final long serialVersionUID = 1L;
+	
 	private BookPane panelBookAce;
     private BookPane panelBookKing;
     private BookPane panelBookQueen;
@@ -24,7 +26,8 @@ public class BookPanes extends JLayeredPane
     private BookPane panelBook3;
     private BookPane panelBook2; 
 	    
-    private DeckOfCards deck = null; 
+    @SuppressWarnings("unused")
+	private DeckOfCards deck = null; 
     
     public BookPanes(DeckOfCards deck)
     {

@@ -7,10 +7,12 @@ import javax.swing.JLabel;
  *
  * @author Patrick
  */
-public class Card extends JLabel{
+public class Card extends JLabel
+{
+	private static final long serialVersionUID = 1L;
+	
     private ImageIcon img;
-    private ImageIcon imgBack;
-    private JLabel    container;
+    private ImageIcon imgBack;    
     private boolean   shown = false;
 
     Card(ImageIcon image) {

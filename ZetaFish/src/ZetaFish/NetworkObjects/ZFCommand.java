@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 public class ZFCommand implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	public enum CommandType
 	{
 		NONE,

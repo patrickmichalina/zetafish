@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public class ZFStatus implements Serializable
 {
-	private static int seqNumber = 0;
+	private static final long serialVersionUID = 1L;
+		
 	public enum StatusType
 	{
 		NONE,

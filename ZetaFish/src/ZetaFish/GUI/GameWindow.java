@@ -35,8 +35,11 @@ import ZetaFish.Interfaces.IServerErrorListener;
  *
  */
 
-public class GameWindow extends JFrame implements IServerErrorListener, ActionListener {
-    /**
+public class GameWindow extends JFrame implements IServerErrorListener, ActionListener 
+{    
+	private static final long serialVersionUID = 1L;
+
+	/**
      * These local fields create instances of panels that wrap other panels.
      * BackgroundPanel is the primary panel that holds the main BG image.
      * logoPanel holds the image of the ZetaFish logo.
@@ -44,7 +47,8 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
      * infoPanel is holds status information for the game
      * gamePanel is the panel that contains several more game related panels
      */
-    private static GameWindow ourGameWindow;
+    @SuppressWarnings("unused")
+	private static GameWindow ourGameWindow;
 
     private BackgroundPanel backgroundPanel;
     private Panel           logoPanel;

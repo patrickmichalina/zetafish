@@ -2,10 +2,10 @@ package ZetaFish.NetworkObjects;
 
 import java.io.Serializable;
 
-import ZetaFish.*;
-
 public class ZFCardRequestResponse implements Serializable 
 {
+	private static final long serialVersionUID = 1L;
+	
 	public enum CardRequestResult
 	{
 		FROM_PLAYER,

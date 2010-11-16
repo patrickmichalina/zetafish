@@ -13,8 +13,10 @@ import javax.swing.ImageIcon;
  *  @author Patrick Michalina
  */
 public class BackgroundPanel extends Panel
-{
-    BackgroundPanel(ImageIcon image)
+{    
+	private static final long serialVersionUID = 1L;
+
+	BackgroundPanel(ImageIcon image)
     {
         super(image);
     }
