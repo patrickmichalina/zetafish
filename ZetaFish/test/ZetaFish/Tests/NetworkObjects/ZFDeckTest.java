@@ -1,8 +1,6 @@
 package ZetaFish.Tests.NetworkObjects;
 
 import static org.junit.Assert.*;
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
