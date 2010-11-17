@@ -1,6 +1,7 @@
 package ZetaFish;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -165,7 +166,7 @@ class ZFClientResponseHandler extends Thread {
 	}
 	
 	public void run()
-	{
+	{				
 		try
 		{
 			player = game.addPlayer(out);			
@@ -182,12 +183,12 @@ class ZFClientResponseHandler extends Thread {
 		catch(Exception err)
 		{
 			// TODO: Implement better exception handling
-			HandleLocalException(err);
+			HandleLocalException(err);			
 		}
 		finally
-		{
-			closeLink();
-		}	
+		{			
+			closeLink();				
+		}			
 	}
 	
 	private void HandleLocalException(Exception error)
@@ -203,13 +204,14 @@ class ZFClientResponseHandler extends Thread {
 		
 		server.display("Listening for input from " + player.getToken());
 		while (!done) {
-//			try
-//			{		
+			try
+			{		
 				Object oin = in.readObject();
 				if(oin == null)
 				{
 					server.display("Client disconnect");
 					done = true;
+					player.sendObject(new RuntimeException("Client connection closed by " + player.getToken()));
 				}
 				else 
 				{							
@@ -217,11 +219,12 @@ class ZFClientResponseHandler extends Thread {
 					parseObjectIn(oin);
 				}
 				
-//			}
-//			catch(IOException e) {
-//				server.display(e.toString());
-//				done = true;
-//			}
+			}
+			catch(Exception e) {
+				server.display(e.toString());
+				done = true;				
+				server.BroadcastObject(new RuntimeException("Client connection closed by " + player.getToken()));
+			}
 		}
 		in.close();
 	}	

@@ -37,9 +37,12 @@ public class GUIUtilities
         {
             for(ZFPlayer player: players)
             {
-                System.out.println("\tName:" + player.getPlayerName());
-                System.out.println("\tScore:" + player.getScore());
-                System.out.println("\tCards in hand:" + player.getCardsInHand());
+            	if(player != null)
+            	{
+	                System.out.println("\tName:" + player.getPlayerName());
+	                System.out.println("\tScore:" + player.getScore());
+	                System.out.println("\tCards in hand:" + player.getCardsInHand());
+            	}
             }
         }
 	}
