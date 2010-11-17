@@ -61,6 +61,8 @@ public class ZetaFishClient extends Thread implements INetworkManager
 				{
 					done = true;					
 					msg = rex.getMessage();
+					if(msg == null)
+						serverExited = true;
 				}
 				catch(Exception err)
 				{
@@ -90,6 +92,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	
 	private void parseObjectIn(Object oin) 		
 	{	
+		System.out.print("parseObjectIn() oin.getClass=" + oin.getClass());
 		if(oin.getClass() == ZFChat.class)
 		{
 			parseChatCommand((ZFChat) oin);
