@@ -2125,222 +2125,6 @@
             </ownedParameter>
           </ownedOperation>
         </packagedElement>
-        <packagedElement xmi:type="uml:Interface" xmi:id="a1534" name="INetworkManager" clientDependency="a1710">
-          <ownedOperation xmi:id="a1535" name="openConnection" visibility="public">
-            <ownedParameter xmi:id="a1536" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1537" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1538"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1539" name="Server" visibility="public" type="a3344">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1540" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1541"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1542" name="myUserName" visibility="public" type="a3344">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1543" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1544"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1545" name="myPassword" visibility="public" type="a3344">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1546" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1547"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1548" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1549" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1550"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1551" name="closeConnection" visibility="public">
-            <ownedParameter xmi:id="a1552" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1553" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1554"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1555" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1556" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1557"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1558" name="startGame" visibility="public">
-            <ownedParameter xmi:id="a1559" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1560" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1561"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1562" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1563" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1564"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1565" name="exitGame" visibility="public">
-            <ownedParameter xmi:id="a1566" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1567" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1568"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1569" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1570" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1571"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1572" name="getIsGameRunning" visibility="public">
-            <ownedParameter xmi:id="a1573" visibility="public" type="a3077" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1574" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1575"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1576" name="sendMessage" visibility="public">
-            <ownedParameter xmi:id="a1577" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1578" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1579"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1580" name="msg" visibility="public" type="a3344">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1581" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1582"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1583" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1584" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1585"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1586" name="addChatListener" visibility="public">
-            <ownedParameter xmi:id="a1587" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1588" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1589"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1590" name="listener" visibility="public" type="a1507">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1591" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1592"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1593" name="addStatusListener" visibility="public">
-            <ownedParameter xmi:id="a1594" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1595" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1596"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1597" name="listener" visibility="public" type="a1518">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1598" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1599"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1600" name="addTurnListener" visibility="public">
-            <ownedParameter xmi:id="a1601" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1602" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1603"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1604" name="listener" visibility="public" type="a1502">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1605" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1606"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1607" name="addRemovePlayerListener" visibility="public">
-            <ownedParameter xmi:id="a1608" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1609" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1610"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1611" name="listener" visibility="public" type="a1693">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1612" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1613"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1614" name="addServerErrorListener" visibility="public">
-            <ownedParameter xmi:id="a1615" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1616" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1617"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1618" name="listener" visibility="public" type="a1526">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1619" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1620"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1621" name="getScore" visibility="public">
-            <ownedParameter xmi:id="a1622" visibility="public" type="a3076" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1623" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1624"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1625" name="p" visibility="public" type="a3076">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1626" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1627"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1628" name="DoneWithTurn" visibility="public">
-            <ownedParameter xmi:id="a1629" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1630" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1631"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1632" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1633" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1634"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1635" name="addCardRequestResponseListener" visibility="public">
-            <ownedParameter xmi:id="a1636" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1637" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1638"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1639" name="listener" visibility="public" type="a1701">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1640" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1641"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1642" name="RequestCards" visibility="public">
-            <ownedParameter xmi:id="a1643" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1644" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1645"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1646" name="From" visibility="public" type="a3076">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1647" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1648"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1649" name="CardValue" visibility="public" type="a3076">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1650" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1651"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1652" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1653" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1654"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1655" name="PlayBook" visibility="public">
-            <ownedParameter xmi:id="a1656" visibility="public" type="a3078" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1657" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1658"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1659" name="book" visibility="public" type="a1895">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1660" value="*"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1661"/>
-            </ownedParameter>
-            <ownedParameter xmi:id="a1662" visibility="public" type="a3388">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1663" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1664"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1665" name="getHand" visibility="public">
-            <ownedParameter xmi:id="a1666" visibility="public" type="a1895" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1667" value="*"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1668"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1669" name="getIsGameOver" visibility="public">
-            <ownedParameter xmi:id="a1670" visibility="public" type="a3077" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1671" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1672"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1673" name="getMyPlayerNumber" visibility="public">
-            <ownedParameter xmi:id="a1674" visibility="public" type="a3076" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1675" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1676"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1677" name="getNumberOfPlayers" visibility="public">
-            <ownedParameter xmi:id="a1678" visibility="public" type="a3076" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1679" value="1"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1680"/>
-            </ownedParameter>
-          </ownedOperation>
-          <ownedOperation xmi:id="a1681" name="getPlayers" visibility="public">
-            <ownedParameter xmi:id="a1682" visibility="public" type="a1829" direction="return">
-              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1683" value="*"/>
-              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1684"/>
-            </ownedParameter>
-          </ownedOperation>
-        </packagedElement>
         <packagedElement xmi:type="uml:Interface" xmi:id="a1685" name="ICardButtonPush">
           <ownedOperation xmi:id="a1686" name="OnCardButtonSelect" visibility="public">
             <ownedParameter xmi:id="a1687" visibility="public" type="a3078" direction="return">
@@ -4295,6 +4079,222 @@
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="a3072" memberEnd="a2886 a3073">
         <ownedEnd xmi:id="a3073" type="a2882" association="a3072"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Interface" xmi:id="a1534" name="INetworkManager" clientDependency="a1710">
+        <ownedOperation xmi:id="a1535" name="openConnection" visibility="public">
+          <ownedParameter xmi:id="a1536" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1537" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1538"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1539" name="Server" visibility="public" type="a3344">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1540" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1541"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1542" name="myUserName" visibility="public" type="a3344">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1543" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1544"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1545" name="myPassword" visibility="public" type="a3344">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1546" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1547"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1548" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1549" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1550"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1551" name="closeConnection" visibility="public">
+          <ownedParameter xmi:id="a1552" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1553" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1554"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1555" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1556" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1557"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1558" name="startGame" visibility="public">
+          <ownedParameter xmi:id="a1559" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1560" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1561"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1562" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1563" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1564"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1565" name="exitGame" visibility="public">
+          <ownedParameter xmi:id="a1566" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1567" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1568"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1569" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1570" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1571"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1572" name="getIsGameRunning" visibility="public">
+          <ownedParameter xmi:id="a1573" visibility="public" type="a3077" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1574" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1575"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1576" name="sendMessage" visibility="public">
+          <ownedParameter xmi:id="a1577" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1578" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1579"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1580" name="msg" visibility="public" type="a3344">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1581" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1582"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1583" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1584" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1585"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1586" name="addChatListener" visibility="public">
+          <ownedParameter xmi:id="a1587" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1588" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1589"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1590" name="listener" visibility="public" type="a1507">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1591" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1592"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1593" name="addStatusListener" visibility="public">
+          <ownedParameter xmi:id="a1594" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1595" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1596"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1597" name="listener" visibility="public" type="a1518">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1598" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1599"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1600" name="addTurnListener" visibility="public">
+          <ownedParameter xmi:id="a1601" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1602" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1603"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1604" name="listener" visibility="public" type="a1502">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1605" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1606"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1607" name="addRemovePlayerListener" visibility="public">
+          <ownedParameter xmi:id="a1608" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1609" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1610"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1611" name="listener" visibility="public" type="a1693">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1612" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1613"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1614" name="addServerErrorListener" visibility="public">
+          <ownedParameter xmi:id="a1615" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1616" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1617"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1618" name="listener" visibility="public" type="a1526">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1619" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1620"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1621" name="getScore" visibility="public">
+          <ownedParameter xmi:id="a1622" visibility="public" type="a3076" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1623" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1624"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1625" name="p" visibility="public" type="a3076">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1626" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1627"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1628" name="DoneWithTurn" visibility="public">
+          <ownedParameter xmi:id="a1629" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1630" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1631"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1632" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1633" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1634"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1635" name="addCardRequestResponseListener" visibility="public">
+          <ownedParameter xmi:id="a1636" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1637" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1638"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1639" name="listener" visibility="public" type="a1701">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1640" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1641"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1642" name="RequestCards" visibility="public">
+          <ownedParameter xmi:id="a1643" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1644" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1645"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1646" name="From" visibility="public" type="a3076">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1647" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1648"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1649" name="CardValue" visibility="public" type="a3076">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1650" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1651"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1652" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1653" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1654"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1655" name="PlayBook" visibility="public">
+          <ownedParameter xmi:id="a1656" visibility="public" type="a3078" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1657" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1658"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1659" name="book" visibility="public" type="a1895">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1660" value="*"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1661"/>
+          </ownedParameter>
+          <ownedParameter xmi:id="a1662" visibility="public" type="a3388">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1663" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1664"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1665" name="getHand" visibility="public">
+          <ownedParameter xmi:id="a1666" visibility="public" type="a1895" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1667" value="*"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1668"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1669" name="getIsGameOver" visibility="public">
+          <ownedParameter xmi:id="a1670" visibility="public" type="a3077" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1671" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1672"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1673" name="getMyPlayerNumber" visibility="public">
+          <ownedParameter xmi:id="a1674" visibility="public" type="a3076" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1675" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1676"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1677" name="getNumberOfPlayers" visibility="public">
+          <ownedParameter xmi:id="a1678" visibility="public" type="a3076" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1679" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1680"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="a1681" name="getPlayers" visibility="public">
+          <ownedParameter xmi:id="a1682" visibility="public" type="a1829" direction="return">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="a1683" value="*"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="a1684"/>
+          </ownedParameter>
+        </ownedOperation>
       </packagedElement>
     </packagedElement>
     <packagedElement xmi:type="uml:Package" xmi:id="a3074" name="Common Java datatypes">
