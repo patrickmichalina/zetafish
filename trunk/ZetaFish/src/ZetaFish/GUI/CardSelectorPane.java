@@ -16,6 +16,12 @@ import javax.swing.JPanel;
 import ZetaFish.Interfaces.ICardButtonPush;
 import ZetaFish.NetworkObjects.ZFCard;
 
+
+/**
+ * Provides a means to choose which card to request from an opponent
+ * 
+ * Design 7.1.11 v1.5
+ */
 public class CardSelectorPane extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
@@ -54,6 +60,9 @@ public class CardSelectorPane extends JPanel implements ActionListener
 	
 	private transient Vector<ICardButtonPush> CardPushListeners;
 	
+	/**
+	 * Constructor
+	 */
 	public CardSelectorPane()
 	{
 		Color DefaultForeColor = Color.WHITE;
@@ -96,6 +105,9 @@ public class CardSelectorPane extends JPanel implements ActionListener
         setButtonListeners();
 	}
 	
+	/**
+	 * Wires up the listeners for all the button on this pane.
+	 */
 	private void setButtonListeners() 
 	{
 		this.btn1.setActionCommand(REQ_1_ACTION);
@@ -138,7 +150,10 @@ public class CardSelectorPane extends JPanel implements ActionListener
         this.btnking.addActionListener(this);			
 	}
 	
-		
+	/**
+	 * Enables or Disables all the buttons on this pane.	
+	 * @param isEnabled True if enabled, false otherwise.
+	 */
 	public void SetAllEnabledState(boolean isEnabled)
 	{
 		btn1.setEnabled(isEnabled);
@@ -156,11 +171,19 @@ public class CardSelectorPane extends JPanel implements ActionListener
 		btnking.setEnabled(isEnabled);
 	}	
 	
+	/**
+	 * Show the "My Turn" indicator.
+	 * @param isShown True if it is my turn, false otherwise.
+	 */
 	public void ShowMyTurn(boolean isShown)
 	{
 		lblMyTurn.setVisible(isShown);
 	}
 	
+	/**
+	 * Enable only the buttons that are represented in the hand.
+	 * @param hand Cards to check.
+	 */
 	public void EnableCardRequestChoiceByHand(ZFCard[] hand)
 	{
 		if(hand != null)
@@ -188,7 +211,7 @@ public class CardSelectorPane extends JPanel implements ActionListener
 	}
 	
 	/**
-	 * Add a subscriber to push events
+	 * Add a subscriber to button push events
 	 * @param listener
 	 */
 	public void addCardButtonPushListener(ICardButtonPush listener)
@@ -198,6 +221,10 @@ public class CardSelectorPane extends JPanel implements ActionListener
 		CardPushListeners.addElement(listener);	
 	}
 	
+	/**
+	 * Notify listeners of a button push.
+	 * @param cardValue value of card.
+	 */
 	private void NotifyCardPushListeners(int cardValue)
 	{
 		// Notify all turn event listeners
@@ -213,6 +240,9 @@ public class CardSelectorPane extends JPanel implements ActionListener
 	    }
 	}
 	
+	/**
+	 * See description in ActionListener.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae)
 	{

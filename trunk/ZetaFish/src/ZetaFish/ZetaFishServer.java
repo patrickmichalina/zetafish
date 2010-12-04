@@ -17,10 +17,7 @@ import ZetaFish.NetworkObjects.ZFCardRequestResponse.CardRequestResult;
 
 
 /**
- * Main class for ZetaFishServer
- * 
- * @author calbrecht
- *
+ * Main class for ZetaFishServer.
  */
 public class ZetaFishServer extends JFrame
 {	
@@ -29,11 +26,15 @@ public class ZetaFishServer extends JFrame
 	private ZFServerThread serverThread = null;
 	
 	public static final int DEFAULT_PORT = 5000;
-	public static final boolean INCLUDE_JOKERS = false;
-	
+		
 	private JTextArea output;
 	private JScrollPane scrollPane;	
 	
+	/**
+	 * Constructor
+	 * @param args Command line arguments
+	 * @param Visible Should the server window be visible?
+	 */
 	public ZetaFishServer(String args[], boolean Visible) 
 	{		
 		super("ZetaFish Server");
@@ -52,20 +53,32 @@ public class ZetaFishServer extends JFrame
 				display(e.toString());
 			}
 		}
-		serverThread = new ZFServerThread(this, port, ZetaFishServer.INCLUDE_JOKERS);
+		serverThread = new ZFServerThread(this, port);
 		serverThread.start();
 	}
 	
+	/**
+	 * Write a string to the window.
+	 * @param s String to write.
+	 */
 	public synchronized void display(String s) 
 	{
 		output.append(s + "\n");
 	}
 	
+	/**
+	 * Returns a Set of ZFClientResponseHandler representing each the channel to each player.
+	 * @return active players
+	 */
 	public synchronized Set<ZFClientResponseHandler> getActivePlayers()
 	{
-		return ZFServerThread.activePlayers;
+		return serverThread.getActivePlayers();		
 	}
 	
+	/**
+	 * Send a network object to all players.
+	 * @param obj network object to send.
+	 */
 	public synchronized void BroadcastObject(Object obj)
 	{
 		serverThread.BroadcastObject(obj);		
@@ -79,25 +92,34 @@ public class ZetaFishServer extends JFrame
 	}
 }
 
+/**
+ * Private class used by ZetaFishServer to handle incoming network requests
+ */
 class ZFServerThread extends Thread 
 {	
-	private ZetaFishServer ZFserver;
-	private boolean includeJokers;
+	private ZetaFishServer ZFserver;	
 	private ZFGame game;
 	private int port;
 	
 	static protected Set<ZFClientResponseHandler> activePlayers = new HashSet<ZFClientResponseHandler>();
-	
-	public ZFServerThread(ZetaFishServer server, int port, boolean includeJokers)
+
+	/**
+	 * Constructor
+	 * @param server Instance of ZetaFishServer
+	 * @param port Port to listen for clients on. 
+	 */
+	public ZFServerThread(ZetaFishServer server, int port)
 	{
 		this.ZFserver = server;
-		this.port = port;
-		this.includeJokers = includeJokers;
+		this.port = port;		
 	}
 	
+	/**
+	 * Thread.run
+	 */
 	public void run()
 	{		
-		game = new ZFGame(ZFserver, this.includeJokers);
+		game = new ZFGame(ZFserver);
 		try {
 			ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));			
 			Socket connection;
@@ -115,11 +137,19 @@ class ZFServerThread extends Thread
 		}		
 	}
 	
+	/**
+	 * Returns a Set of ZFClientResponseHandler representing each the channel to each player.
+	 * @return Set<ZFClientResponseHandler>
+	 */
 	public synchronized Set<ZFClientResponseHandler> getActivePlayers()
 	{
 		return ZFServerThread.activePlayers;
 	}
 	
+	/**
+	 * Send a network object to all players.
+	 * @param obj Network object to send.
+	 */
 	public synchronized void BroadcastObject(Object obj)
 	{
 		for(ZFClientResponseHandler prh: ZFServerThread.activePlayers)
@@ -130,9 +160,7 @@ class ZFServerThread extends Thread
 }
 
 /**
- * ZFClientResponseHandler: Threaded handler for client communication
- * @author calbrecht
- *
+ * Private class used by ZFServerThread as a threaded handler for client communication
  */
 class ZFClientResponseHandler extends Thread {
 	private Socket connection;
@@ -144,6 +172,12 @@ class ZFClientResponseHandler extends Thread {
 
 	private Player player;
 		
+	/**
+	 * Constructor
+	 * @param connection Client socket
+	 * @param game Instance of ZFGame
+	 * @param server Instance of ZetaFishServer
+	 */
 	public ZFClientResponseHandler(Socket connection, ZFGame game, ZetaFishServer server) 
 	{
 		this.connection = connection;
@@ -159,11 +193,18 @@ class ZFClientResponseHandler extends Thread {
 		}
 	}
 	
+	/**
+	 * Gets the Player object associated with this handler
+	 * @return Player
+	 */
 	public Player getPlayer()
 	{
 		return this.player;
 	}
 	
+	/**
+	 * Thread.run
+	 */
 	public void run()
 	{				
 		try
@@ -190,12 +231,19 @@ class ZFClientResponseHandler extends Thread {
 		}			
 	}
 	
+	/**
+	 * Single location to handle exceptions 
+	 * @param error Exception
+	 */
 	private void HandleLocalException(Exception error)
-	{
-		//System.out.println(err.getMessage());		
+	{			
 		server.display(error.toString());
 	}
 	
+	/**
+	 * Waits for incoming client objects then parses them.
+	 * @throws Exception
+	 */
 	private void parsePlayerInput() throws Exception 
 	{		
 		boolean done = false;
@@ -217,17 +265,21 @@ class ZFClientResponseHandler extends Thread {
 					server.display("Client --> Server: " + oin.toString());
 					parseObjectIn(oin);
 				}
-				
 			}
 			catch(Exception e) {
 				server.display(e.toString());
-				done = true;				
+				done = true;	
+				/* Design 7.1.9 v1.5 */
 				server.BroadcastObject(new RuntimeException("Client connection closed by " + player.getToken()));
 			}
 		}
 		in.close();
 	}	
 	
+	/**
+	 * Parse incoming client object.
+	 * @param oin Network object to parse.
+	 */
 	private void parseObjectIn(Object oin) 		
 	{	
 		if(oin.getClass() == ZFChat.class)
@@ -249,6 +301,10 @@ class ZFClientResponseHandler extends Thread {
 	
 	}
 	
+	/**
+	 * Parse incoming chat object.
+	 * @param c ZFChat object
+	 */
 	private void parseChatCommand(ZFChat c)
 	{		
 		server.display("(Chat)" + c.from + ": " + c.msg);
@@ -262,6 +318,10 @@ class ZFClientResponseHandler extends Thread {
 		}
 	}
 	
+	/**
+	 * Parse incoming Command.
+	 * @param cmd ZFCommand object
+	 */
 	private void parsePlayerCommand(ZFCommand cmd)
 	{
 		switch(cmd.getCommand())
@@ -281,18 +341,30 @@ class ZFClientResponseHandler extends Thread {
 		
 	}	
 	
+	/**
+	 * Handle incoming card request
+	 * @param cr ZFCardRequest
+	 */
 	private void parsePlayerCardRequest(ZFCardRequest cr)
 	{
 		game.doCardRequest(player.getPlayerNumber(), cr);		
 	}
 	
+	/**
+	 * Handle incoming play book command
+	 * @param play ZFPlayBook
+	 */
 	private void parsePlayerPlayBook(ZFPlayBook play)
 	{
 		game.doPlayBook(player.getPlayerNumber(), play);		
 	}
-	
+		
+	/**
+	 * Close the communications link to this player gracefully.
+	 */
 	private void closeLink() {
 		try {
+			/* Design 7.1.9.2 v1.5 */
 			game.delPlayer(player.getPlayerNumber());
 			if((connection != null) && (!connection.isClosed()))
 					connection.close();
@@ -304,10 +376,10 @@ class ZFClientResponseHandler extends Thread {
 		}
 	}
 }
+
+
 /**
- * ZFGame: Game Manager
- * @author calbrecht
- *
+ * Private class used by ZFServerThread as a Game Manager for the game of ZetaFish
  */
 class ZFGame {
 	public final int MAX_PLAYERS = 6;
@@ -322,29 +394,47 @@ class ZFGame {
 	
 	private ZetaFishServer server;
 	
-	public ZFGame(ZetaFishServer server, boolean includeJokers) {
+	/**
+	 * Constructor
+	 * @param server Instance of ZetaFishServer
+	 */
+	public ZFGame(ZetaFishServer server) {
 		this.server = server;
-		deck = new ZFDeck(includeJokers);	
+		deck = new ZFDeck();	
 		players = new ArrayList<Player>();		
 		numPlayers = 0;
 		gameEnabled = false;
 		isGameOver = false;
 	}
 	
+	/**
+	 * Is the game enabled?  (In progress)
+	 * @return boolean
+	 */
 	public boolean getGameEnabled()
 	{
 		return this.gameEnabled;
 	}
 	
+	/**
+	 * Is the game over?
+	 * @return boolean
+	 */
 	public boolean getIsGameOver()
 	{
 		return this.isGameOver;
 	}
 		
+	/**
+	 * Add a new player to the game.
+	 * @param out Player's ObjectOutputStream
+	 * @return new Player object
+	 */
 	synchronized public Player addPlayer(ObjectOutputStream out)
 	{
 		Player newPlayer = null;
 		
+		/* Design 7.1.4 v1.5 */
 		if(gameEnabled)
 		{
 			String error = "Game already enabled.  Player rejected.";
@@ -353,6 +443,7 @@ class ZFGame {
 			p.setOutput(out);
 			p.sendObject(new RuntimeException(error));
 		}
+		/* Design 7.1.2.2 v1.5 */
 		else if (numPlayers >= MAX_PLAYERS)
 		{
 			String error = "Too many players.  Player rejected.";
@@ -377,14 +468,16 @@ class ZFGame {
 		return newPlayer;
 	}
 	
+	/**
+	 * Remove a player from the game.
+	 * @param playerNumber Player number to remove.
+	 */
 	synchronized public void delPlayer(int playerNumber) {			
 		Player player = players.get(playerNumber);
 		server.display("delPlayer: " + player.getToken());
 		player.disable();
 
-		/**
-		 * (Requirement 3.1.9)
-		 */
+		/* Design 7.1.9.4 v1.5 */
 		deck.replaceCards(player.getHand());
 		
 		player.removeAllCardsFromHand();		
@@ -398,10 +491,15 @@ class ZFGame {
 		}
 		
 		players.remove(player);
+		/* Design 7.1.9.3 v1.5 */
 		sendRemovePlayer(player);
 		UpdateGameStatus(ZFStatus.StatusType.PLAYER_DELETE);
 	}
 	
+	/**
+	 * Send a RemovePlayer object to all clients.
+	 * @param player Player to remove
+	 */
 	private void sendRemovePlayer(Player player)
 	{
 		ZFPlayer zp = new ZFPlayer( player.getToken(), 
@@ -414,8 +512,12 @@ class ZFGame {
 		this.server.BroadcastObject(remove);
 	}
 	
+	/**
+	 * Start the game.
+	 */
 	synchronized public void startGame() 
 	{
+		/* Design 7.1.2.1 v1.5 */
 		if(numPlayers > 1)		
 		{
 			deck.shuffle();
@@ -446,8 +548,6 @@ class ZFGame {
 			{
 				player.sendMessageFromAdmin(msg);
 			}
-//			Player current = players.get(currentPlayerNumber); 
-//			current.sendMessageFromAdmin("Game is ready to begin");	
 		}
 		else
 		{
@@ -460,6 +560,10 @@ class ZFGame {
 		}
 	}
 	
+	/**
+	 * Update game status. (Turn change, card change, score change, etc.)
+	 * @param status
+	 */
 	private void UpdateGameStatus(ZFStatus.StatusType status)	
 	{
 		server.display("Server --> Clients: UpdateGameStatus " + status);
@@ -472,8 +576,8 @@ class ZFGame {
 			if(player != null)
 			{
 				zps[i] = new ZFPlayer( player.getToken(), 
-						player.getPlayerNumber(), 
-						player.getScore(), 
+						player.getPlayerNumber(), 						
+						player.getScore(), /* Design 7.1.7 v1.5 */ 
 						player.getCardsInHand(), 
 						player.getHand(), 
 						player.getBooks());
@@ -485,8 +589,10 @@ class ZFGame {
 		this.server.BroadcastObject(status_out);
 	}
 	
-	
-	
+	/**
+	 * Complete the current player's turn and move to the next player.
+	 * @param playerNumber Player number making the request.
+	 */
 	synchronized public void doTurnDone(int playerNumber)
 	{
 		if(playerNumber == this.currentPlayerNumber)
@@ -500,6 +606,11 @@ class ZFGame {
 		}
 	}
 	
+	/**
+	 * Make a card request. ("do you have any eights?")
+	 * @param playerNumber Player number making the request.
+	 * @param cr ZFCardRequest object
+	 */
 	synchronized public void doCardRequest(int playerNumber, ZFCardRequest cr)
 	{
 		ZFCardRequestResponse response = null;
@@ -511,14 +622,16 @@ class ZFGame {
 			ZFCard[] hand = opponent.getHand();
 			Set<ZFCard> passback = new HashSet<ZFCard>();
 			CardRequestResult result = CardRequestResult.FROM_PLAYER;
+			/* Design 7.1.12.1 v1.5 */
 			for(ZFCard card: hand)
 			{
 				if(card.getValue() == cr.getCardValue())
-				{
-					passback.add(card);					
+				{					
+					passback.add(card);	 /* Design 7.1.12.2 v1.5 */				
 					opponent.removeCardFromHand(card);					
 				}
 			}
+			/* Design 7.1.13 v1.5 */
 			if(passback.size() == 0)
 			{
 				result = CardRequestResult.FROM_OCEAN;
@@ -550,6 +663,11 @@ class ZFGame {
 		players.get(playerNumber).sendObject(response);
 	}
 	
+	/**
+	 * Play a book.
+	 * @param playerNumber Player number making the request.
+	 * @param play ZFPlayBook object
+	 */
 	synchronized public void doPlayBook(int playerNumber, ZFPlayBook play)
 	{
 		if(playerNumber == this.currentPlayerNumber)
@@ -570,19 +688,18 @@ class ZFGame {
 		}
 	}
 	
+	/**
+	 * Handle the game over state.
+	 */
 	synchronized public void doGameOver()
 	{		
 		isGameOver = true;
 		UpdateGameStatus(ZFStatus.StatusType.GAME_OVER);
 	}
-	
-	
 }
 
 /**
  * Player in a ZFGame  (private)
- * @author calbrecht
- *
  */
 class Player {
 	private String token;
@@ -590,7 +707,12 @@ class Player {
 	private int PlayerNumber;
 	private List<ZFCard> hand;
 	private List<ZFCard[]> books;
-			
+	
+	/**
+	 * Constructor
+	 * @param PlayerNumber Player number in game
+	 * @param token String used to represent this player. (name)
+	 */
 	public Player(int PlayerNumber, String token) {
 		this.PlayerNumber = PlayerNumber;
 		this.token = token;
@@ -598,29 +720,59 @@ class Player {
 		hand = new ArrayList<ZFCard>();
 		books = new ArrayList<ZFCard[]>();
 	}		
+	
+	/**
+	 * Sets the ObjectOutputStream used to write objects to the player.
+	 * @param out ObjectOutputStream object
+	 */
 	public void setOutput(ObjectOutputStream out)
 	{
 		this.out = out;
 	}
+	
+	/**
+	 * Gets the player's number 
+	 * @return int
+	 */
 	public int getPlayerNumber() {
 		return PlayerNumber;
 	}
+	/**
+	 * Gets the player's token
+	 * @return String
+	 */
 	public String getToken() {
 		return token;
 	}
+	/**
+	 * Sets the player's token. (name)
+	 * @param token String
+	 */
 	public void setToken(String token){
 		this.token = token;
 	}
 	
+	/**
+	 * Mark this player disabled.
+	 */
 	public void disable() {
 		out = null;
 	}
 	
+	/**
+	 * Add a card to this player's hand..
+	 * @param card Card to add
+	 */
 	public void addCardToHand(ZFCard card)
 	{
 		hand.add(card);
 	}
 	
+	/**
+	 * Remove a card from this player's hand.
+	 * @param card Card to remove.
+	 * @return true if removed, false otherwise.
+	 */
 	public boolean removeCardFromHand(ZFCard card)
 	{
 		boolean removed = false;
@@ -636,11 +788,17 @@ class Player {
 		return removed;
 	}
 	
+	/**
+	 * Remove all cards from this player's hand.
+	 */
 	public void removeAllCardsFromHand()
 	{
 		this.hand.clear();
 	}
 	
+	/**
+	 * Remove all books owned by this player.
+	 */
 	public void removeAllBooks()
 	{
 		this.books.clear();
@@ -652,6 +810,10 @@ class Player {
 		this.removeAllBooks();
 	}
 	
+	/**
+	 * Returns the cards in this player's hand.
+	 * @return ZFCard[]
+	 */
 	public ZFCard[] getHand()
 	{
 		ZFCard[] h = new ZFCard[hand.size()];
@@ -659,11 +821,19 @@ class Player {
 		return h;		
 	}
 	
+	/**
+	 * Gets the number of cards in this player's hand.
+	 * @return int
+	 */
 	public int getCardsInHand()
 	{
 		return hand.size();
 	}
 	
+	/**
+	 * Get the current books owned by this player.
+	 * @return ZFCard[][]
+	 */
 	public ZFCard[][] getBooks()
 	{		
 		ZFCard[][] bks = new ZFCard[books.size()][];
@@ -673,6 +843,10 @@ class Player {
 		return bks;
 	}
 	
+	/**
+	 * Plays a book for this player.
+	 * @param book Book to play
+	 */
 	public void playBook(ZFCard[] book)
 	{
 		books.add(book);
@@ -691,15 +865,20 @@ class Player {
 	}
 	
 	/**
-	 * (Requirement 3.1.8)
+	 * Returns the player's score 
 	 * @return Number of books at 1 point each
+	 * 
+	 * Design 7.1.8 v1.5
 	 */
 	public int getScore()
 	{
 		return this.books.size();
 	}
 	
-	
+	/**
+	 * Send a private message to this player from the game admin.
+	 * @param msg Message to send.
+	 */
 	public void sendMessageFromAdmin(String msg)
 	{
 		ZFChat chat = new ZFChat("Server ", msg);
@@ -714,6 +893,10 @@ class Player {
 		}
 	}
 	
+	/**
+	 * Send an object only to this player.
+	 * @param obj Network object to send.
+	 */
 	public void sendObject(Object obj)
 	{
 		try

@@ -76,10 +76,10 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 
     /**
      * Constructor
-     * @param networkManager
-     * @param serverName
-     * @param playerName
-     * @param CanStartGame
+     * @param networkManager Instance of INetworkManager implementation.
+     * @param serverName Server to connect to.
+     * @param playerName Local player.
+     * @param CanStartGame Is this the player that started the server?
      * @throws Exception
      */
     public GamePanel(INetworkManager networkManager, String serverName, String playerName, boolean CanStartGame) throws Exception {
@@ -237,6 +237,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
         this.btnSend.setActionCommand(SEND_ACTION);
         this.btnSend.addActionListener(this);
 
+        /* Design 7.1.5.1 v1.5 */
+        /* Design 7.1.5.2 v1.5 */
+        /* Design 7.1.6 v1.5 */
         if(this.CanStartGame)
         {
         	this.btnStartGame.setActionCommand(START_GAME_ACTION);
@@ -270,9 +273,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
     }
     
     /**
-     * BuildWinMessage
-     * @param status
-     * @return
+     * Builds a string containing information about the player that won the game.
+     * @param status Last ZFStatus containing player information
+     * @return String
      */
     private String buildWinMessage(ZFStatus status)
     {
@@ -294,6 +297,10 @@ public class GamePanel extends JPanel implements 	IStatusListener,
     	return name + " wins!";
     }
     
+    /**
+     * Update all the player's hands on the screen.
+     * @param players ZFPlayer[]
+     */
     private void updatePlayerHands(ZFPlayer[] players)
     {
     	if(players != null)
@@ -325,6 +332,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
         }
     }
       
+    /**
+     * See description in IStatusListener.
+     */
 	@Override
 	public void OnGameStausChange(ZFStatus status)
 	{
@@ -514,12 +524,18 @@ public class GamePanel extends JPanel implements 	IStatusListener,
     	this.networkManager.startGame();    	
 	}
 	
+	/**
+	 * See description in ITurnListener
+	 */
 	@Override
 	public void OnGameTurn()
 	{
 		// Currently not used
 	}
 
+	/**
+	 * See description in ICardRequestResponseListener
+	 */
 	@Override
 	public void OnCardRequestResponse(ZFCardRequestResponse response)
 	{
@@ -530,7 +546,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 		this.btnPlayBook.setEnabled(canPlayBook);
 		this.panelCardButtons.SetAllEnabledState(false);
 		
-		// Auto end turn
+		/* Auto end turn?
+		*   Design 7.1.14 v1.5  
+		*/
 		if(!canPlayBook)
 		{
 			try
@@ -544,6 +562,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 		}		
 	}
 	
+	/**
+	 * See description in IRemovePlayerListener
+	 */
 	@Override
 	public void OnRemovePlayer(ZFRemovePlayer remove) 
 	{
@@ -556,16 +577,25 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 		this.panelPool.returnCardsToOcean(cards);
 	}	 
 
+	/**
+	 * See description in Runnable
+	 */
     @Override
     public void run() {
         throw new UnsupportedOperationException("Not supported");
     }
 
+    /**
+	 * See description in IChatListener
+	 */
     @Override
     public void OnNewMessage(String from, String msg) {
         txtOutput.setText(txtOutput.getText() + from + ": " + msg + "\n");
     }
     
+    /**
+	 * See description in ICardButtonPush
+	 */
     @Override
 	public void OnCardButtonSelect(int cardValue) {
     	int selectedOpponent = this.panelOpponent.GetRequestPlayer();
@@ -576,6 +606,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 		}		
 	}     
 
+    /**
+	 * See description in ActionListener
+	 */
     @Override
     public void actionPerformed(ActionEvent ae)
     {
@@ -607,7 +640,7 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 
     /**
      * Single spot to determine how to handle exceptions
-     * @param err
+     * @param err Exception
      */
     private void HandleException(Exception err) {
     	err.printStackTrace();
