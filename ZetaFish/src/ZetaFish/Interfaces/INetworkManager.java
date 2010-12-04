@@ -7,15 +7,19 @@ public interface INetworkManager
 	/**
 	 * Open a connection to the game server given by the Server param
 	 * @param Server server name to connect to
-	 * @param myUserName 
-	 * @param myPassword
+	 * @param player name 
+	 * @param password used to login to server (if necessary)
 	 * @throws Exception
+	 * 
+	 * Design 7.1.3.1 v1.5
 	 */
   public void openConnection(String Server, String myUserName, String myPassword) throws Exception;
 
   /**
    * Close the connection to the current game sever
    * @throws Exception
+   * 
+   * Design 7.1.3.2 v1.5
    */
   public void closeConnection() throws Exception;
 

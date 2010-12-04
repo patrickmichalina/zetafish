@@ -4,18 +4,18 @@ import java.util.*;
 import javax.swing.ImageIcon;
 
 /**
+ * Represents the deck of playing cards used by the GUI.
  *
- * @author Patrick
+ * Design 7.1.15.2 v1.5
  */
 public class DeckOfCards {
     public enum Suits {SPADES, HEARTS, DIAMONDS, CLUBS, JOKER};
 	
-    /**
-     * 
-     */
     private Map<Suits, ArrayList <Card>> deck = new HashMap<Suits, ArrayList <Card>>();
     
-    // declare the memory space for each card
+    /* Bind a graphic to each card 
+     *   Design 7.1.15 v1.5
+     */
     private Card aceOfSpades      = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/spades-ace.png"    )));
     private Card aceOfClubs       = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/clubs-ace.png"     )));
     private Card aceOfHearts      = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/hearts-ace.png"    )));
@@ -82,7 +82,7 @@ public class DeckOfCards {
     private Card twoOfDiamonds    = new Card(new ImageIcon(getClass().getResource("/Resources/CardImages/diamonds-2.png"    )));
 
     /**
-     *
+     * Constructor
      */
     public DeckOfCards() 
     {
@@ -158,6 +158,12 @@ public class DeckOfCards {
         deck.get(Suits.DIAMONDS).add(kingOfDiamonds );       
     }
         
+    /**
+     * Get the card represented by the parameters.
+     * @param value Value of the card.
+     * @param suit Suit of the card.
+     * @return Card or null.
+     */
     public Card getCard(int value, Suits suit) {
     	Card card = null;
     	try {
@@ -169,6 +175,10 @@ public class DeckOfCards {
     	return card;
     }
     
+    /**
+     * Size of the deck.
+     * @return int
+     */
     public int size()
     {
     	return deck.size();

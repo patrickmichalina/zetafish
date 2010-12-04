@@ -8,6 +8,9 @@ import javax.swing.JLayeredPane;
 
 import ZetaFish.NetworkObjects.ZFCard;
 
+/**
+ * Container pane for the collection of books.
+ */
 public class BookPanes extends JLayeredPane  
 {
 	private static final long serialVersionUID = 1L;
@@ -29,6 +32,10 @@ public class BookPanes extends JLayeredPane
     @SuppressWarnings("unused")
 	private DeckOfCards deck = null; 
     
+    /**
+     * Constructor
+     * @param deck DeckOfCards
+     */
     public BookPanes(DeckOfCards deck)
     {
     	super();
@@ -79,6 +86,9 @@ public class BookPanes extends JLayeredPane
         setBookPaneBounds();
     }
     
+    /**
+     * Set the bounds of the pane.
+     */
     private void setBookPaneBounds() {
         panelBookAce.setBounds(   30,  70, 101, 65);
         panelBookKing.setBounds( 134,  40, 101, 65);
@@ -98,6 +108,10 @@ public class BookPanes extends JLayeredPane
               
     } 
     
+    /**
+     * Add books to the visible set.
+     * @param books Books to add.
+     */
     public void AddBooks(ZFCard[][] books)
     {
 		if(books != null)
@@ -111,6 +125,9 @@ public class BookPanes extends JLayeredPane
 		}
     }
     
+    /**
+     * Clear all the visible books.
+     */
     public void reset()
 	{
 		for(Component cmp : this.getComponents())

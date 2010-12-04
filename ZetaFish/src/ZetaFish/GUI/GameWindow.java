@@ -114,6 +114,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     
     private void showMenu()
     {
+    	/* Design 7.1.16 v1.5 */
     	this.setSize(800,600);
     	
     	backgroundPanel.removeAll();
@@ -139,10 +140,6 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
                     image,
                     null,
                     "localhost");
-
-            //TODO server validations
-
-
         } catch(Exception e) {
         	HandleException(e);
         }
@@ -162,8 +159,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
                     null,
                     "Your Name");
             
-            //check if name is too short
-            //if so, inform user
+            //check if name is too short, if so, inform user
             if (playername.length() < 2) {
                 JOptionPane.showMessageDialog(this,
                         "Name must contain more than two characters.",
@@ -171,13 +167,10 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
                         JOptionPane.INFORMATION_MESSAGE,
                         image);
             }
-
             else {
                 //TODO Maybe add a confirmation dialog
                 return playername;
             }
-            
-            
         } catch(Exception e) {
         	HandleException(e);
         }
@@ -188,13 +181,12 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     private void serverCommand() {
 
         String playername = getPlayerName();
-
         
-        boolean ShowServerWindow = true;
+        boolean ShowServerWindow = false;
         
         if((args != null) && (args.length > 0))
         {
-        	if(args[0].toUpperCase() == "TRUE")
+        	if(args[0].toUpperCase() == "showserver")
         		ShowServerWindow = true;
         }
 
@@ -246,8 +238,10 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
 	        
 	        backgroundPanel.validate();
             
-	        this.setSize(1024,768);
+	        /* Design 7.1.16 v1.5 */
+	        this.setSize(1024,768);	        
             this.setLocationRelativeTo(null);
+            
             started = true;
     	}
     	catch(Exception err) {

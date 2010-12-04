@@ -7,6 +7,9 @@ import java.net.*;
 import ZetaFish.Interfaces.*;
 import ZetaFish.NetworkObjects.*;
 
+/**
+ * An implementation of INetworkManager to be used on local networks.
+ */
 public class ZetaFishClient extends Thread implements INetworkManager
 {
 	public static final int SERVER_PORT = 5000;
@@ -27,7 +30,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	
 	private ZFStatus lastStatus = null;
 	
-	
+	/**
+	 * Default constructor
+	 */
 	public ZetaFishClient() 
 	{		
 	}
@@ -90,6 +95,12 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		}		
 	}
 	
+	/**
+	 * Determines the type of object retrieved from the network and passes
+	 * it to the appropriate handler.
+	 * 
+	 * @param oin Object to handle
+	 */
 	private void parseObjectIn(Object oin) 		
 	{	
 		System.out.print("parseObjectIn() oin.getClass=" + oin.getClass());
@@ -115,12 +126,20 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		}
 	}
 	
+	/**
+	 * Handle incoming exception from the server.
+	 * @param exception Exception to handle
+	 */
 	private void parseRuntimeException(RuntimeException exception)
 	{
 		System.out.print("RuntimeException from server:" + exception.getMessage());
 		throw(exception);					
 	}
 
+	/**
+	 * Handle an incoming chat object from the server.
+	 * @param c Chat object
+	 */
 	private void parseChatCommand(ZFChat c)
 	{	
 		// Notify all event listeners
@@ -136,6 +155,10 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    }
 	}
 	
+	/**
+	 * Handle and incoming status object from the server.
+	 * @param status Status object
+	 */
 	private void parseStatus(ZFStatus status)
 	{
 		this.lastStatus = status;
@@ -162,16 +185,27 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    	NotifyTurnListeners();
 	}
 	
+	/**
+	 * Handle an incoming CardRequestResponse from the server.
+	 * @param response CardRequestResponse object
+	 */
 	private void parseCardRequestResponse(ZFCardRequestResponse response)
 	{
 		NotifyCardRequestResponseListeners(response);
 	}
 	
+	/**
+	 * Handle an incoming RemovePlayer object from the server
+	 * @param remove RemovePlayer object
+	 */
 	private void parseRemovePlayer(ZFRemovePlayer remove)
 	{
 		NotifyRemovePlayerListeners(remove);
 	}
 		
+	/**
+	 * Notify all status listeners of new status message.
+	 */
 	private void NotifyStatusListeners()
 	{
 		// Notify all status event listeners
@@ -187,6 +221,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    }
 	}
 	
+	/**
+	 * Notify all turn listeners of a turn change.
+	 */
 	private void NotifyTurnListeners()
 	{
 		// Notify all turn event listeners
@@ -202,6 +239,10 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    }
 	}
 	
+	/**
+	 * Notify all remove player listeners that a player has exited
+	 * @param remove ZFRemovePlayer object representing the exiting player
+	 */
 	private void NotifyRemovePlayerListeners(ZFRemovePlayer remove)
 	{
 		// Notify all remove player event listeners
@@ -217,6 +258,10 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    }
 	}
 	
+	/**
+	 * Notify all card request response listeners of a new response.
+	 * @param response ZFCardRequestResponse object
+	 */		
 	private void NotifyCardRequestResponseListeners(ZFCardRequestResponse response)
 	{
 		// Notify all turn event listeners
@@ -232,6 +277,10 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    }
 	}
 	
+	/**
+	 * Notify all server error listeners that a server error was received.
+	 * @param msg
+	 */
 	private void NotifyServerErrorListeners(String msg)
 	{
 		// Notify all turn event listeners
@@ -263,9 +312,14 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	// ==================================================	
 	// Begin INetworkManager implementation
 	// ==================================================
+	
+	/**
+	 * See description in INetworkManager
+	 *  Design 7.1.3.1 v1.5 
+	 */	
 	@Override
-	public synchronized void openConnection(String Server, String myUserName, String myPassword)	throws Exception 
-	{
+	public synchronized void openConnection(String Server, String myUserName, String myPassword) throws Exception 
+	{		
 		this.client = new Socket(Server, SERVER_PORT);
 		this.client.setKeepAlive(true);
 		this.out = new ObjectOutputStream(client.getOutputStream());
@@ -274,7 +328,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 
 		new Thread(this).start();
 	}
-	
+
+	/**
+	 * See description in INetworkManager
+	 *  Design 7.1.3.2 v1.5 
+	 */
 	@Override
 	public synchronized void closeConnection() throws Exception
 	{
@@ -283,6 +341,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 			client.close();	
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void startGame() throws Exception
 	{
@@ -290,30 +351,44 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		sendObject(cmd);		
 	}
 
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void exitGame() throws Exception
 	{
 		this.closeConnection();		
 	}
-	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized ZFPlayer[] getPlayers() 
 	{
 		return (lastStatus == null) ? null : lastStatus.getPlayers();
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized int getMyPlayerNumber()
 	{
 		return this.myPlayerNumber;
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized int getNumberOfPlayers()
 	{
 		return (lastStatus == null) || (lastStatus.getPlayers() == null) ? 0 : lastStatus.getPlayers().length;
 	}
 
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void addChatListener(IChatListener listener)
 	{
@@ -322,6 +397,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		ChatListeners.addElement(listener);		
 	}
 
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void sendMessage(String msg) throws Exception 
 	{
@@ -329,6 +407,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		sendObject(chat);
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void addStatusListener(IStatusListener listener)
 	{
@@ -337,6 +418,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		StatusListeners.addElement(listener);
 	}
 		
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void addTurnListener(ITurnListener listener)
 	{
@@ -345,6 +429,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		TurnListeners.addElement(listener);
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void addRemovePlayerListener(IRemovePlayerListener listener)
 	{
@@ -353,6 +440,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		RemovePlayerListeners.addElement(listener);
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void addServerErrorListener(IServerErrorListener listener)
 	{
@@ -361,6 +451,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		ServerErrorListeners.addElement(listener);
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void DoneWithTurn() throws Exception
 	{
@@ -368,6 +461,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		sendObject(cmd);
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void addCardRequestResponseListener(ICardRequestResponseListener listener)
 	{
@@ -376,6 +472,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		CardRequestResponseListeners.addElement(listener);
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void RequestCards(int From, int CardValue) throws Exception
 	{
@@ -383,6 +482,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		sendObject(request);		
 	}	
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized void PlayBook(ZFCard[] book) throws Exception
 	{
@@ -390,24 +492,36 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		sendObject(play);		
 	}	
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized ZFCard[] getHand() 
 	{
 		return (lastStatus == null) ? null : lastStatus.getPlayers()[myPlayerNumber].getHand();
 	}
 		
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized int getScore(int p) 
 	{	
 		return (lastStatus == null) ? null : lastStatus.getPlayers()[p].getScore();
 	}
 	 
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized boolean getIsGameRunning() 
 	{	
 		return (lastStatus == null) ? false : lastStatus.getIsGameRunning();
 	}
 	
+	/**
+	 * See description in INetworkManager
+	 */
 	@Override
 	public synchronized boolean getIsGameOver() 
 	{	

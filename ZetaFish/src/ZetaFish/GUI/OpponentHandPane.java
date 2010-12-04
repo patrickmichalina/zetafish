@@ -4,6 +4,12 @@ public class OpponentHandPane extends PlayerPane
 {
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 * @param deck
+	 * 
+	 * Design 7.1.10 v1.5
+	 */
 	public OpponentHandPane(DeckOfCards deck)
 	{
 		super(deck);
