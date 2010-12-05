@@ -2,7 +2,6 @@ package ZetaFish.NetworkObjects;
 
 import java.io.Serializable;
 
-
 /**
  * An object of type Card represents a playing card from a
  * standard Poker deck, including Jokers.  The card has a suit, which
@@ -12,8 +11,12 @@ import java.io.Serializable;
  * the smallest value.  A joker can also have an associated value; 
  * this value can be anything and can be used to keep track of several
  * different jokers.
+ * 
+ *  Taken in part from:  Introduction to Programming Using Java, Fifth Edition 
+ *                       math.hws.edu/javanotes/source/Card.java
+ *                       
+ *  Design 4.6.1 v1.5                      
  */
-
 public class ZFCard implements Serializable, Comparable<ZFCard>
 {      
 	private static final long serialVersionUID = 1L;
@@ -164,6 +167,9 @@ public class ZFCard implements Serializable, Comparable<ZFCard>
 	   return retval;
    }
 
+   /**
+    * See description in Comparable<>
+    */
 	@Override
 	public int compareTo(ZFCard arg0) {
 	

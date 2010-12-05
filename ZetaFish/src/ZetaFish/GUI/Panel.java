@@ -6,10 +6,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 /**
- *
- * @author Patrick
+ * Base class for GameWindow
  */
-
 public class Panel extends JPanel 
 {
 	private static final long serialVersionUID = 1L;
@@ -17,7 +15,7 @@ public class Panel extends JPanel
     private ImageIcon background = null;
 
     /**
-     * 
+     * Default Constructor
      */
     public Panel() {
         super();
@@ -26,8 +24,8 @@ public class Panel extends JPanel
     }
     
     /**
-     *
-     * @param image
+     * Constructor
+     * @param image Background image.
      */
     public Panel(ImageIcon image) {
         super();
@@ -37,9 +35,9 @@ public class Panel extends JPanel
     }
 
     /**
-     *
-     * @param length
-     * @param height
+     * Constructor
+     * @param length Length of panel
+     * @param height Height of panel
      */
     public Panel(int length, int height) {
         super();
@@ -47,6 +45,11 @@ public class Panel extends JPanel
         setPreferredSize(dim);
     }
 
+    /**
+     * Scale and paint the background.
+     * 
+     * Additionally, see description in JPanel
+     */
     @Override
     protected void paintComponent(Graphics g) {
 

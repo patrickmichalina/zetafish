@@ -11,6 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import ZetaFish.NetworkObjects.ZFCard;
 
+/**
+ * Visual collection of OpponentHandPane.
+ * Design 5.2 v1.6
+ */
 public class OpponentHandPanes extends JLayeredPane implements MouseListener
 {
 	private static final long serialVersionUID = 1L;
@@ -26,9 +30,17 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     
     private JLabel sub1BackDrop = new JLabel();
     
+    int selectedOpponentNumber = -1;
+    int hoveredlayerPaneNumber = -1;
+    int oldAlpha = 0xFF000000;
+    
     @SuppressWarnings("unused")
 	private DeckOfCards deck = null;
 	
+    /**
+     * Constructor
+     * @param deck Deck of playing cards.
+     */
 	public OpponentHandPanes(DeckOfCards deck)
 	{
 		super();
@@ -72,6 +84,9 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
 		setMouseListener();		
 	}
 		
+	/**
+	 * Attach the mouse listener
+	 */
 	private void setMouseListener() {
         panelOpponentSub1.addMouseListener(this);
         panelOpponentSub2.addMouseListener(this);
@@ -80,11 +95,17 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
         panelOpponentSub5.addMouseListener(this);
     }
 	
+	/**
+	 * Pick one of the opponents as the default opponent to ask for cards from.
+	 */
 	public void SetDefaultOpponent()
 	{		
 		this.SelectOpponentPane((OpponentHandPane)this.getComponents()[0]);
 	}
 	
+	/**
+	 * Clear all the opponent hands.
+	 */
 	public void reset()
 	{
 		for(Component cmp : this.getComponents())
@@ -94,6 +115,10 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     	}
 	}
 	
+	/**
+	 * Show a opponent pane as being selected.
+	 * @param selectedPane Target pane
+	 */
 	public void SelectOpponentPane(OpponentHandPane selectedPane)
     {
 		for(Component cmp : this.getComponents())
@@ -135,6 +160,14 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     	}
     }
         
+    /**
+     * Add playing cards to an opponent's hand and set information.
+     * @param paneNumber Pane number index in collection.
+     * @param cards Cards to add.
+     * @param PlayerNumer Opponent's player number.
+     * @param name Opponent's player name.
+     * @param score Opponent's score.
+     */
     public void addCardsToOpponent(int paneNumber, ZFCard[] cards, int PlayerNumer, String name, int score)
     {    
     	OpponentHandPane op = (OpponentHandPane)this.getComponent(paneNumber);
@@ -144,6 +177,10 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
         op.addCards(cards);
     }
     
+    /**
+     * Remove player from collection.
+     * @param playerNumber Player to remove.
+     */
     public void removePlayer(int playerNumber)
     {
     	for(Component cmp : this.getComponents())
@@ -157,6 +194,11 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     	}    	
     }
     
+    /**
+     * Get the cards in an opponent's hand as an array of Components.
+     * @param playerNumber Opponent's player number
+     * @return Component[]
+     */
     public Component[] getPlayerCards(int playerNumber)
     {
     	Component[] retval = null;
@@ -175,17 +217,17 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
 	
 	 /**
      * Pulls the selected playernumber from the radio button group
-     * @return
+     * @return int
      */
     public int GetRequestPlayer() {
     	return selectedOpponentNumber;
     }
 
-	//private JLayeredPane paneWasClicked;
-    int selectedOpponentNumber = -1;
-    int hoveredlayerPaneNumber = -1;
-
-    //Test code for mouse hover over opponent hands to choose who to fish from
+    /**
+     *  Handle the selection of a new target opponent.  
+     *  
+     *  Additionally, see description in MouseListener
+     */
     @Override
     public void mouseClicked(MouseEvent me) {
     	GUIUtilities.playSound("select.wav", this.getClass());
@@ -194,14 +236,23 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     	SelectOpponentPane(clickedPane);
     } 
 
+    /**
+     * See description in MouseListener
+     */
     @Override
     public void mousePressed(MouseEvent me) { }
 
+    /**
+     * See description in MouseListener
+     */
     @Override
     public void mouseReleased(MouseEvent me) {   }
-
-    int oldAlpha = 0xFF000000;
     
+    /**
+     * Perform a "hover" effect.
+     * 
+     * Additionally, see description in MouseListener
+     */
     @Override
     public void mouseEntered(MouseEvent me) {
         PlayerPane clickedPane = (PlayerPane) me.getSource();
@@ -222,6 +273,11 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
         this.repaint();
     }
 
+    /**
+     * Clear the "hover" effect.
+     * 
+     * Additionally, see description in MouseListener
+     */
     @Override
     public void mouseExited(MouseEvent me) {
         PlayerPane clickedPane = (PlayerPane) me.getSource();

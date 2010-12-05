@@ -5,6 +5,10 @@ import javax.swing.border.TitledBorder;
 
 import ZetaFish.NetworkObjects.ZFCard;
 
+/**
+ * Base class for many of the Panes described in:
+ * Design 5.2 v1.6
+ */
 public class PlayerPane extends JLayeredPane  
 {
 	private static final long serialVersionUID = 1L;
@@ -23,32 +27,59 @@ public class PlayerPane extends JLayeredPane
     
     protected boolean cardsVisible = true;
 
+    /**
+     * Default Constructor
+     */
 	public PlayerPane() {
             super();
 	}
 	
+	/**
+	 * Constructor
+	 * @param deck Deck of playing cards.
+	 */
 	public PlayerPane(DeckOfCards deck)
 	{
 		super();
 		this.deck = deck;		
 	}
 
+	/**
+	 * Gets the player number represented by this pane.
+	 * @return int player number
+	 */
 	public int getPlayerNumber() {
             return this.playerNumber;
 	}
 
+	/**
+	 * Sets the player number represented by this pane.
+	 * @param playerNumber in player number.
+	 */
 	public void setPlayerNumber(int playerNumber) {
             this.playerNumber = playerNumber;
 	}
 
+	/**
+	 * Is this pane in the "selected" state?
+	 * @return true if selected, false otherwise.
+	 */
 	public boolean isSelected() {
 		return isSelected;
 	}
 
+	/**
+	 * Set this pane to the "selected" state.
+	 * @param isSelected true if selected, false otherwise.
+	 */
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
 	
+	/**
+	 * Set the title of the pane. (TitledBorder)
+	 * @param title String to use for the title.
+	 */
 	protected void setTitle(String title){
 		TitledBorder border = (TitledBorder)this.getBorder();
         border.setTitle(title);

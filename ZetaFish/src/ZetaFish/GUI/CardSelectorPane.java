@@ -20,6 +20,7 @@ import ZetaFish.NetworkObjects.ZFCard;
 /**
  * Provides a means to choose which card to request from an opponent
  * 
+ * Design 5.2 v1.6
  * Design 7.1.11 v1.5
  */
 public class CardSelectorPane extends JPanel implements ActionListener
