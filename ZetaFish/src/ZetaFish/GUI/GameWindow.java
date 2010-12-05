@@ -57,6 +57,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
 
     /**
      * Constructor
+     * @param args Command line arguments.
      */
     public GameWindow(String args[]) {
         super("ZetaFish - " + VersionInfo.version()); //give the window a title
@@ -68,7 +69,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     
     /**
      * Main application entry point.
-     * @param args[] Command line arguments.
+     * @param args Command line arguments.
      */
     public static void main(String args[]) {
          ourGameWindow = new GameWindow(args);
