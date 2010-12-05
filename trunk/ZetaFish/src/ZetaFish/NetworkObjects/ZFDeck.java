@@ -10,6 +10,8 @@ import java.util.*;
  *  
  *  Taken in part from:  Introduction to Programming Using Java, Fifth Edition 
  *                       math.hws.edu/javanotes/source/Deck.java
+ *                       
+ *  Design 4.6.6 v1.5                       
  */
 public class ZFDeck  implements Serializable 
 {

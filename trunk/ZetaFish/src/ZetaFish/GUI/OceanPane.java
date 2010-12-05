@@ -6,12 +6,21 @@ import java.awt.Rectangle;
 
 import javax.swing.JLabel;
 
+/**
+ * Displays the ocean of cards in the GUI.
+ * 
+ *  Design 5.2 v1.6
+ */
 public class OceanPane extends PlayerPane 
 {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel       lblCardCount      = new JLabel("Count: ");
 	
+	/**
+	 * Constructor
+	 * @param deck Playing card deck
+	 */
 	public OceanPane(DeckOfCards deck)
 	{
 		super(deck);
@@ -49,11 +58,18 @@ public class OceanPane extends PlayerPane
         this.invalidate();
     }
     
+    /**
+     * Updates the on screen ocean card count.
+     */
     public void UpdateCardCount()
     {
     	lblCardCount.setText("Count: " + this.getComponentCount());
     }
     
+    /**
+     * Put cards back into ocean.  (Exiting player?)
+     * @param cards  Cards to return.
+     */
     public void returnCardsToOcean(Component cards[])    
     {    	    	    	
     	for(Component cmp : cards)

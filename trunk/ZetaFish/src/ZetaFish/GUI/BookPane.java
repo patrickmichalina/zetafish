@@ -2,6 +2,8 @@ package ZetaFish.GUI;
 
 /**
  *  GUI Pane containing all the played books. 
+ *  
+ *  Design 5.2 v1.6
  */
 public class BookPane extends PlayerPane
 {

@@ -8,8 +8,15 @@ import ZetaFish.NetworkObjects.ZFCardRequestResponse;
 import ZetaFish.NetworkObjects.ZFPlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
 
+/**
+ * A set of utilities for displaying status, playing sounds, etc.
+ */
 public class GUIUtilities 
 {
+	/**
+	 * Show the contents of the ZFCardRequestResponse network object to System.out.
+	 * @param response ZFCardRequestResponse object
+	 */
 	public synchronized static void ShowCardRequestResponse(ZFCardRequestResponse response)
 	{
 		System.out.println("CARD REQUEST RESPONSE");
@@ -23,6 +30,10 @@ public class GUIUtilities
 		}
 	}
 	
+	/**
+	 * Show the contents of the ZFStatus network object to System.out.
+	 * @param response ZFStatus object
+	 */
 	public synchronized static void ShowGameStatus(ZFStatus status)
 	{
         System.out.println("STATUS CHANGE!");
@@ -49,9 +60,9 @@ public class GUIUtilities
 	
 	/**
 	 * Plays a sound from contained in the embedded resources
-	 * @param <T>
-	 * @param link
-	 * @param cls
+	 * @param <T> Calling type.
+	 * @param link Resource name.
+	 * @param cls Instance of T.
 	 */
 	public synchronized static <T> void playSound(final String link, Class<T> cls) 
 	{

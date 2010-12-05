@@ -23,18 +23,8 @@ import ZetaFish.Interfaces.INetworkManager;
 import ZetaFish.Interfaces.IServerErrorListener;
 
 /**
- *  Summary:
- *  Imports:
- *  Exports:
- *
- *  @author Patrick Michalina
- *  @author Chad A
- *  @author Melanie
- *
- *  @version 0.9
- *
+ * Main ZetaFish application window. 
  */
-
 public class GameWindow extends JFrame implements IServerErrorListener, ActionListener 
 {    
 	private static final long serialVersionUID = 1L;
@@ -66,7 +56,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     private String 			args[] = null;
 
     /**
-     *
+     * Constructor
      */
     public GameWindow(String args[]) {
         super("ZetaFish - " + VersionInfo.version()); //give the window a title
@@ -77,13 +67,16 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     }
     
     /**
-     *
-     * @param args[]
+     * Main application entry point.
+     * @param args[] Command line arguments.
      */
     public static void main(String args[]) {
          ourGameWindow = new GameWindow(args);
     }
 
+    /**
+     * Initializes the menu window at startup.
+     */
     private void initStartConditions() {
         //create the background, logo, and menu panels
         backgroundPanel = new BackgroundPanel(new ImageIcon(getClass().getResource("/Resources/water.jpg")));
@@ -112,6 +105,9 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         this.validate();
     }
     
+    /**
+     * Shows the Menu window.
+     */
     private void showMenu()
     {
     	/* Design 7.1.16 v1.5 */
@@ -127,137 +123,9 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         backgroundPanel.repaint();
     }
     
-    private String getServerName() {
-    	String servername = "";
-        try {
-            //our little fishy
-            ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
-
-            servername = (String)JOptionPane.showInputDialog(this,
-                    "Please enter server",
-                    "Server Entry",
-                    JOptionPane.PLAIN_MESSAGE,
-                    image,
-                    null,
-                    "localhost");
-        } catch(Exception e) {
-        	HandleException(e);
-        }
-
-        return servername;
-    }
-    private String getPlayerName() {
-        try {
-            //our little fishy
-            ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
-
-            String playername = (String)JOptionPane.showInputDialog(this,
-                    "Please enter your name:",
-                    "Name Entry",
-                    JOptionPane.PLAIN_MESSAGE,
-                    image,
-                    null,
-                    "Your Name");
-            
-            //check if name is too short, if so, inform user
-            if (playername.length() < 2) {
-                JOptionPane.showMessageDialog(this,
-                        "Name must contain more than two characters.",
-                        "Error",
-                        JOptionPane.INFORMATION_MESSAGE,
-                        image);
-            }
-            else {
-                //TODO Maybe add a confirmation dialog
-                return playername;
-            }
-        } catch(Exception e) {
-        	HandleException(e);
-        }
-
-        return null;
-    }
-
-    private void serverCommand() {
-
-        String playername = getPlayerName();
-        
-        boolean ShowServerWindow = false;
-        
-        if((args != null) && (args.length > 0))
-        {
-        	if(args[0].toUpperCase() == "showserver")
-        		ShowServerWindow = true;
-        }
-
-        if(server == null && playername != null) {
-            server = new ZetaFishServer(null, ShowServerWindow);
-            
-            String servername = "localhost";
-            JoinGame(servername, playername, true);
-        }
-    }
-    
-    private void exitCommand() {
-    	try {
-            networkManager.closeConnection();
-    	}
-    	catch(Exception err) {
-            HandleException(err);
-    	}    	
-
-        dispose();
-        System.exit(0);
-    }
-
-    private void playCommand() {
-        String playerName = getPlayerName();
-
-        if(playerName != null) {
-            JoinGame(getServerName(), playerName, false);
-        }
-        
-    }
-    
-    private void JoinGame(String serverName, String playerName, boolean canStartGame)
-    {
-    	boolean started = false;
-    	try {
-            //reset to blank window
-            backgroundPanel.removeAll();
-            backgroundPanel.repaint();
-
-            //setup game screen
-            backgroundPanel.setLayout(new BorderLayout());            
-
-            gamePanel = new GamePanel(networkManager, serverName, playerName, canStartGame);
-	        	        	        
-	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
-	
-	        backgroundPanel.repaint();
-	        
-	        backgroundPanel.validate();
-            
-	        /* Design 7.1.16 v1.5 */
-	        this.setSize(1024,768);	        
-            this.setLocationRelativeTo(null);
-            
-            started = true;
-    	}
-    	catch(Exception err) {
-            HandleException(err);
-            String msg = "Could not connect to game server\n" + err.getMessage();
-            JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.OK_OPTION);
-    	}
-    	finally
-    	{
-    		if(!started)
-    			showMenu();
-    	}
-    }
-    
-   
-
+    /**
+     * Layout the Menu window.
+     */
     private void setMenuPanel() {
         menuPanel       = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel,BoxLayout.Y_AXIS));
@@ -301,13 +169,103 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     }
     
     /**
-     * Single spot to determine how to handle exceptions
-     * @param err
+     * Prompts the user for a game server to connect to.
+     * @return server name
      */
-    private void HandleException(Exception err) {
-    	err.printStackTrace();    	
+    private String getServerName() {
+    	String servername = "";
+        try {
+            //our little fishy
+            ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
+
+            servername = (String)JOptionPane.showInputDialog(this,
+                    "Please enter server",
+                    "Server Entry",
+                    JOptionPane.PLAIN_MESSAGE,
+                    image,
+                    null,
+                    "localhost");
+        } catch(Exception e) {
+        	HandleException(e);
+        }
+
+        return servername;
+    }
+    
+    /**
+     * Prompts the user for a name to use in the game.
+     * @return user name
+     */
+    private String getPlayerName() {
+        try {
+            //our little fishy
+            ImageIcon image = new ImageIcon(getClass().getResource("/Resources/fishtest.png"));
+
+            String playername = (String)JOptionPane.showInputDialog(this,
+                    "Please enter your name:",
+                    "Name Entry",
+                    JOptionPane.PLAIN_MESSAGE,
+                    image,
+                    null,
+                    "Your Name");
+            
+            //check if name is too short, if so, inform user
+            if (playername.length() < 2) {
+                JOptionPane.showMessageDialog(this,
+                        "Name must contain more than two characters.",
+                        "Error",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        image);
+            }
+            else {
+                //TODO Maybe add a confirmation dialog
+                return playername;
+            }
+        } catch(Exception e) {
+        	HandleException(e);
+        }
+
+        return null;
     }
 
+    /**
+     * Start a new server and join it.
+     */
+    private void serverCommand() {
+
+        String playername = getPlayerName();
+        
+        boolean ShowServerWindow = false;
+        
+        if((args != null) && (args.length > 0))
+        {
+        	if(args[0].toUpperCase() == "showserver")
+        		ShowServerWindow = true;
+        }
+
+        if(server == null && playername != null) {
+            server = new ZetaFishServer(null, ShowServerWindow);
+            
+            String servername = "localhost";
+            JoinGame(servername, playername, true);
+        }
+    }
+
+    /**
+     * Join a game running on an existing server.
+     */
+    private void playCommand() {
+        String playerName = getPlayerName();
+
+        if(playerName != null) {
+            JoinGame(getServerName(), playerName, false);
+        }
+        
+    }
+    
+    /**
+     * Display in game instructions. (help)
+     */
     private void instructionCommand() {
         JFrame instructionFrame = new JFrame("Instructions");
         JTextArea text = new JTextArea("Instructions go here... I wonder how long instructions are for GoFish??");
@@ -324,7 +282,68 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         instructionFrame.setVisible(true);
         instructionFrame.validate();
     }
+    
+    /**
+     *  Exit the ZetaFish application.
+     */
+    private void exitCommand() {
+    	try {
+            networkManager.closeConnection();
+    	}
+    	catch(Exception err) {
+            HandleException(err);
+    	}    	
 
+        dispose();
+        System.exit(0);
+    }
+    
+    /**
+     * Connect to the game.
+     * @param serverName Server to connect to.
+     * @param playerName Local player name to use.
+     * @param canStartGame Allow this player to start the game?
+     */
+    private void JoinGame(String serverName, String playerName, boolean canStartGame)
+    {
+    	boolean started = false;
+    	try {
+            //reset to blank window
+            backgroundPanel.removeAll();
+            backgroundPanel.repaint();
+
+            //setup game screen
+            backgroundPanel.setLayout(new BorderLayout());            
+
+            gamePanel = new GamePanel(networkManager, serverName, playerName, canStartGame);
+	        	        	        
+	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
+	
+	        backgroundPanel.repaint();
+	        
+	        backgroundPanel.validate();
+            
+	        /* Design 7.1.16 v1.5 */
+	        this.setSize(1024,768);	        
+            this.setLocationRelativeTo(null);
+            
+            started = true;
+    	}
+    	catch(Exception err) {
+            HandleException(err);
+            String msg = "Could not connect to game server\n" + err.getMessage();
+            JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.OK_OPTION);
+    	}
+    	finally
+    	{
+    		if(!started)
+    			showMenu();
+    	}
+    }    
+
+    /**
+     * See description in ActionListener
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
     	if("serverCMD".equals(e.getActionCommand())) {
@@ -341,13 +360,22 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         else if("exitCMD".equals(e.getActionCommand())) {
             exitCommand();
         }
-
-        
     }
-
+        
+    /**
+     * See description in IServerErrorListener
+     */
 	@Override
 	public void OnServerError(String msg) {		
         JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.OK_OPTION);
         showMenu();	
 	}
+	
+	 /**
+     * Single spot to determine how to handle exceptions
+     * @param err Exception to handle
+     */
+    private void HandleException(Exception err) {
+    	err.printStackTrace();    	
+    }    
 }

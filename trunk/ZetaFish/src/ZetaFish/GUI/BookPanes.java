@@ -10,6 +10,8 @@ import ZetaFish.NetworkObjects.ZFCard;
 
 /**
  * Container pane for the collection of books.
+ * 
+ * Design 5.2 v1.6
  */
 public class BookPanes extends JLayeredPane  
 {
