@@ -153,8 +153,10 @@ class ZFServerThread extends Thread
 	public synchronized void BroadcastObject(Object obj)
 	{
 		for(ZFClientResponseHandler prh: ZFServerThread.activePlayers)
-		{						
-			prh.getPlayer().sendObject(obj);								
+		{	
+			Player p = prh.getPlayer();
+			if(p != null)
+				p.sendObject(obj);								
 		}
 	}
 }
@@ -214,11 +216,7 @@ class ZFClientResponseHandler extends Thread {
 			{
 				server.display("Started thread for " + player.getToken());
 				parsePlayerInput();
-			}
-			else
-			{
-				player.sendObject(new RuntimeException("Player limit reached"));			
-			}
+			}			
 		}
 		catch(Exception err)
 		{
@@ -365,10 +363,14 @@ class ZFClientResponseHandler extends Thread {
 	private void closeLink() {
 		try {
 			/* Design 7.1.9.2 v1.5 */
-			game.delPlayer(player.getPlayerNumber());
-			if((connection != null) && (!connection.isClosed()))
+			if(player != null)
+				game.delPlayer(player.getPlayerNumber());
+			
+			if((connection != null) && (!connection.isClosed()))				
 					connection.close();
-			server.display("Client connection closed by " + player.getToken() + "\n");
+			
+			if(player != null)
+				server.display("Client connection closed by " + player.getToken() + "\n");
 		}
 		catch(Exception e) 
 		{
@@ -439,18 +441,18 @@ class ZFGame {
 		{
 			String error = "Game already enabled.  Player rejected.";
 			server.display(error);
-			Player p = new Player(numPlayers, "Player" + numPlayers);
+			Player p = new Player(Integer.MAX_VALUE, "Player" + Integer.MAX_VALUE);
 			p.setOutput(out);
-			p.sendObject(new RuntimeException(error));
+			p.sendObject(new RuntimeException(error));			
 		}
 		/* Design 7.1.2.2 v1.5 */
 		else if (numPlayers >= MAX_PLAYERS)
 		{
 			String error = "Too many players.  Player rejected.";
 			server.display(error);
-			Player p = new Player(numPlayers, "Player" + numPlayers);
+			Player p = new Player(Integer.MAX_VALUE, "Player" + Integer.MAX_VALUE);
 			p.setOutput(out);
-			p.sendObject(new RuntimeException(error));
+			p.sendObject(new RuntimeException(error));			
 		}
 		else
 		{			
