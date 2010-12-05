@@ -7,8 +7,8 @@ public interface INetworkManager
 	/**
 	 * Open a connection to the game server given by the Server param
 	 * @param Server server name to connect to
-	 * @param player name 
-	 * @param password used to login to server (if necessary)
+	 * @param myUserName player's name 
+	 * @param myPassword used to login to server (if necessary)
 	 * @throws Exception
 	 * 
 	 * Design 7.1.3.1 v1.5

@@ -75,7 +75,7 @@ public class ZFCard implements Serializable, Comparable<ZFCard>
 
    /**
     * Returns the suit of this card.
-    * @returns the suit, which is one of the constants Card.SPADES, 
+    * @return the suit, which is one of the constants Card.SPADES, 
     * Card.HEARTS, Card.DIAMONDS, Card.CLUBS, or Card.JOKER
     */
    public Suits getSuit() {
@@ -135,7 +135,7 @@ public class ZFCard implements Serializable, Comparable<ZFCard>
    }
    
    /**
-    * Returns a string representation of this card, including both
+    * @return a string representation of this card, including both
     * its suit and its value (except that for a Joker with value 1,
     * the return value is just "Joker").  Sample reutrn values
     * are: "Queen of Hearts", "10 of Diamonds", "Ace of Spades",

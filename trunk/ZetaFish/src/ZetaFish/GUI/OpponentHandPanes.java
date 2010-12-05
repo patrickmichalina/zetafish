@@ -144,7 +144,7 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
 	
 	/**
      * Enable an indicator to show current player
-     * @param CurrentPlayer: Player number
+     * @param CurrentPlayer Player number
      */
     public void SetTurnIndicator(int CurrentPlayer)
     {

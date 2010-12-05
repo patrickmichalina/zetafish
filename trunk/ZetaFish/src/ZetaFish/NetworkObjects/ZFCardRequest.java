@@ -48,7 +48,7 @@ public class ZFCardRequest implements Serializable
 	
 	/**
 	 * Card value being asked for
-	 * @return
+	 * @return int
 	 */
 	public int getCardValue()
 	{
