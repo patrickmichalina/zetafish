@@ -218,7 +218,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
                         image);
             }
             else {
-                //TODO Maybe add a confirmation dialog
+                //TODO: Maybe add a confirmation dialog
                 return playername;
             }
         } catch(Exception e) {

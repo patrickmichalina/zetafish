@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * The ZFStatus object will be passed to all clients whenever the game state changes.  
  * 
- * Design 4.6.9 v1.5
+ * Design 4.6.10 v1.5
  */
 public class ZFStatus implements Serializable
 {
