@@ -3,7 +3,7 @@ package ZetaFish.NetworkObjects;
 import java.io.Serializable;
 
 /**
- * The ZFCardRequestResponse is the “partner” to the ZFCardRequest.  
+ * The ZFCardRequestResponse is the partner to the ZFCardRequest.  
  * This object returns the results of the card requests.
  *   
  * Design 4.6.3 v1.5
