@@ -2,25 +2,29 @@ package ZetaFish.Interfaces;
 
 import ZetaFish.NetworkObjects.*;
 
+/**
+ * Interface to Network Manager implementation. Allows multiple implementations (Sockets, XMPP, HTTP, etc.) to 
+ * be used with minimal code changes.
+ */
 public interface INetworkManager 
 { 
 	/**
-	 * Open a connection to the game server given by the Server param
+	 * Open a connection to the game server given by the Server param.
+	 * Design 7.1.3.1 v1.5
+	 * 
 	 * @param Server server name to connect to
 	 * @param myUserName player's name 
 	 * @param myPassword used to login to server (if necessary)
 	 * @throws Exception
-	 * 
-	 * Design 7.1.3.1 v1.5
-	 */
+	 */   
   public void openConnection(String Server, String myUserName, String myPassword) throws Exception;
 
   /**
-   * Close the connection to the current game sever
-   * @throws Exception
-   * 
+   * Close the connection to the current game sever.
    * Design 7.1.3.2 v1.5
-   */
+   * 
+   * @throws Exception
+   */     
   public void closeConnection() throws Exception;
 
       

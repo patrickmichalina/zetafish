@@ -14,9 +14,9 @@ import java.io.Serializable;
  * 
  *  Taken in part from:  Introduction to Programming Using Java, Fifth Edition 
  *                       math.hws.edu/javanotes/source/Card.java
- *                       
- *  Design 4.6.1 v1.5                      
- */
+ *  
+ *  Design 4.6.1 v1.5
+ */                        
 public class ZFCard implements Serializable, Comparable<ZFCard>
 {      
 	private static final long serialVersionUID = 1L;
