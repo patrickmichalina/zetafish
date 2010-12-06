@@ -32,7 +32,7 @@ public class GUIUtilities
 	
 	/**
 	 * Show the contents of the ZFStatus network object to System.out.
-	 * @param response ZFStatus object
+	 * @param status ZFStatus object
 	 */
 	public synchronized static void ShowGameStatus(ZFStatus status)
 	{
