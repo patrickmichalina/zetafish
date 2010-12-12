@@ -20,6 +20,8 @@ public class ZFCardRequestResponse implements Serializable
 		FROM_PLAYER,
 		FROM_OCEAN,
 		
+		NO_CARDS_IN_DECK,
+		
 		ERROR
 	}
 	
