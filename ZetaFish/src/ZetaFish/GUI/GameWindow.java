@@ -28,6 +28,8 @@ import ZetaFish.Interfaces.IServerErrorListener;
 public class GameWindow extends JFrame implements IServerErrorListener, ActionListener 
 {    
 	private static final long serialVersionUID = 1L;
+	
+	private static final boolean SHOW_SERVER_WINDOW = true;
 
 	/**
      * These local fields create instances of panels that wrap other panels.
@@ -60,7 +62,10 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
      * @param args Command line arguments.
      */
     public GameWindow(String args[]) {
-        super("ZetaFish - " + VersionInfo.version()); //give the window a title
+        super(); 
+        
+        SetTitle(""); //give the window a title
+        
         this.args = args;
         initStartConditions(); //start the game with the inital view
         this.networkManager = new ZetaFishClient(); // start the network manager
@@ -106,6 +111,15 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         this.validate();
     }
     
+    private void SetTitle(String PlayerName)
+    {
+    	if(PlayerName.length() > 0)
+    		this.setTitle("ZetaFish - " + PlayerName + " - " + VersionInfo.version());
+    	else
+    		this.setTitle("ZetaFish - " + VersionInfo.version());
+    		
+    }
+    
     /**
      * Shows the Menu window.
      */
@@ -122,6 +136,20 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         backgroundPanel.add(menuPanel);
         
         backgroundPanel.repaint();
+        
+        if(server != null)
+        {
+        	server.dispose();
+        	server = null;
+        	try
+        	{
+        		this.networkManager.closeConnection();
+        	}
+        	catch(Exception err)
+        	{
+        		err.printStackTrace();
+        	}
+        }
     }
     
     /**
@@ -236,7 +264,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
 
         String playername = getPlayerName();
         
-        boolean ShowServerWindow = false;
+        boolean ShowServerWindow = SHOW_SERVER_WINDOW;
         
         if((args != null) && (args.length > 0))
         {
@@ -312,13 +340,16 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
             //reset to blank window
             backgroundPanel.removeAll();
             backgroundPanel.repaint();
-
+            
+            // Add player name to title
+            SetTitle(playerName);
+            
             //setup game screen
             backgroundPanel.setLayout(new BorderLayout());            
 
             gamePanel = new GamePanel(networkManager, serverName, playerName, canStartGame);
 	        	        	        
-	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);
+	        backgroundPanel.add(gamePanel, BorderLayout.CENTER);	               
 	
 	        backgroundPanel.repaint();
 	        
@@ -367,9 +398,10 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
      * See description in IServerErrorListener
      */
 	@Override
-	public void OnServerError(String msg) {		
+	public void OnServerError(String msg, boolean abortGame) {		
         JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.OK_OPTION);
-        showMenu();	
+        if(abortGame)
+        	showMenu();	
 	}
 	
 	 /**

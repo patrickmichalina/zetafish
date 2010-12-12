@@ -6,6 +6,7 @@ import javax.sound.sampled.AudioSystem;
 import ZetaFish.NetworkObjects.ZFCard;
 import ZetaFish.NetworkObjects.ZFCardRequestResponse;
 import ZetaFish.NetworkObjects.ZFPlayer;
+import ZetaFish.NetworkObjects.ZFRemovePlayer;
 import ZetaFish.NetworkObjects.ZFStatus;
 
 /**
@@ -48,14 +49,60 @@ public class GUIUtilities
         {
             for(ZFPlayer player: players)
             {
-            	if(player != null)
-            	{
-	                System.out.println("\tName:" + player.getPlayerName());
-	                System.out.println("\tScore:" + player.getScore());
-	                System.out.println("\tCards in hand:" + player.getCardsInHand());
-            	}
+            	ShowPlayer(player, false);            	
             }
         }
+	}
+	
+	public synchronized static void ShowPlayer(ZFPlayer player, boolean ShowCards)
+	{
+		if(player != null)
+    	{
+            System.out.println("\tName:" + player.getPlayerName());
+            System.out.println("\tScore:" + player.getScore());
+            System.out.println("\tCards in hand:" + player.getCardsInHand());
+            
+            if(ShowCards)
+            {
+            	ZFCard[] hand = player.getHand();
+            	if(hand != null)
+            	{
+            		System.out.println("\tHand:");
+            		for(ZFCard card : hand)
+            		{
+            			System.out.println("\t\t" + card.getValueAsString() + " of " + card.getSuitAsString());	
+            		}
+            	}
+
+            	ZFCard[][] books = player.getBooks();
+            	if(books != null)
+            	{
+            		for(ZFCard[] book : books)
+            		{
+            			if(book != null)
+            			{
+            				System.out.println("\tBook:");
+            				for(ZFCard card : book)
+            				{
+            					System.out.println("\t\t" + card.getValueAsString() + " of " + card.getSuitAsString());	
+            				}
+            			}
+            		}
+            	}
+            }
+    	}
+	}
+	
+	
+	/**
+	 * Show the contents of the ZFStatus network object to System.out.
+	 * @param status ZFStatus object
+	 */
+	public synchronized static void ShowRemovePlayer(ZFRemovePlayer remove)
+	{
+		System.out.println("REMOVE PLAYER!");
+		if(remove != null)			
+			ShowPlayer(remove.getPlayer(), true);
 	}
 	
 	/**

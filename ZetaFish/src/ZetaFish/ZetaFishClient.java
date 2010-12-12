@@ -17,7 +17,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 		
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	
+			
 	private transient Vector<IChatListener> ChatListeners;
 	private transient Vector<IStatusListener> StatusListeners;
 	private transient Vector<ITurnListener> TurnListeners;
@@ -64,8 +64,11 @@ public class ZetaFishClient extends Thread implements INetworkManager
 				}
 				catch(RuntimeException rex)
 				{
-					done = true;					
 					msg = rex.getMessage();
+					System.out.println("RuntimeException(1):" + msg);
+					System.out.println("STACK:");
+					rex.printStackTrace();
+					done = true;										
 					if(msg == null)
 						serverExited = true;
 				}
@@ -73,8 +76,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 				{
 					msg = err.getMessage();
 					System.out.println("CLIENT EXCEPTION(1):" + msg);
+					System.out.println("STACK:");
 					err.printStackTrace();
-					if((msg == "Connection reset") || (msg == "socket closed"))
+					if(msg.equals("Connection reset") || msg.equals("socket closed"))
 					{
 						done = true;
 						serverExited = true;
@@ -84,9 +88,9 @@ public class ZetaFishClient extends Thread implements INetworkManager
 			in.close();
 			client.close();			
 			if(serverExited)
-				NotifyServerErrorListeners("Game server exited.");
+				NotifyServerErrorListeners("Game server exited.", true);
 			else 
-				NotifyServerErrorListeners(msg);
+				NotifyServerErrorListeners(msg, true);
 		}
 		catch(Exception err)
 		{
@@ -103,26 +107,40 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	 */
 	private void parseObjectIn(Object oin) 		
 	{	
-		System.out.print("parseObjectIn() oin.getClass=" + oin.getClass());
-		if(oin.getClass() == ZFChat.class)
+		System.out.println("parseObjectIn() oin.getClass=" + oin.getClass());
+		try
 		{
-			parseChatCommand((ZFChat) oin);
-		}	
-		else if(oin.getClass() == ZFStatus.class)
-		{
-			parseStatus((ZFStatus)oin);
+			if(oin.getClass() == ZFChat.class)
+			{
+				parseChatCommand((ZFChat) oin);
+			}	
+			else if(oin.getClass() == ZFStatus.class)
+			{
+				parseStatus((ZFStatus)oin);
+			}
+			else if(oin.getClass() == ZFCardRequestResponse.class)
+			{
+				parseCardRequestResponse((ZFCardRequestResponse)oin);
+			}
+			else if(oin.getClass() == ZFRemovePlayer.class)
+			{
+				parseRemovePlayer((ZFRemovePlayer)oin);
+			}
+			else if(oin.getClass() == RuntimeException.class)
+			{
+				parseRuntimeException((RuntimeException)oin);
+			}
 		}
-		else if(oin.getClass() == ZFCardRequestResponse.class)
+		catch(RuntimeException rex)
 		{
-			parseCardRequestResponse((ZFCardRequestResponse)oin);
+			throw(rex);
 		}
-		else if(oin.getClass() == ZFRemovePlayer.class)
+		catch(Exception err)
 		{
-			parseRemovePlayer((ZFRemovePlayer)oin);
-		}
-		else if(oin.getClass() == RuntimeException.class)
-		{
-			parseRuntimeException((RuntimeException)oin);
+			String msg = err.getMessage();
+			System.out.println("parseObjectIn() EXCEPTION):" + msg);
+			System.out.println("STACK:");
+			err.printStackTrace();
 		}
 	}
 	
@@ -132,7 +150,8 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	 */
 	private void parseRuntimeException(RuntimeException exception)
 	{
-		System.out.print("RuntimeException from server:" + exception.getMessage());
+		System.out.println("RuntimeException from server:" + exception.getMessage());
+		exception.fillInStackTrace();
 		throw(exception);					
 	}
 
@@ -201,6 +220,8 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	private void parseRemovePlayer(ZFRemovePlayer remove)
 	{
 		NotifyRemovePlayerListeners(remove);
+		if(this.lastStatus.getPlayers().length <= 2)
+			NotifyServerErrorListeners("Not enough players.", true);
 	}
 		
 	/**
@@ -281,7 +302,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	 * Notify all server error listeners that a server error was received.
 	 * @param msg
 	 */
-	private void NotifyServerErrorListeners(String msg)
+	private void NotifyServerErrorListeners(String msg, boolean exited)
 	{
 		// Notify all turn event listeners
 		Vector<IServerErrorListener> targets;
@@ -292,7 +313,7 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	    while (e.hasMoreElements()) 
 	    {
 	    	IServerErrorListener l = (IServerErrorListener) e.nextElement();
-	        l.OnServerError(msg);
+	        l.OnServerError(msg, exited);
 	    }
 	}
 	
@@ -335,10 +356,13 @@ public class ZetaFishClient extends Thread implements INetworkManager
 	 */
 	@Override
 	public synchronized void closeConnection() throws Exception
-	{
-		out.close();
+	{		
 		if(!client.isClosed())
-			client.close();	
+		{
+			out.close();
+			client.close();
+		}
+		
 	}
 	
 	/**

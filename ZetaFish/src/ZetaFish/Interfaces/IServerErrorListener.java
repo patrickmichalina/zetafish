@@ -8,7 +8,7 @@ package ZetaFish.Interfaces;
 public interface IServerErrorListener {
 
 	/** 
-	 *  Notifies of a server error/exit and other such errors. 
-	 */
-	public void OnServerError(String msg);
+	 * Notifies of a server error/exit and other such errors.    
+	 */	
+	public void OnServerError(String msg, boolean abortGame);
 }

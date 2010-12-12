@@ -54,9 +54,9 @@ public class ZetaFishServer extends JFrame
 			}
 		}
 		serverThread = new ZFServerThread(this, port);
-		serverThread.start();
+		serverThread.start();	
 	}
-	
+			
 	/**
 	 * Write a string to the window.
 	 * @param s String to write.
@@ -65,6 +65,21 @@ public class ZetaFishServer extends JFrame
 	{
 		output.append(s + "\n");
 	}
+	
+	
+	public void dispose()
+	{
+		try
+		{
+			serverThread.end();
+		}
+		catch(Exception err)
+		{
+			err.printStackTrace();
+		}
+		super.dispose();		
+	}
+	
 	
 	/**
 	 * Returns a Set of ZFClientResponseHandler representing each the channel to each player.
@@ -100,6 +115,7 @@ class ZFServerThread extends Thread
 	private ZetaFishServer ZFserver;	
 	private ZFGame game;
 	private int port;
+	private ServerSocket server = null;
 	
 	static protected Set<ZFClientResponseHandler> activePlayers = new HashSet<ZFClientResponseHandler>();
 
@@ -121,7 +137,7 @@ class ZFServerThread extends Thread
 	{		
 		game = new ZFGame(ZFserver);
 		try {
-			ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));			
+			server = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"));			
 			Socket connection;
 			while (true) {
 				ZFserver.display("Waiting for players to connect...");
@@ -133,8 +149,17 @@ class ZFServerThread extends Thread
 		}
 		catch(Exception e) 
 		{
-			ZFserver.display(e.toString());
+			ZFserver.display("ZFServerThread.run:" + e.toString());
 		}		
+	}
+	
+	/**
+	 * Call to end the server
+	 * @throws Exception
+	 */
+	public void end() throws Exception
+	{
+		server.close();
 	}
 	
 	/**
@@ -152,6 +177,7 @@ class ZFServerThread extends Thread
 	 */
 	public synchronized void BroadcastObject(Object obj)
 	{
+		ZFserver.display("BroadcastObject()");
 		for(ZFClientResponseHandler prh: ZFServerThread.activePlayers)
 		{	
 			Player p = prh.getPlayer();
@@ -220,7 +246,7 @@ class ZFClientResponseHandler extends Thread {
 		}
 		catch(Exception err)
 		{
-			// TODO: Implement better exception handling
+			server.display("ZFClientResponseHandler.run:" + err.getMessage());
 			HandleLocalException(err);			
 		}
 		finally
@@ -234,8 +260,14 @@ class ZFClientResponseHandler extends Thread {
 	 * @param error Exception
 	 */
 	private void HandleLocalException(Exception error)
-	{			
+	{					
 		server.display(error.toString());
+		for(StackTraceElement ste : error.getStackTrace())
+		{
+			server.display("\t" + ste.toString());
+		}
+		
+		error.printStackTrace();		
 	}
 	
 	/**
@@ -254,9 +286,9 @@ class ZFClientResponseHandler extends Thread {
 				Object oin = in.readObject();
 				if(oin == null)
 				{
-					server.display("Client disconnect");
+					server.display("Client disconnect (" + player.getToken() + ")");
 					done = true;
-					player.sendObject(new RuntimeException("Client connection closed by " + player.getToken()));
+					//player.sendObject(new RuntimeException("Client connection closed by " + player.getToken()));
 				}
 				else 
 				{							
@@ -265,10 +297,13 @@ class ZFClientResponseHandler extends Thread {
 				}
 			}
 			catch(Exception e) {
-				server.display(e.toString());
+				System.out.println("parsePlayerInput() exception!");
+				System.out.println("STACK:");
+				e.printStackTrace();
+				server.display("Client disconnect (" + player.getToken() + ") Exception:" + e.toString());
 				done = true;	
 				/* Design 7.1.9 v1.5 */
-				server.BroadcastObject(new RuntimeException("Client connection closed by " + player.getToken()));
+				//server.BroadcastObject(new RuntimeException("Client connection closed by " + player.getToken()));
 			}
 		}
 		in.close();
@@ -388,7 +423,7 @@ class ZFGame {
 	//public final int MAX_PLAYERS = 2;
 	public final int INITIAL_HAND_SIZE = 7;
 	
-	private List<Player> players;
+	private LinkedList<Player> players;
 	private int numPlayers;
 	private boolean gameEnabled, isGameOver;
 	private int currentPlayerNumber;
@@ -403,7 +438,7 @@ class ZFGame {
 	public ZFGame(ZetaFishServer server) {
 		this.server = server;
 		deck = new ZFDeck();	
-		players = new ArrayList<Player>();		
+		players = new LinkedList<Player>();		
 		numPlayers = 0;
 		gameEnabled = false;
 		isGameOver = false;
@@ -434,7 +469,7 @@ class ZFGame {
 	 */
 	synchronized public Player addPlayer(ObjectOutputStream out)
 	{
-		Player newPlayer = null;
+		Player newPlayer = null;				
 		
 		/* Design 7.1.4 v1.5 */
 		if(gameEnabled)
@@ -461,20 +496,22 @@ class ZFGame {
 			players.add(newPlayer);			
 
             String token = newPlayer.getToken();
-			server.display("Server --> Client: Player connected " + token);
-			//newPlayer.sendMessageFromAdmin("Player connected " + token);
+			server.display("Server --> Client: Player connected " + token);			
 			newPlayer.sendObject(new ZFStatus(ZFStatus.StatusType.ASSIGN_PLAYER_NUMBER, numPlayers, null, gameEnabled, isGameOver));			
 			numPlayers++;		
 		}
 		
 		return newPlayer;
-	}
+	}	
 	
 	/**
 	 * Remove a player from the game.
 	 * @param playerNumber Player number to remove.
 	 */
-	synchronized public void delPlayer(int playerNumber) {			
+	synchronized public void delPlayer(int playerNumber) 
+	{
+		boolean sendFinalTurnChange = false;
+		
 		Player player = players.get(playerNumber);
 		server.display("delPlayer: " + player.getToken());
 		player.disable();
@@ -482,20 +519,56 @@ class ZFGame {
 		/* Design 7.1.9.4 v1.5 */
 		deck.replaceCards(player.getHand());
 		
-		player.removeAllCardsFromHand();		
-		players.set(playerNumber,null);
+		player.removeAllCardsFromHand();				
 		
-		numPlayers--;						
+		numPlayers--;
+		/* end game if not enough players */
 		if (numPlayers <= 1) 
 		{
 			gameEnabled = false;
 			isGameOver = true;
+		}
+		/* move to the next player if the current player is exiting */
+		else if (playerNumber == currentPlayerNumber)
+		{
+			moveToNextPlayer();
+			sendFinalTurnChange = true;
 		}
 		
 		players.remove(player);
 		/* Design 7.1.9.3 v1.5 */
 		sendRemovePlayer(player);
 		UpdateGameStatus(ZFStatus.StatusType.PLAYER_DELETE);
+		
+		/* Make sure we have a contiguous block of player numbers */ 
+		reassignAllPlayerNumbers();		
+		
+		if(sendFinalTurnChange)
+			UpdateGameStatus(ZFStatus.StatusType.TURN_CHANGE);
+			
+	}
+	
+	/**
+	 * At the end of a turn, move to the next player
+	 */
+	synchronized public void moveToNextPlayer()
+	{
+		currentPlayerNumber = (currentPlayerNumber + 1) % numPlayers;	
+		server.display("moveToNextPlayer() - " + currentPlayerNumber);
+	}
+	
+	/**
+	 * Reassigns all player numbers when a player exits
+	 */
+	synchronized public void reassignAllPlayerNumbers()
+	{
+		int playerNumber = 0;
+		for(Player player:players)
+		{
+			player.setPlayerNumber(playerNumber);
+			player.sendObject(new ZFStatus(ZFStatus.StatusType.ASSIGN_PLAYER_NUMBER, playerNumber, null, gameEnabled, isGameOver));
+			playerNumber++;
+		}
 	}
 	
 	/**
@@ -568,11 +641,10 @@ class ZFGame {
 	 */
 	private void UpdateGameStatus(ZFStatus.StatusType status)	
 	{
-		server.display("Server --> Clients: UpdateGameStatus " + status);
-		int num_players = players.size();
-		ZFPlayer zps[] = new ZFPlayer[num_players];		
-		
-		for(int i=0; i< num_players; i++)
+		server.display("Server --> Clients: UpdateGameStatus " + status);		
+		ZFPlayer zps[] = new ZFPlayer[numPlayers];		
+						
+		for(int i=0; i< numPlayers; i++)
 		{			
 			Player player = players.get(i);
 			if(player != null)
@@ -599,12 +671,12 @@ class ZFGame {
 	{
 		if(playerNumber == this.currentPlayerNumber)
 		{
-			currentPlayerNumber = (currentPlayerNumber + 1) % numPlayers;
+			moveToNextPlayer();
 			UpdateGameStatus(ZFStatus.StatusType.TURN_CHANGE);
 		}
 		else
 		{
-			// TODO: Should handle "not your turn" in a generic way
+			server.display("doTurnDone() from invalid player!!!");
 		}
 	}
 	
@@ -686,7 +758,7 @@ class ZFGame {
 		}	
 		else
 		{
-			// TODO: Should handle "not your turn" in a generic way
+			server.display("doPlayBook() from invalid player!!!");
 		}
 	}
 	
@@ -730,6 +802,15 @@ class Player {
 	public void setOutput(ObjectOutputStream out)
 	{
 		this.out = out;
+	}
+	
+	/**
+	 * Sets the player's number
+	 * @param playerNumber Player's number
+	 */
+	public void setPlayerNumber(int playerNumber)
+	{
+		this.PlayerNumber = playerNumber;
 	}
 	
 	/**
@@ -806,10 +887,22 @@ class Player {
 		this.books.clear();
 	}
 	
+	/**
+	 * clears the players hand and books.
+	 */
 	public void reset()
 	{
 		this.removeAllCardsFromHand();
 		this.removeAllBooks();
+	}
+	
+	/**
+	 * Is this player enabled in the game?
+	 * @return true is so, false otherwise.
+	 */
+	public boolean getEnabled()
+	{
+		return (out != null);
 	}
 	
 	/**
