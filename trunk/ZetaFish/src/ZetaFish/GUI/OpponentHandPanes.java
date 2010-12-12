@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import ZetaFish.NetworkObjects.ZFCard;
+import ZetaFish.NetworkObjects.ZFPlayer;
 
 /**
  * Visual collection of OpponentHandPane.
@@ -159,22 +160,55 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
             }
     	}
     }
+    
+    public void setOpponents(ZFPlayer[] players, int MyPlayerNumber)
+    {	    	
+    	/* hide all opponent panes */
+    	for(Component cmp : this.getComponents())
+    	{
+    		OpponentHandPane op = (OpponentHandPane)cmp;
+    		op.setVisible(false);
+    		op.setPlayerNumber(-1);
+    	}
+    	
+    	int i=0;
+    	/* show the opponent panes */
+    	for(ZFPlayer player : players)
+    	{
+    		if(player.getPlayerNumber() != MyPlayerNumber)
+    		{
+    			OpponentHandPane op = (OpponentHandPane)this.getComponent(i++);
+    			op.setVisible(true);
+    			op.setPlayerNumber(player.getPlayerNumber());
+    			op.setTitle(player.getPlayerName() + " - " + player.getScore()); 
+    		}    		
+    	}    	
+    }
         
     /**
      * Add playing cards to an opponent's hand and set information.
      * @param paneNumber Pane number index in collection.
      * @param cards Cards to add.
-     * @param PlayerNumer Opponent's player number.
+     * @param PlayerNumber Opponent's player number.
      * @param name Opponent's player name.
      * @param score Opponent's score.
      */
-    public void addCardsToOpponent(int paneNumber, ZFCard[] cards, int PlayerNumer, String name, int score)
+    public void addCardsToOpponent(int paneNumber, ZFCard[] cards, int PlayerNumber, String name, int score)
     {    
-    	OpponentHandPane op = (OpponentHandPane)this.getComponent(paneNumber);
-		op.setVisible(true);
-		op.setPlayerNumber(PlayerNumer);
-        op.setTitle(name + " - " + score);                   		
-        op.addCards(cards);
+    	OpponentHandPane op = null;
+    	for(Component cmp : this.getComponents())
+    	{
+    		op = (OpponentHandPane)cmp;
+    		if(op.getPlayerNumber() == PlayerNumber)
+    		{
+    			op.setVisible(true);
+    			op.setPlayerNumber(PlayerNumber);
+    			op.setTitle(name + " - " + score);                   		
+    			op.addCards(cards);
+    		}    	
+    		else if(op.getPlayerNumber() == -1)
+    			op.setVisible(false);
+    	}
     }
     
     /**
@@ -189,7 +223,7 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     		if(playerNumber == pane.getPlayerNumber()) 
     		{
     			pane.setVisible(false);
-
+    			pane.setPlayerNumber(-1);
     		}
     	}    	
     }

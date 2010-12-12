@@ -71,36 +71,39 @@ public class OceanPane extends PlayerPane
      * @param cards  Cards to return.
      */
     public void returnCardsToOcean(Component cards[])    
-    {    	    	    	
-    	for(Component cmp : cards)
-		{
-    		if(cmp.getClass() == Card.class)
+    {    	    	
+    	if(cards != null)
+    	{
+    		for(Component cmp : cards)
     		{
-    			Card card = (Card)cmp;
-    			this.add(card);
-    			// find an open slot
-    			for(int i=0; i< this.deck.size(); i++)
+    			if(cmp.getClass() == Card.class)
     			{
-    				int expectedX = ((i*18) + 30);
-    				Card pool_card = (Card)this.getComponent(i);
-    				if(pool_card != null)
+    				Card card = (Card)cmp;
+    				this.add(card);
+    				// find an open slot
+    				for(int i=0; i< this.deck.size(); i++)
     				{
-    					Rectangle rect = pool_card.getBounds();    		    			
-    					if(rect.x != expectedX)
-    					{    				
-    						// empty slot
+    					int expectedX = ((i*18) + 30);
+    					Card pool_card = (Card)this.getComponent(i);
+    					if(pool_card != null)
+    					{
+    						Rectangle rect = pool_card.getBounds();    		    			
+    						if(rect.x != expectedX)
+    						{    				
+    							// empty slot
+    							card.setBounds(expectedX, 30,  60, 60);
+    							break;
+    						}
+    					}
+    					else
+    					{
+    						// right side of pool
     						card.setBounds(expectedX, 30,  60, 60);
-    						break;
     					}
     				}
-    				else
-    				{
-    					// right side of pool
-    					card.setBounds(expectedX, 30,  60, 60);
-    				}
     			}
-    		}
-		}    	    	   
+    		}    
+    	}
     	UpdateCardCount();
         this.invalidate();
     }

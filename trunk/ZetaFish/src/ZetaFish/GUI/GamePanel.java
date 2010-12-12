@@ -73,6 +73,8 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 
     private boolean CanStartGame = true;   
     private ZFCard[] CurrentHand = null;
+    
+    private boolean needsOpponentPaneRebuild = false;
 
     /**
      * Constructor
@@ -305,29 +307,37 @@ public class GamePanel extends JPanel implements 	IStatusListener,
     {
     	if(players != null)
         {
-			int i = 0;
-                        
+			int i = 0;                      
 			for(ZFPlayer player: players)
-            {
-				// Update player books
-				panelBook.AddBooks(player.getBooks());
-				
-				// Update my hand
-				if(player.getPlayerNumber() == this.networkManager.getMyPlayerNumber())
+			{
+				if(player != null)
 				{
-					this.CurrentHand = player.getHand();
-					panelPlayer.addCards(this.CurrentHand, player.getScore());
+					if(needsOpponentPaneRebuild)
+					{
+						this.panelOpponent.setOpponents(players, this.networkManager.getMyPlayerNumber());
+						needsOpponentPaneRebuild = false;
+					}
 					
+					// Update player books
+					panelBook.AddBooks(player.getBooks());
+
+					// Update my hand
+					if(player.getPlayerNumber() == this.networkManager.getMyPlayerNumber())
+					{
+						this.CurrentHand = player.getHand();
+						panelPlayer.addCards(this.CurrentHand, player.getScore());
+
+					}
+					else // Update other players
+					{					
+						this.panelOpponent.addCardsToOpponent(i, player.getHand(), 
+								player.getPlayerNumber(), 
+								player.getPlayerName(),
+								player.getScore());
+						i++;
+					}
 				}
-				else // Update other players
-				{					
-					this.panelOpponent.addCardsToOpponent(i, player.getHand(), 
-															 player.getPlayerNumber(), 
-															 player.getPlayerName(),
-															 player.getScore());
-					i++;
-				}
-            }			
+			}			
 			this.panelPool.UpdateCardCount();
         }
     }
@@ -355,7 +365,9 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 						this.panelBook.reset();
 						this.panelPlayer.reset();
 						this.panelPool.DrawOcean();
-						GUIUtilities.playSound("shuffling.wav", this.getClass());				    
+						GUIUtilities.playSound("shuffling.wav", this.getClass());		
+						this.panelOpponent.setOpponents(players, this.networkManager.getMyPlayerNumber());
+						needsOpponentPaneRebuild = true;
 			            updatePlayerHands(players);			           
 						handleTurnChange(isTurn);
 						setDefaultOpponent();
@@ -367,8 +379,12 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 						handleTurnChange(isTurn);
 						this.panelOpponent.SetTurnIndicator(status.getCurrentPlayer());
 						break;
+						
+					case ASSIGN_PLAYER_NUMBER:
+						needsOpponentPaneRebuild = true;
+						break;
 
-					case PLAYER_DELETE:
+					case PLAYER_DELETE:								
 					case BOOK_PLAY:
 					case CARDS_CHANGE:						
 			            updatePlayerHands(players);			           
@@ -567,14 +583,17 @@ public class GamePanel extends JPanel implements 	IStatusListener,
 	 */
 	@Override
 	public void OnRemovePlayer(ZFRemovePlayer remove) 
-	{
+	{		
+		GUIUtilities.ShowRemovePlayer(remove);
+		
 		ZFPlayer player = remove.getPlayer();
-		int playerNumber = player.getPlayerNumber();
-		this.panelOpponent.removePlayer(playerNumber);
+		System.out.println("Remove player " + player.getPlayerName());
+		int playerNumber = player.getPlayerNumber();		
 		
-		Component[] cards = this.panelOpponent.getPlayerCards(playerNumber);	
-		
+		Component[] cards = this.panelOpponent.getPlayerCards(playerNumber);			
 		this.panelPool.returnCardsToOcean(cards);
+		
+		this.panelOpponent.removePlayer(playerNumber);
 	}	 
 
 	/**
