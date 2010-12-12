@@ -29,7 +29,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
 {    
 	private static final long serialVersionUID = 1L;
 	
-	private static final boolean SHOW_SERVER_WINDOW = true;
+	private static final boolean SHOW_SERVER_WINDOW = false;
 
 	/**
      * These local fields create instances of panels that wrap other panels.

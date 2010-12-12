@@ -18,7 +18,7 @@ public class VersionInfo
 	 * Incremented on bug fix or any rebuild.  
 	 * Reset to zero on an increment of the Major number.
 	 */
-	public static final String revisionRevision="5";
+	public static final String revisionRevision="6";
 	
 	/**
 	 * Get the full version in string format.

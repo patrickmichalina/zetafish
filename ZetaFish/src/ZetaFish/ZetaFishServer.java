@@ -287,8 +287,7 @@ class ZFClientResponseHandler extends Thread {
 				if(oin == null)
 				{
 					server.display("Client disconnect (" + player.getToken() + ")");
-					done = true;
-					//player.sendObject(new RuntimeException("Client connection closed by " + player.getToken()));
+					done = true;				
 				}
 				else 
 				{							
@@ -302,8 +301,6 @@ class ZFClientResponseHandler extends Thread {
 				e.printStackTrace();
 				server.display("Client disconnect (" + player.getToken() + ") Exception:" + e.toString());
 				done = true;	
-				/* Design 7.1.9 v1.5 */
-				//server.BroadcastObject(new RuntimeException("Client connection closed by " + player.getToken()));
 			}
 		}
 		in.close();
@@ -706,22 +703,33 @@ class ZFGame {
 				}
 			}
 			/* Design 7.1.13 v1.5 */
-			if(passback.size() == 0)
+			if((passback.size() == 0) && (deck.cardsLeft() > 0))
 			{
 				result = CardRequestResult.FROM_OCEAN;
 				passback.add(deck.dealCard());			
 			}
-			
-			// add cards to player's hand
-			for(ZFCard card: passback)
+			else
 			{
-				player.addCardToHand(card);
+				result = CardRequestResult.NO_CARDS_IN_DECK;
 			}
-			
-			// send new cards back
-			ZFCard[] cards = new ZFCard[passback.size()]; 
-			cards = passback.toArray(cards);								
-			response = new ZFCardRequestResponse(result,cards, result.toString());
+
+			if(passback.size() > 0)
+			{
+				// add cards to player's hand
+				for(ZFCard card: passback)
+				{
+					player.addCardToHand(card);
+				}
+
+				// send new cards back
+				ZFCard[] cards = new ZFCard[passback.size()]; 
+				cards = passback.toArray(cards);								
+				response = new ZFCardRequestResponse(result,cards, result.toString());
+			}
+			else
+			{
+				response = new ZFCardRequestResponse(result, null, result.toString());
+			}
 			
 			UpdateGameStatus(ZFStatus.StatusType.CARDS_CHANGE);
 			

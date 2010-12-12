@@ -25,9 +25,12 @@ public class GUIUtilities
 		System.out.println("Message:" + response.getMessage());
 		System.out.println("Cards:");
 		ZFCard[] cards = response.getCards();
-		for(ZFCard card: cards)
+		if(cards != null)
 		{
-			System.out.println(card.toString());
+			for(ZFCard card: cards)
+			{
+				System.out.println(card.toString());
+			}
 		}
 	}
 	
