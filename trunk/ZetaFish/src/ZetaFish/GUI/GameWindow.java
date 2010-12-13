@@ -5,12 +5,18 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import javax.annotation.Resource;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -297,13 +303,27 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
      */
     private void instructionCommand() {
         JFrame instructionFrame = new JFrame("Instructions");
-        JTextArea text = new JTextArea("Instructions go here... I wonder how long instructions are for GoFish??");
+        
+        String instructions = "";
+        try {
+        	InputStream is = getClass().getResourceAsStream("/Resources/instructions.txt");
+        	BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        	String line;
+        	while ((line = br.readLine()) != null) {
+        		instructions += line + "\n";
+            }
+		} catch (IOException e) {
+			e.printStackTrace();
+			instructions = "Go Fish Instructions";
+		}
+        
+        JTextArea text = new JTextArea(instructions);		
         text.setEditable(false);
         text.setLineWrap(true);
-        text.setWrapStyleWord(true);
+        text.setWrapStyleWord(true);        
         instructionFrame.add(new JScrollPane(text));
         instructionFrame.pack();
-        instructionFrame.setSize(400,400);
+        instructionFrame.setSize(800,600);
         instructionFrame.isDoubleBuffered();
         instructionFrame.isLightweight();
         instructionFrame.setLocationRelativeTo(null);

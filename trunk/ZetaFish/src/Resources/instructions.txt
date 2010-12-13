@@ -1,0 +1,35 @@
+Introduction
+============
+ZetaFish is network enabled version of the classic game of "Go Fish."  One player acts as a game "server" with other players joining in. 
+
+Getting Started
+===============
+On the Menu Screen the first player will need to start a new game that other players will connect to.  
+This is done by clicking “Start New Game.”  If you would like to join a game created by another player, click “Join Game.”  
+In both cases you will be prompted for your player name.
+
+Determining the Server Name
+==========================
+The server name is the name of the player’s computer who started the game.  This name can typically be found by looking at the system settings on the player’s computer who started the game. 
+
+Game Play
+=========
+•	ZetaFish is a card game that supports 2 - 6 players over a network.  
+•	Once the game is started, no new player can be added.
+•	A player can leave the game at any time and his hand would be return to the ocean, while the remaining players would continue their game.
+•	If the host (player who started the game) exits, the game comes to an end.
+•	In a two player setting, if any player exit, the game would ends as there would be only one player left.
+•	The game uses a standard 52 card Deck, with computer as a dealer.
+•	Each player is initially dealt seven cards.
+•	The remaining cards are shared between the players, sprawled out in a randomly ordered pile called the "ocean".
+•	The player who started the game goes first.
+•	The remaining players would get their turn in the order they joined the game.
+•	During a player’s turn they option to pass the turn just by clicking the “End turn” button.
+•	If a player takes a turn, they ask an opponent for cards by clicking the desired value.
+•	If the opponent does not have any of the requested card value, the player automatically draws a card from the ocean.
+•	After receiving cards from an opponent or the ocean, four cards of the same value may be played as a “book” by clicking “Play Books,” otherwise the turn ends.
+
+Winning the Game
+================
+The game ends when any player runs out of cards.  Whoever has the most books wins.
+
