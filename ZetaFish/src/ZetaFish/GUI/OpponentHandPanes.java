@@ -157,6 +157,7 @@ public class OpponentHandPanes extends JLayeredPane implements MouseListener
     			//turn indicator fish image
                 sub1BackDrop.setIcon(new ImageIcon(getClass().getResource("/Resources/fishtest.png")));
                 pane.add(sub1BackDrop, pane.getComponentCount() + 1);
+                pane.setLayer(sub1BackDrop, Integer.MAX_VALUE);
             }
     	}
     }
