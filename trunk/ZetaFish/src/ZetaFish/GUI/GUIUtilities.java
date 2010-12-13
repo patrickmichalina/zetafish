@@ -99,7 +99,7 @@ public class GUIUtilities
 	
 	/**
 	 * Show the contents of the ZFStatus network object to System.out.
-	 * @param status ZFStatus object
+	 * @param remove ZFStatus object
 	 */
 	public synchronized static void ShowRemovePlayer(ZFRemovePlayer remove)
 	{
