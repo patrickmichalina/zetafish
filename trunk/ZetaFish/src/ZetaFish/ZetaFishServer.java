@@ -54,7 +54,8 @@ public class ZetaFishServer extends JFrame
 			}
 		}
 		serverThread = new ZFServerThread(this, port);
-		serverThread.start();	
+		serverThread.start();
+		serverThread.setName("ZetaFish Server Thread");
 	}
 			
 	/**
@@ -210,10 +211,13 @@ class ZFClientResponseHandler extends Thread {
 	{
 		this.connection = connection;
 		this.game = game;
-		this.server = server;
+		this.server = server;		
+		
 		server.display("A player has connected");
+		
 		try {	
-		    out = new ObjectOutputStream(connection.getOutputStream());		    
+		    out = new ObjectOutputStream(connection.getOutputStream());	
+		    
 		}
 		catch(Exception e) 
 		{
@@ -237,9 +241,10 @@ class ZFClientResponseHandler extends Thread {
 	{				
 		try
 		{
-			player = game.addPlayer(out);			
+			player = game.addPlayer(out);				
 			if (player != null)
 			{
+				this.setName("ZFClientResponseHandler for " + player.getToken());
 				server.display("Started thread for " + player.getToken());
 				parsePlayerInput();
 			}			
@@ -529,6 +534,12 @@ class ZFGame {
 		else if (playerNumber == currentPlayerNumber)
 		{
 			moveToNextPlayer();
+			sendFinalTurnChange = true;
+		}
+		/* this will screw up the player numbers. */
+		else if (playerNumber < currentPlayerNumber)
+		{
+			currentPlayerNumber--;
 			sendFinalTurnChange = true;
 		}
 		

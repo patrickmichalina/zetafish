@@ -10,13 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.annotation.Resource;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -70,7 +68,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
     public GameWindow(String args[]) {
         super(); 
         
-        SetTitle(""); //give the window a title
+        setCustomTitle(""); //give the window a title
         
         this.args = args;
         initStartConditions(); //start the game with the inital view
@@ -117,13 +115,16 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         this.validate();
     }
     
-    private void SetTitle(String PlayerName)
+    private void setCustomTitle(String PlayerName)
     {
+    	String title = "ZetaFish";
     	if(PlayerName.length() > 0)
-    		this.setTitle("ZetaFish - " + PlayerName + " - " + VersionInfo.version());
+    		title = "ZetaFish - " + PlayerName + " - " + VersionInfo.version();
     	else
-    		this.setTitle("ZetaFish - " + VersionInfo.version());
-    		
+    		title = "ZetaFish - " + VersionInfo.version();
+    	
+    	this.setTitle(title);
+    	
     }
     
     /**
@@ -274,7 +275,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
         
         if((args != null) && (args.length > 0))
         {
-        	if(args[0].toUpperCase() == "showserver")
+        	if(args[0].toUpperCase().equals("SHOWSERVER"))
         		ShowServerWindow = true;
         }
 
@@ -362,7 +363,7 @@ public class GameWindow extends JFrame implements IServerErrorListener, ActionLi
             backgroundPanel.repaint();
             
             // Add player name to title
-            SetTitle(playerName);
+            setCustomTitle(playerName);
             
             //setup game screen
             backgroundPanel.setLayout(new BorderLayout());            
